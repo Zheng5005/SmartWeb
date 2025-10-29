@@ -2,11 +2,11 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from config import SessionLocal
-from routes import ejemplo
+from routes import auth, ejemplo
 
 app = FastAPI()
 
-app.mount("/static", StaticFiles(directory="static"), name="static")
+#app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # CORS
 app.add_middleware(
@@ -32,3 +32,4 @@ def read_root():
 
 # Importar rutas
 app.include_router(ejemplo.router)
+app.include_router(auth.router)
