@@ -1,6 +1,6 @@
 from config import SessionLocal
 from fastapi import APIRouter, Depends, HTTPException
-from models import Roles, Usuarios
+from model.models import Roles, Usuarios
 from schemas.s_usuarios import UsuarioCreate
 from services.cifrar import hash_password
 from sqlalchemy.orm import Session
