@@ -6,13 +6,13 @@ import os
 load_dotenv()
 
 # Base de datos SQLite como ejemplo de configuración
-DATABASE_PATH = os.getenv("DATABASE_URL", "sqlite:///./default.db")
+DATABASE_URL = os.getenv("DATABASE_URL", None)
 
 # Secreto de usuario
 SECRET_KEY = os.getenv("SECRET_KEY", None)
 
 # Configuración de SQLAlchemy
-engine = create_engine(DATABASE_PATH)
+engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 

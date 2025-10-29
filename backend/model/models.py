@@ -21,9 +21,9 @@ class Usuarios(Base):
     apellido = Column(String)
     email = Column(String, unique=True, nullable=False)
     password_hash = Column(String)
-    role = Column(Integer, ForeignKey("Roles.id"), nullable=False)
+    role = Column(Integer, ForeignKey("Roles.id"), nullable=True) # not nullable changed to nullable=True
     creacion_cuenta = Column(DateTime(timezone=True), server_default=func.now())
-    ultimo_login = Column(DateTime(timezone=True))
+    ultimo_login = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     status = Column(Enum(EstadoUsuario), default=EstadoUsuario.Activo)
 
     rol = relationship("Roles")

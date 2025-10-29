@@ -16,5 +16,5 @@ class UsuarioResponse(BaseModel):
     creacion_cuenta: datetime
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
