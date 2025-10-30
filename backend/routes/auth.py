@@ -1,8 +1,8 @@
 from config import SessionLocal
 from fastapi import APIRouter, Depends, HTTPException
 from model.models import Roles, Usuarios
-from schemas.s_usuarios import UsuarioCreate
-from services.cifrar import hash_password
+from schemas.s_usuarios import UsuarioCreate, UsuarioLogin
+from services.cifrar import hash_password, verify_password
 from sqlalchemy.orm import Session
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
@@ -15,7 +15,7 @@ def get_db():
         db.close()
 
 @router.post("/register")
-def register_user(user: UsuarioCreate, db: Session = Depends(get_db)):
+async def register_user(user: UsuarioCreate, db: Session = Depends(get_db)):
     # Verificar si el email ya existe
     existing_user = db.query(Usuarios).filter(Usuarios.email == user.email).first()
     if existing_user:
@@ -44,3 +44,19 @@ def register_user(user: UsuarioCreate, db: Session = Depends(get_db)):
 
     return {"message": "Usuario creado exitosamente"}
 
+##Login manual
+@router.post("/login")
+async def login_user(user_data: UsuarioLogin, db: Session = Depends(get_db())):
+    user = db.query(Usuarios).filter(Usuarios.email ).first()
+
+    # Verificar si el usuario existe
+    if not user:
+        raise HTTPException(status_code=400, detail="Credenciales incorrectas")
+
+    # Verificar la contraseña
+    if not verify_password(user_data.user_password, user.user_password):
+        raise HTTPException(status_code=400, detail="Credenciales incorrectas")
+
+     # Generar el token JWT
+
+    return {"token": "token"}
