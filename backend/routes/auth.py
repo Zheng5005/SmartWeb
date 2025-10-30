@@ -46,7 +46,7 @@ async def register_user(user: UsuarioCreate, db: Session = Depends(get_db)):
 
 ##Login manual
 @router.post("/login")
-async def login_user(user_data: UsuarioLogin, db: Session = Depends(get_db())):
+async def login_user(user_data: UsuarioLogin, db: Session = Depends(get_db)):
     user = db.query(Usuarios).filter(Usuarios.email ).first()
 
     # Verificar si el usuario existe
@@ -57,6 +57,6 @@ async def login_user(user_data: UsuarioLogin, db: Session = Depends(get_db())):
     if not verify_password(user_data.user_password, user.user_password):
         raise HTTPException(status_code=400, detail="Credenciales incorrectas")
 
-     # Generar el token JWT
+    # Generar el token JWT
 
     return {"token": "token"}
