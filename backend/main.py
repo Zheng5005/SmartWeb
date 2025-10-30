@@ -1,12 +1,15 @@
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
-from config import SessionLocal
+from config import SessionLocal, Base, engine
 from routes import auth, ejemplo
+from model.models import Roles
 
 app = FastAPI()
 
-#app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+Base.metadata.create_all(bind=engine)
 
 # CORS
 app.add_middleware(
@@ -25,6 +28,19 @@ def get_db():
     finally:
         db.close()
 
+# Insertar roles defaults si no existen
+def seed_roles():
+    db = SessionLocal(bind=engine)
+    roles_default = ["Estudiante", "Profesor", "Administrador"]
+
+    for rol in roles_default:
+        existe = db.query(Roles).filter_by(nombre_rol=rol).first()
+        if not existe:
+            nuevo_rol = Roles(nombre_rol=rol)
+            db.add(nuevo_rol)
+    db.commit()
+    db.close()
+
 # Ejemplo basico de ruta
 @app.get("/")
 def read_root():
@@ -33,3 +49,5 @@ def read_root():
 # Importar rutas
 app.include_router(ejemplo.router)
 app.include_router(auth.router)
+
+seed_roles()

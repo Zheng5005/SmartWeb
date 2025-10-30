@@ -22,7 +22,7 @@ async def register_user(user: UsuarioCreate, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail="El correo ya está registrado")
 
     # Obtener rol por defecto
-    default_role = db.query(Roles).filter(Roles.nombre_rol == "ESTUDIANTE").first()
+    default_role = db.query(Roles).filter(Roles.nombre_rol == "Estudiante").first()
     if not default_role:
         raise HTTPException(status_code=500, detail="Rol por defecto 'ESTUDIANTE' no encontrado")
 
