@@ -1,10 +1,12 @@
-from config import SessionLocal
-from fastapi import APIRouter, Depends, HTTPException
-from model.models import Roles, Usuarios
-from schemas.s_usuarios import UsuarioCreate, UsuarioLogin
-from services.cifrar import hash_password, verify_password
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-
+from datetime import datetime, timedelta
+from model.models import Usuarios, AuthToken, Roles
+from services.cifrar import hash_password
+from schemas.s_usuarios import UsuarioLogin, UsuarioCreate
+from services.cifrar import verify_password
+from config import SessionLocal
+from services.jwt import create_access_token, verify_token
 router = APIRouter(prefix="/auth", tags=["Auth"])
 
 def get_db():
@@ -44,19 +46,61 @@ async def register_user(user: UsuarioCreate, db: Session = Depends(get_db)):
 
     return {"message": "Usuario creado exitosamente"}
 
-##Login manual
+# Login manual
 @router.post("/login")
 async def login_user(user_data: UsuarioLogin, db: Session = Depends(get_db)):
-    user = db.query(Usuarios).filter(Usuarios.email ).first()
+    user = db.query(Usuarios).filter(Usuarios.email == user_data.email).first()
 
-    # Verificar si el usuario existe
     if not user:
         raise HTTPException(status_code=400, detail="Credenciales incorrectas")
 
-    # Verificar la contraseña
-    if not verify_password(user_data.user_password, user.user_password):
+    if not verify_password(user_data.password, user.password_hash):
         raise HTTPException(status_code=400, detail="Credenciales incorrectas")
 
-    # Generar el token JWT
+    # Control de múltiples sesiones
+    existing_token = db.query(AuthToken).filter(
+        AuthToken.user_id == user.id,
+        AuthToken.revocado == False
+    ).first()
 
-    return {"token": "token"}
+    if existing_token:
+        raise HTTPException(status_code=403, detail="Ya hay una sesión activa")
+
+    # Generar token JWT
+    access_token = create_access_token({"sub": str(user.id)})
+
+    # Guardar token en la base de datos
+    expiracion = datetime.utcnow() + timedelta(hours=2)
+    new_token = AuthToken(
+        user_id=user.id,
+        jwt_token=access_token,
+        expiracion=expiracion,
+        revocado=False
+    )
+    db.add(new_token)
+
+    # Marcar usuario como activo
+    user.status = "Activo"
+    db.commit()
+
+    return {"access_token": access_token, "token_type": "bearer"}
+
+@router.post("/logout")
+async def logout_user(current_user: Usuarios = Depends(verify_token), db: Session = Depends(get_db)):
+    # Buscar el token activo del usuario
+    token = db.query(AuthToken).filter(
+        AuthToken.user_id == current_user.id,
+        AuthToken.revocado == False
+    ).first()
+
+    if not token:
+        raise HTTPException(status_code=400, detail="No hay sesión activa")
+
+    # Revocar token
+    token.revocado = True
+
+    # Marcar usuario como inactivo
+    current_user.status = "Inactivo"
+    db.commit()
+
+    return {"message": "Sesión cerrada correctamente"}
