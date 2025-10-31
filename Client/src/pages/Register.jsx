@@ -1,9 +1,11 @@
-//  LOGIN MANUAL
+//  REGISTRO MANUAL
 import { useState } from "react";
 import { Link } from "react-router";
 
-const LoginPage = () => {
-  const [loginData, setLoginData] = useState({
+const RegisterPage = () => {
+  const [registerData, setRegisterData] = useState({
+    nombre: "",
+    apellido: "",
     email: "",
     password: "",
   });
@@ -18,7 +20,7 @@ const LoginPage = () => {
       className="h-screen flex items-center justify-center p-4 sm:p-6 md:p-8"
     >
       <div className="border border-primary/25 flex flex-col lg:flex-row w-full max-w-5xl mx-auto bg-base-100 rounded-xl shadow-lg overflow-hidden">
-        {/* LOGIN FORM SECTION */}
+        {/* REGISTER FORM SECTION */}
         <div className="w-full lg:w-1/2 p-4 sm:p-8 flex flex-col">
           {/* LOGO */}
           <div className="mb-4 flex items-center justify-start gap-2">
@@ -40,11 +42,39 @@ const LoginPage = () => {
                 <div>
                   <h2 className="text-xl font-semibold">Bienvenido de nuevo</h2>
                   <p className="text-sm opacity-70">
-                    Ingresa a tu cuenta para seguir aprendidendo
+                    Crea una cuenta para poder adquirir mas conocimiento
                   </p>
                 </div>
 
                 <div className="flex flex-col gap-3">
+                  <div className="form-control w-full space-y-2">
+                    <label className="label">
+                      <span className="label-text">Nombre</span>
+                    </label>
+                    <input
+                      type="string"
+                      placeholder="Juan"
+                      className="input input-bordered w-full"
+                      value={registerData.nombre}
+                      onChange={(e) => setRegisterData({ ...registerData, nombre: e.target.value })}
+                      required
+                    />
+                  </div>
+
+                  <div className="form-control w-full space-y-2">
+                    <label className="label">
+                      <span className="label-text">Apellido</span>
+                    </label>
+                    <input
+                      type="string"
+                      placeholder="Peréz"
+                      className="input input-bordered w-full"
+                      value={registerData.apellido}
+                      onChange={(e) => setRegisterData({ ...registerData, apellido: e.target.value })}
+                      required
+                    />
+                  </div>
+
                   <div className="form-control w-full space-y-2">
                     <label className="label">
                       <span className="label-text">Email</span>
@@ -53,8 +83,8 @@ const LoginPage = () => {
                       type="email"
                       placeholder="hello@ejemplo.com"
                       className="input input-bordered w-full"
-                      value={loginData.email}
-                      onChange={(e) => setLoginData({ ...loginData, email: e.target.value })}
+                      value={registerData.email}
+                      onChange={(e) => setRegisterData({ ...registerData, email: e.target.value })}
                       required
                     />
                   </div>
@@ -67,8 +97,8 @@ const LoginPage = () => {
                       type="password"
                       placeholder="••••••••"
                       className="input input-bordered w-full"
-                      value={loginData.password}
-                      onChange={(e) => setLoginData({ ...loginData, password: e.target.value })}
+                      value={registerData.password}
+                      onChange={(e) => setRegisterData({ ...registerData, password: e.target.value })}
                       required
                     />
                   </div>
@@ -77,18 +107,18 @@ const LoginPage = () => {
                     {isPending ? (
                       <>
                         <span className="loading loading-spinner loading-xs"></span>
-                        Entrando...
+                        Registrando...
                       </>
                     ) : (
-                      "Entrar"
+                      "Registrarse"
                     )}
                   </button>
 
                   <div className="text-center mt-4">
                     <p className="text-sm">
-                      No tienes una cuenta?{" "}
-                      <Link to="/register" className="text-primary hover:underline text-blue-600 font-bold">
-                        Crea una
+                      Tienes una cuenta?{" "}
+                      <Link to="/login" className="text-primary hover:underline text-blue-600 font-bold">
+                        Ingresa
                       </Link>
                     </p>
                   </div>
@@ -117,4 +147,4 @@ const LoginPage = () => {
     </div>
   );
 };
-export default LoginPage;
+export default RegisterPage;
