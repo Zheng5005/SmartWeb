@@ -12,7 +12,7 @@ const RegisterPage = () => {
   const [isPending, setIsPending] = useState(false)
 
   const handleLogin = (e) => {
-    e.preventDefault();
+    e.preventDefault(); 
   };
 
   return (
