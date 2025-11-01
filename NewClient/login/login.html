@@ -43,21 +43,7 @@
     </div>
   </div>
 
-  <script>
-    const form = document.getElementById("loginForm");
-    const button = document.getElementById("loginButton");
-
-    form.addEventListener("submit", (e) => {
-      e.preventDefault();
-      button.disabled = true;
-      button.textContent = "Entrando...";
-      setTimeout(() => {
-        alert("Login simulado completado");
-        button.disabled = false;
-        button.textContent = "Entrar";
-      }, 1500);
-    });
-  </script>
+  <script src="login.js"></script>
 </body>
 </html>
 
