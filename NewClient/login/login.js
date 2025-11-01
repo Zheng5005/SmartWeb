@@ -37,11 +37,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Verificar rol del usuario
       const role = data.user?.role?.toLowerCase();
+      console.log(role)
 
-      if (!role) {
-        alert("No se pudo determinar el rol del usuario.");
-        return;
-      }
+      // if (!role) {
+      //   alert("No se pudo determinar el rol del usuario.");
+      //   return;
+      // }
 
       alert(`Inicio de sesión exitoso como ${role} ✅`);
 
