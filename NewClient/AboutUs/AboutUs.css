@@ -1,0 +1,281 @@
+/* Variables para colores (Ajustadas para la estética del Panel del Docente) */
+:root {
+    --color-primary: #0e4c7d; /* Azul oscuro del header y banner */
+    --color-accent: #ff745d; /* Coral/Naranja de botones de acción */
+    --color-background: #f4f6f9; /* Fondo gris claro de toda la página */
+    --color-text-dark: #333;
+    --color-text-light: #fff;
+    --color-card-background: #ffffff;
+    --color-red-button: #dc3545; /* Rojo del botón 'Cerrar sesión' */
+}
+
+/* Estilos Globales */
+body {
+    font-family: 'Open Sans', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: var(--color-background);
+    color: var(--color-text-dark);
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* 1. HEADER (FINAL: LOGO Y TEXTO VISIBLE) */
+.header {
+    background-color: var(--color-primary);
+    color: var(--color-text-light);
+    padding: 15px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header .logo {
+    display: flex; /* Para alinear el logo y el texto */
+    align-items: center;
+}
+
+.header .logo .logo-img {
+    height: 35px; /* Altura ideal para un header */
+    width: auto;
+    margin-right: 8px; /* Espacio entre el logo y el texto */
+    display: block;
+}
+
+/* ESTILO DEL TEXTO DEL LOGO AHORA ES VISIBLE */
+.header .logo .logo-text {
+    font-size: 1.5em;
+    font-weight: 700;
+    color: var(--color-text-light);
+}
+
+.header .nav {
+    display: flex;
+    align-items: center;
+}
+
+.header .nav .nav-item {
+    color: var(--color-text-light);
+    text-decoration: none;
+    margin-left: 25px;
+    display: flex;
+    align-items: center;
+    font-size: 0.9em;
+    padding: 5px 10px;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+.header .nav .nav-item i {
+    margin-right: 5px;
+    font-size: 1.1em;
+}
+
+.header .nav .nav-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.header .nav .cerrar-sesion {
+    background-color: var(--color-red-button); 
+    color: var(--color-text-light);
+    text-decoration: none;
+    padding: 8px 15px;
+    border-radius: 8px; 
+    font-weight: 600;
+    margin-left: 25px;
+    display: flex;
+    align-items: center;
+    transition: background-color 0.3s;
+}
+
+.header .nav .cerrar-sesion i {
+    margin-right: 8px;
+}
+
+.header .nav .cerrar-sesion:hover {
+    background-color: #c82333;
+}
+
+
+/* 2. BANNER PRINCIPAL */
+.banner-acerca-de {
+    background-color: var(--color-primary);
+    color: var(--color-text-light);
+    padding: 30px 40px;
+    margin-bottom: 30px;
+    border-radius: 8px;
+}
+
+.banner-acerca-de h1 {
+    font-size: 2em;
+    font-weight: 700;
+    margin-top: 0;
+}
+
+.banner-acerca-de p {
+    font-size: 1.1em;
+    opacity: 0.9;
+}
+
+
+/* 3. SECCIÓN DE DESARROLLADORES */
+.seccion-equipo h2 {
+    font-size: 1.4em;
+    font-weight: 600;
+    color: var(--color-text-dark);
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+}
+
+/* Ajuste de ícono de título a algo genérico de equipo */
+.seccion-equipo h2 i {
+    margin-right: 10px;
+    color: var(--color-primary);
+}
+
+.grid-desarrolladores {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); 
+    gap: 20px;
+}
+
+.card-desarrollador {
+    background-color: var(--color-card-background);
+    padding: 20px;
+    border-radius: 20px;
+    border: 1px solid #e0e0e0; 
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03); 
+    
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex; 
+    flex-direction: column;
+}
+
+.card-desarrollador:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08); 
+}
+
+.foto-perfil {
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 15px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 4px solid var(--color-accent); 
+}
+
+.foto-perfil img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; 
+}
+
+.info h3 {
+    margin-bottom: 5px;
+    font-size: 1.2em;
+    font-weight: 700;
+}
+
+.info .rol {
+    color: #6c757d; 
+    font-size: 0.95em;
+    margin-bottom: 15px;
+}
+
+.habilidades {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.habilidades span {
+    font-size: 1.3em;
+    color: var(--color-accent);
+}
+
+.card-desarrollador .contribucion {
+    font-size: 0.85em; 
+    color: #5a6268; 
+    padding: 15px 5px 0;
+    border-top: 1px solid #eee; 
+    margin-top: auto; 
+    line-height: 1.4;
+    font-style: italic;
+}
+
+/* Sección de Información de Contacto al final (FOOTER LIMPIO) */
+.seccion-contacto-info {
+    text-align: center;
+    margin-top: 40px;
+    padding: 20px;
+    border-top: 1px solid #ddd;
+    font-size: 0.9em;
+    color: #6c757d; /* Color gris para el texto del footer */
+}
+
+.seccion-contacto-info a {
+    color: var(--color-primary); 
+    text-decoration: none;
+    transition: color 0.2s;
+    margin: 0 5px; /* Pequeño margen entre enlaces */
+}
+
+.seccion-contacto-info a:hover {
+    color: var(--color-accent); 
+}
+
+/* Media Query para Responsividad */
+@media (max-width: 992px) {
+    .grid-desarrolladores {
+        grid-template-columns: repeat(2, 1fr); 
+    }
+    .header .nav .nav-item {
+        margin-left: 15px;
+    }
+    .header .nav .cerrar-sesion {
+        margin-left: 15px;
+    }
+}
+
+@media (max-width: 768px) {
+    .header {
+        flex-direction: column;
+        text-align: center;
+        padding: 15px 20px;
+    }
+    .header .logo {
+        justify-content: center;
+    }
+    .header .nav {
+        margin-top: 15px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    .header .nav .nav-item,
+    .header .nav .cerrar-sesion {
+        margin: 5px 10px;
+    }
+}
+
+
+@media (max-width: 576px) {
+    .grid-desarrolladores {
+        grid-template-columns: 1fr; 
+    }
+    .banner-acerca-de {
+        padding: 20px;
+    }
+    .seccion-contacto-info a {
+        display: block;
+        margin: 5px 0;
+    }
+}
