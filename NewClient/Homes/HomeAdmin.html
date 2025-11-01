@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Panel de Administración - SMARTWEB</title>
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --primary-dark: #0e2a47;
+      --primary-medium: #265c8b;
+      --primary-light: #3a7bb6;
+      --accent-color: #6a0dad;
+      --accent-hover: #5a0b9d;
+      --light-bg: #f4f7fb;
+      --card-bg: #ffffff;
+      --text-dark: #2d3748;
+      --text-light: #718096;
+      --success-color: #48bb78;
+      --warning-color: #ed8936;
+      --danger-color: #e53e3e;
+    }
+
+    body {
+      background: var(--light-bg);
+      font-family: 'Poppins', sans-serif;
+      color: var(--text-dark);
+    }
+
+    /* Navbar */
+    .navbar {
+      background: var(--primary-dark);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      padding: 12px 0;
+    }
+
+    .navbar-brand {
+      font-weight: 700;
+      font-size: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: white !important;
+    }
+
+    .logo-img {
+      height: 40px;
+      width: auto;
+    }
+
+    .nav-link {
+      color: #d8e6ff !important;
+      font-weight: 500;
+      transition: all 0.3s;
+      padding: 8px 16px !important;
+      border-radius: 6px;
+    }
+
+    .nav-link:hover {
+      color: #fff !important;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .btn-logout {
+      background: var(--accent-color) !important;
+      color: white !important;
+      border-radius: 6px;
+      padding: 8px 20px !important;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+
+    .btn-logout:hover {
+      background: var(--accent-hover) !important;
+      transform: translateY(-2px);
+    }
+
+    /* Header */
+    .admin-hero {
+      background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-medium) 100%);
+      color: white;
+      padding: 3rem 2rem;
+      border-radius: 20px;
+      margin: 2rem auto;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(14, 42, 71, 0.2);
+    }
+
+    .admin-hero::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 200px;
+      height: 200px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 50%;
+      transform: translate(30%, -30%);
+    }
+
+    .admin-hero h1 {
+      font-weight: 700;
+      margin-bottom: 1rem;
+      position: relative;
+      z-index: 2;
+    }
+
+    .admin-hero p {
+      font-size: 1.1rem;
+      opacity: 0.9;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin: 2rem 0;
+    }
+
+    .stat-card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+      border-left: 5px solid var(--primary-medium);
+      transition: all 0.3s;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .stat-number {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+      color: var(--text-light);
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .stat-trend {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.8rem;
+      margin-top: 0.5rem;
+    }
+
+    .trend-up { color: var(--success-color); }
+    .trend-down { color: var(--danger-color); }
+
+    /* Admin Cards */
+    .admin-card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 2rem;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+      transition: all 0.3s;
+      border: 1px solid rgba(0, 0, 0, 0.03);
+      height: 100%;
+    }
+
+    .admin-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 25px rgba(0, 0, 0, 0.12);
+    }
+
+    .card-icon {
+      width: 70px;
+      height: 70px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+      font-size: 1.8rem;
+      background: linear-gradient(135deg, var(--primary-medium), var(--primary-light));
+      color: white;
+    }
+
+    .btn-admin {
+      background: var(--primary-dark);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 20px;
+      font-weight: 600;
+      transition: all 0.3s;
+      width: 100%;
+      margin-top: 1rem;
+    }
+
+    .btn-admin:hover {
+      background: var(--primary-medium);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(14, 42, 71, 0.3);
+    }
+
+    /* Tables */
+    .admin-table {
+      background: var(--card-bg);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+    }
+
+    .table th {
+      background: var(--primary-dark);
+      color: white;
+      border: none;
+      padding: 1rem;
+      font-weight: 600;
+    }
+
+    .table td {
+      padding: 1rem;
+      border-color: #e9ecef;
+      vertical-align: middle;
+    }
+
+    .badge-pending { background: var(--warning-color); }
+    .badge-approved { background: var(--success-color); }
+    .badge-rejected { background: var(--danger-color); }
+
+    /* Section Headers */
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      padding-bottom: 10px;
+      border-bottom: 2px solid rgba(14, 42, 71, 0.1);
+    }
+
+    .section-title {
+      color: var(--primary-dark);
+      font-weight: 700;
+      font-size: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-title i {
+      color: var(--primary-medium);
+    }
+
+    /* Footer */
+    footer {
+      background: var(--primary-dark);
+      color: white;
+      padding: 2.5rem 0 1.5rem;
+      margin-top: 4rem;
+    }
+
+    .footer-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .footer-logo {
+      font-weight: 700;
+      font-size: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: white;
+    }
+
+    .footer-logo-img {
+      height: 30px;
+      width: auto;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 20px;
+    }
+
+    .footer-links a {
+      color: rgba(255, 255, 255, 0.7);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .footer-links a:hover {
+      color: white;
+    }
+
+    .copyright {
+      text-align: center;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 0.9rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .footer-content {
+        flex-direction: column;
+        gap: 20px;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg">
+    <div class="container">
+      <a class="navbar-brand" href="#">
+        <img src="logo.png" alt="SMARTWEB Logo" class="logo-img">
+        SMARTWEB
+      </a>
+
+      <button class="navbar-toggler bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div id="navMenu" class="collapse navbar-collapse">
+        <ul class="navbar-nav ms-auto align-items-center gap-2">
+          <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-home me-1"></i> Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-users me-1"></i> Usuarios</a></li>
+          <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-chalkboard-teacher me-1"></i> Instructores</a></li>
+          <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-book me-1"></i> Cursos</a></li>
+          <li class="nav-item"><a class="nav-link btn-logout" href="#"><i class="fas fa-sign-out-alt me-1"></i> Cerrar sesión</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Header -->
+  <div class="container">
+    <div class="admin-hero">
+      <h1>Panel de Administración</h1>
+      <p>Gestiona usuarios, instructores, cursos y configuración del sistema</p>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main class="container">
+
+    
+
+    <!-- Acciones Rápidas -->
+    <section class="mb-5">
+      <div class="section-header">
+        <h2 class="section-title"><i class="fas fa-bolt"></i> Acciones Rápidas</h2>
+      </div>
+
+      <div class="row g-4">
+        <div class="col-md-3">
+          <div class="admin-card text-center">
+            <div class="card-icon mx-auto">
+              <i class="fas fa-user-plus"></i>
+            </div>
+            <h5>Gestionar Usuarios</h5>
+            <p class="text-muted">Administrar estudiantes y permisos</p>
+            <button class="btn-admin">Acceder</button>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="admin-card text-center">
+            <div class="card-icon mx-auto">
+              <i class="fas fa-chalkboard-teacher"></i>
+            </div>
+            <h5>Verificar Instructores</h5>
+            <p class="text-muted">Revisar solicitudes de instructores</p>
+            <button class="btn-admin">Revisar</button>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="admin-card text-center">
+            <div class="card-icon mx-auto">
+              <i class="fas fa-book"></i>
+            </div>
+            <h5>Gestionar Cursos</h5>
+            <p class="text-muted">Aprobar y moderar cursos</p>
+            <button class="btn-admin">Administrar</button>
+          </div>
+        </div>
+
+        
+      </div>
+    </section>
+
+    <!-- Solicitudes de Instructores Pendientes -->
+    <section class="mb-5">
+      <div class="section-header">
+        <h2 class="section-title"><i class="fas fa-clock"></i> Solicitudes Pendientes</h2>
+        <a href="#" class="text-primary">Ver todas</a>
+      </div>
+
+      <div class="admin-table">
+        <table class="table table-hover mb-0">
+          <thead>
+            <tr>
+              <th>Instructor</th>
+              <th>Especialidad</th>
+              <th>Fecha Solicitud</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <div class="d-flex align-items-center">
+                  <img src="https://ui-avatars.com/api/?name=Carlos+Ruiz&background=0e2a47&color=fff" 
+                       class="rounded-circle me-3" width="40" height="40" alt="">
+                  <div>
+                    <strong>Carlos Ruiz</strong>
+                    <div class="text-muted small">carlos.ruiz@email.com</div>
+                  </div>
+                </div>
+              </td>
+              <td>Matemáticas Avanzadas</td>
+              <td>15 Mar 2024</td>
+              <td><span class="badge badge-pending text-white">Pendiente</span></td>
+              <td>
+                <button class="btn btn-success btn-sm me-1"><i class="fas fa-check"></i></button>
+                <button class="btn btn-danger btn-sm"><i class="fas fa-times"></i></button>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="d-flex align-items-center">
+                  <img src="https://ui-avatars.com/api/?name=Ana+Morales&background=0e2a47&color=fff" 
+                       class="rounded-circle me-3" width="40" height="40" alt="">
+                  <div>
+                    <strong>Ana Morales</strong>
+                    <div class="text-muted small">ana.morales@email.com</div>
+                  </div>
+                </div>
+              </td>
+              <td>Diseño Gráfico</td>
+              <td>14 Mar 2024</td>
+              <td><span class="badge badge-pending text-white">Pendiente</span></td>
+              <td>
+                <button class="btn btn-success btn-sm me-1"><i class="fas fa-check"></i></button>
+                <button class="btn btn-danger btn-sm"><i class="fas fa-times"></i></button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Cursos Recientes -->
+    <section class="mb-5">
+      <div class="section-header">
+        <h2 class="section-title"><i class="fas fa-book-open"></i> Cursos Recientes</h2>
+        <a href="#" class="text-primary">Ver todos</a>
+      </div>
+
+      <div class="admin-table">
+        <table class="table table-hover mb-0">
+          <thead>
+            <tr>
+              <th>Curso</th>
+              <th>Instructor</th>
+              <th>Estudiantes</th>
+              <th>Fecha Creación</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <strong>Programación Web Avanzada</strong>
+                <div class="text-muted small">HTML, CSS, JavaScript, React</div>
+              </td>
+              <td>María González</td>
+              <td>142</td>
+              <td>14 Mar 2024</td>
+              <td><span class="badge badge-approved text-white">Activo</span></td>
+            </tr>
+            <tr>
+              <td>
+                <strong>Inglés para Negocios</strong>
+                <div class="text-muted small">Comunicación empresarial</div>
+              </td>
+              <td>Robert Johnson</td>
+              <td>89</td>
+              <td>13 Mar 2024</td>
+              <td><span class="badge badge-approved text-white">Activo</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+   
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-logo">
+          <img src="logo.png" alt="SMARTWEB Logo" class="footer-logo-img">
+          SMARTWEB
+        </div>
+        <div class="footer-links">
+          <a href="#">Centro de Ayuda</a>
+          <a href="#">Políticas de Privacidad</a>
+          <a href="#">Términos de Servicio</a>
+          <a href="#">Contacto</a>
+        </div>
+      </div>
+      <div class="copyright">
+        © 2025 SMARTWEB — Plataforma Educativa Internacional. Todos los derechos reservados.
+      </div>
+    </div>
+  </footer>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
