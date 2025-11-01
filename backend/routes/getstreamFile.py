@@ -4,7 +4,7 @@ from getstream.models import UserRequest
 from config import STREAM_API_KEY, STREAM_API_SECRET, STREAM_BASE_URL
 from uuid import uuid4
 from urllib.parse import urlencode
-import httpx, uuid, jwt, webbrowser, os
+import httpx, uuid, jwt, webbrowser, os, time
 
 router = APIRouter(prefix="/getstream", tags=["getstream"])
 
@@ -28,14 +28,22 @@ async def create_call(user_id: str):
         client.upsert_users(UserRequest(id=user_id, name=user_id))
 
         # Crear token válido 1 hora
-        user_token = client.create_token(user_id, expiration=3600)
+        user_token = client.create_token(
+            user_id,
+            expiration=3600
+        )
 
         # Crear ID único para la llamada
         call_id = str(uuid.uuid4())
         call = client.video.call("default", call_id)
 
-        # Crear llamada en Stream
-        response = call.get_or_create(data={"created_by_id": user_id})
+        # Crear llamada y agregar el usuario como miembro
+        response = call.get_or_create(
+            data={
+                "created_by_id": user_id,
+                "members": [{"user_id": user_id}]
+            }
+        )
 
         # Generar URL para unirse a la llamada
         params = {
@@ -44,15 +52,13 @@ async def create_call(user_id: str):
             "skip_lobby": "true",
         }
 
-        base_url = os.getenv("EXAMPLE_BASE_URL", "https://video.stream-io-api.com")
-        join_url = f"{base_url}/join/{call_id}?{urlencode(params)}"
+        join_url = f"https://video.stream-io-api.com/join/{call_id}?{urlencode(params)}"
 
-        # 🟢 Devolver solo los datos útiles (sin el objeto StreamResponse)
         return {
             "call_id": call_id,
             "user_id": user_id,
             "join_url": join_url,
-            "stream_response": response.data  # <-- solo el diccionario, seguro para JSON
+            "token": user_token,
         }
 
     except Exception as e:
