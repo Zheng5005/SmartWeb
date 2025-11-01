@@ -33,6 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (data.token) {
         localStorage.setItem("token", data.token);
       }
+      console.log(response)
 
       // Verificar rol del usuario
       const role = data.user?.role?.toLowerCase();
@@ -46,17 +47,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Redirección según el rol
       switch (role) {
-        case "admin":
-        case "administrador":
-          window.location.href = "admin-dashboard.html";
+        //case "Administrador":
+        case 2:
+          window.location.href = "HomeAdmin.html";
           break;
-        case "profesor":
-        case "teacher":
-          window.location.href = "profesor-dashboard.html";
+        case "Profesor":
+          window.location.href = "HomeTeacher.html";
           break;
-        case "estudiante":
-        case "student":
-          window.location.href = "estudiante-dashboard.html";
+        //case "Estudiante":
+        case 4:
+          window.location.href = "HomeStudent.html";
           break;
         default:
           window.location.href = "dashboard.html";
