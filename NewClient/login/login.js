@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
       console.log(response)
 
       // Verificar rol del usuario
-      const role = data.user?.role?.toLowerCase();
+      const role = data.role?.toLowerCase();
       console.log(role)
 
       // if (!role) {
@@ -48,15 +48,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Redirección según el rol
       switch (role) {
-        //case "Administrador":
-        case 2:
+        case "administrador":
           window.location.href = "HomeAdmin.html";
           break;
-        case "Profesor":
+        case "profesor":
           window.location.href = "HomeTeacher.html";
           break;
-        //case "Estudiante":
-        case 4:
+        case "estudiante":
           window.location.href = "HomeStudent.html";
           break;
         default:
