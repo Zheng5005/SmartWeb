@@ -49,6 +49,6 @@ def read_root():
 # Importar rutas
 app.include_router(ejemplo.router)
 app.include_router(auth.router)
-app.include_router(getstream.routes)
+app.include_router(getstream.router)
 
 seed_roles()
