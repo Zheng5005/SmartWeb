@@ -11,6 +11,11 @@ DATABASE_URL = os.getenv("DATABASE_URL", None)
 # Secreto de usuario
 SECRET_KEY = os.getenv("SECRET_KEY", None)
 
+# GetStream API credentials
+STREAM_API_KEY = os.getenv("STREAM_API_KEY", None)
+STREAM_API_SECRET = os.getenv("STREAM_API_SECRET", None)
+STREAM_BASE_URL = os.getenv("STREAM_BASE_URL", None)
+
 # Configuración de SQLAlchemy
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
