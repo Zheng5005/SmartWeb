@@ -1,0 +1,162 @@
+/* Estilos generales */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: "Segoe UI", sans-serif;
+}
+
+body {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f4f6f9;
+}
+
+.container {
+  width: 100%;
+  max-width: 1100px;
+  padding: 1rem;
+}
+
+.login-box {
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+  border: 1px solid rgba(0, 80, 255, 0.1);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+}
+
+@media (min-width: 900px) {
+  .login-box {
+    flex-direction: row;
+  }
+}
+
+/* FORMULARIO */
+.form-section {
+  width: 100%;
+  padding: 2rem;
+}
+
+.logo h1 {
+  font-size: 2rem;
+  font-family: monospace;
+  background: linear-gradient(90deg, #007bff, #00bcd4);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 800;
+  margin-bottom: 1.5rem;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+form h2 {
+  font-size: 1.5rem;
+  margin-bottom: 0.3rem;
+}
+
+.subtitle {
+  font-size: 0.9rem;
+  opacity: 0.7;
+  margin-bottom: 1.2rem;
+}
+
+/* Inputs */
+label {
+  font-weight: 500;
+  margin-bottom: 0.3rem;
+}
+
+input {
+  padding: 0.7rem;
+  margin-bottom: 1rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  width: 100%;
+  font-size: 1rem;
+  transition: border 0.2s ease;
+}
+
+input:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+/* Botón */
+button {
+  background-color: white;
+  color: #007bff;
+  border: 1px solid #007bff;
+  padding: 0.7rem;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+button:hover {
+  background-color: #007bff;
+  color: white;
+}
+
+button:disabled {
+  background-color: #e5e5e5;
+  color: gray;
+  border: none;
+  cursor: not-allowed;
+}
+
+/* Enlace de registro */
+.register-link {
+  text-align: center;
+  margin-top: 1rem;
+  font-size: 0.9rem;
+}
+
+.register-link a {
+  color: #007bff;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.register-link a:hover {
+  text-decoration: underline;
+}
+
+/* IMAGEN */
+.image-section {
+  display: none;
+  background-color: rgba(0, 123, 255, 0.05);
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  width: 50%;
+  padding: 2rem;
+  text-align: center;
+}
+
+.image-section img {
+  width: 250px;
+  height: auto;
+}
+
+.image-section p {
+  margin-top: 1rem;
+  opacity: 0.7;
+  font-size: 0.95rem;
+}
+
+@media (min-width: 900px) {
+  .image-section {
+    display: flex;
+  }
+}
+
