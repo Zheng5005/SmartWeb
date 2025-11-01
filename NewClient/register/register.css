@@ -1,162 +1,134 @@
-/* Estilos base */
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  font-family: "Segoe UI", sans-serif;
+/* Variables del Panel del Estudiante */
+:root {
+    --primary-dark: #0e2a47;
+    --primary-medium: #265c8b;
+    --primary-light: #3a7bb6;
+    --accent-color: #ff7e5f; /* Coral/Naranja para acciones */
+    --accent-hover: #e86a4c;
+    --light-bg: #f4f7fb;
+    --card-bg: #ffffff;
+    --text-dark: #2d3748;
+    --text-light: #718096;
+    --success-color: #48bb78;
+    --warning-color: #ed8936;
+    --disabled-color: #a0aec0;
+    --secondary-dark: #5a6268;
 }
 
+/* Estilos Globales */
 body {
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #f4f6f9;
+    background: var(--light-bg);
+    font-family: 'Poppins', sans-serif;
+    color: var(--text-dark);
+    min-height: 100vh;
+    margin: 0;
 }
 
-.container {
-  width: 100%;
-  max-width: 1100px;
-  padding: 1rem;
+.register-container {
+    min-height: 100vh;
+    padding: 30px 15px;
 }
 
+/* Contenedor Principal del Formulario */
 .register-box {
-  display: flex;
-  flex-direction: column;
-  background-color: #fff;
-  border: 1px solid rgba(0, 80, 255, 0.1);
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+    max-width: 900px;
+    width: 100%;
+    background-color: var(--card-bg);
+    box-shadow: 0 10px 30px rgba(14, 42, 71, 0.15);
 }
 
-@media (min-width: 900px) {
-  .register-box {
-    flex-direction: row;
-  }
-}
-
-/* FORMULARIO */
-.form-section {
-  width: 100%;
-  padding: 2rem;
-}
-
-.logo h1 {
-  font-size: 2rem;
-  font-family: monospace;
-  background: linear-gradient(90deg, #007bff, #00bcd4);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  font-weight: 800;
-  margin-bottom: 1.5rem;
-}
-
-form {
-  display: flex;
-  flex-direction: column;
-}
-
-form h2 {
-  font-size: 1.5rem;
-  margin-bottom: 0.3rem;
-}
-
-.subtitle {
-  font-size: 0.9rem;
-  opacity: 0.7;
-  margin-bottom: 1.2rem;
-}
-
-/* Inputs */
-label {
-  font-weight: 500;
-  margin-bottom: 0.3rem;
-}
-
-input {
-  padding: 0.7rem;
-  margin-bottom: 1rem;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  width: 100%;
-  font-size: 1rem;
-  transition: border 0.2s ease;
-}
-
-input:focus {
-  border-color: #007bff;
-  outline: none;
-}
-
-/* Botón */
-button {
-  background-color: white;
-  color: #007bff;
-  border: 1px solid #007bff;
-  padding: 0.7rem;
-  border-radius: 6px;
-  font-weight: 600;
-  font-size: 0.95rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-button:hover {
-  background-color: #007bff;
-  color: white;
-}
-
-button:disabled {
-  background-color: #e5e5e5;
-  color: gray;
-  border: none;
-  cursor: not-allowed;
-}
-
-/* Enlace de login */
-.login-link {
-  text-align: center;
-  margin-top: 1rem;
-  font-size: 0.9rem;
-}
-
-.login-link a {
-  color: #007bff;
-  text-decoration: none;
-  font-weight: bold;
-}
-
-.login-link a:hover {
-  text-decoration: underline;
-}
-
-/* IMAGEN */
+/* 1. Sección de Imagen/Banner Lateral (para pantallas grandes) */
 .image-section {
-  display: none;
-  background-color: rgba(0, 123, 255, 0.05);
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  width: 50%;
-  padding: 2rem;
-  text-align: center;
+    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-medium) 100%);
+    color: white;
+    position: relative;
+    padding: 2rem;
+    
+    /* === CAMBIO CLAVE: Centrar texto y contenido === */
+    text-align: center; 
+    /* El d-flex y justify-content-center del HTML ya ayudan a centrar verticalmente */
 }
 
-.image-section img {
-  width: 250px;
-  height: auto;
+/* Clase para el logo del birrete */
+.app-logo-image {
+    height: 100px; 
+    width: auto;
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.6)); 
+    margin-bottom: 1.5rem !important; 
+    /* Asegura que la imagen sea un elemento en línea o bloque para que text-align: center funcione, aunque Bootstrap d-flex lo maneja */
 }
 
-.image-section p {
-  margin-top: 1rem;
-  opacity: 0.7;
-  font-size: 0.95rem;
+
+/* 2. Sección del Formulario */
+.form-section {
+    background-color: var(--card-bg);
 }
 
-@media (min-width: 900px) {
-  .image-section {
-    display: flex;
-  }
+/* Estilos de Formulario de Bootstrap (ajustes visuales) */
+.form-label {
+    font-weight: 500;
+    color: var(--primary-dark);
+    font-size: 0.95rem;
 }
 
+.form-control:focus {
+    border-color: var(--primary-light);
+    box-shadow: 0 0 0 0.25rem rgba(58, 123, 182, 0.25); 
+}
+
+/* Estilo para el botón primario */
+.btn-primary {
+    background: var(--primary-dark);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    transition: all 0.3s;
+}
+
+.btn-primary:hover {
+    background: var(--primary-medium);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(14, 42, 71, 0.3);
+}
+
+/* Enlaces (Ingresar) */
+a.text-accent-color {
+    color: var(--accent-color) !important;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+a.text-accent-color:hover {
+    color: var(--accent-hover) !important;
+}
+
+/* Radio Buttons para tipo de usuario */
+.user-type-selection .form-check-input:checked {
+    background-color: var(--primary-medium);
+    border-color: var(--primary-medium);
+}
+
+/* Campos Dinámicos de Profesor */
+.teacher-fields {
+    background-color: var(--light-bg);
+    border-color: rgba(38, 92, 139, 0.25) !important;
+    transition: opacity 0.5s ease-in-out, max-height 0.5s ease-in-out, padding 0.5s ease-in-out;
+}
+
+/* Estilo para ocultar inicialmente (Controlado por JS) */
+.teacher-fields.hidden {
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    border: 0 !important;
+    margin-bottom: 0 !important;
+}
+
+/* Media Query para responsividad (diseño de 1 columna en móvil) */
+@media (max-width: 991.98px) {
+    .register-box {
+        max-width: 500px;
+    }
+}

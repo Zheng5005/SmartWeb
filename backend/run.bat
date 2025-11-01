@@ -1,9 +1,9 @@
 # crear entorno virtual
-#python -m venv env # Windows
-python3 -m venv env # Linux
+python -m venv env
+#python3 -m venv env # Linux
 
 # activar entorno virtual
-#source env/Scripts/activate # Windows
+source env/Scripts/activate
 source env/bin/activate # Linux
 
 # instalar dependencias
