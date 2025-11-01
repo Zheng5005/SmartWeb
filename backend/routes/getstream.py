@@ -1,23 +1,96 @@
 from fastapi import APIRouter, Depends, HTTPException
+from config import STREAM_API_KEY, STREAM_API_SECRET
+import httpx, time, jwt
 
-routes = APIRouter()
+routes = APIRouter(prefix="/getstream", tags=["GetStream"])
 
-# Obtener un enlace a la API de GetStream
-@routes.get("/getstream/api_link/{user_id}")
-async def get_api_link(user_id: int):
-    return {"message": "Enlace a la API de GetStream generado", "user_id": user_id}
+# =============================
+# 🔐 Función para generar tokens Stream seguros
+# =============================
+def generate_stream_token(user_id: str):
+    payload = {
+        "user_id": user_id,
+        "exp": int(time.time()) + 3600  # 1 hora de validez
+    }
+    token = jwt.encode(payload, STREAM_API_SECRET, algorithm="HS256")
+    return token
 
-# Crear un canal de GetStream
-@routes.post("/getstream/create_channel")
-async def create_channel():
-    return {"message": "Canal de GetStream creado"}
 
-# Verificar la conexión con GetStream
+# =============================
+# 🎥 Crear una llamada (videollamada)
+# =============================
+@routes.post("/create_call/{user_id}")
+async def create_call(user_id: str):
+    token = generate_stream_token(user_id)
+    call_id = f"meeting-{user_id}"
+
+    headers = {
+        "Authorization": token,
+        "stream-auth-type": "jwt",
+    }
+
+    data = {
+        "data": {
+            "created_by_id": user_id
+        }
+    }
+
+    url = f"https://video.stream-io-api.com/api/v1/call/default/{call_id}/create"
+
+    async with httpx.AsyncClient() as client:
+        response = await client.post(url, headers=headers, json=data)
+
+    if response.status_code != 200:
+        raise HTTPException(status_code=response.status_code, detail=response.text)
+
+    return {
+        "message": "Llamada creada correctamente",
+        "call_id": call_id,
+        "call_data": response.json()
+    }
+
+
+# =============================
+# ✅ Verificar conexión con GetStream
+# =============================
 @routes.get("/getstream/verify_connection")
 async def verify_connection():
-    return {"message": "Conexión con GetStream verificada exitosamente"}
+    try:
+        async with httpx.AsyncClient() as client:
+            response = await client.get("https://video.stream-io-api.com/api/v1/")
+        if response.status_code == 200:
+            return {"message": "Conexión con GetStream verificada exitosamente"}
+        else:
+            raise HTTPException(status_code=response.status_code, detail="Error en conexión con GetStream")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
-# Verificar que el usuario tiene acceso a la videollamada de GetStream
-@routes.get("/getstream/verify_user_access/{user_id}/{channel_id}")
-async def verify_user_access(user_id: int, channel_id: int):
-    return {"message": "Acceso del usuario verificado", "user_id": user_id, "channel_id": channel_id}
+
+# =============================
+# 🔎 Verificar acceso de usuario a una llamada
+# =============================
+@routes.get("/getstream/verify_user_access/{user_id}/{call_id}")
+async def verify_user_access(user_id: str, call_id: str):
+    """
+    Solo verifica si el usuario tiene token válido y la llamada existe.
+    """
+    token = generate_stream_token(user_id)
+    headers = {
+        "Authorization": token,
+        "stream-auth-type": "jwt",
+    }
+
+    url = f"https://video.stream-io-api.com/api/v1/call/default/{call_id}"
+
+    async with httpx.AsyncClient() as client:
+        response = await client.get(url, headers=headers)
+
+    if response.status_code != 200:
+        raise HTTPException(status_code=response.status_code, detail="No autorizado o llamada no encontrada")
+
+    return {
+        "message": "Usuario autorizado para unirse a la videollamada",
+        "user_id": user_id,
+        "call_id": call_id,
+        "data": response.json()
+    }

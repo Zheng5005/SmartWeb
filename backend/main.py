@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from config import SessionLocal, Base, engine
-from routes import auth, ejemplo
+from routes import auth, ejemplo, getstream
 from model.models import Roles
 
 app = FastAPI()
@@ -49,5 +49,6 @@ def read_root():
 # Importar rutas
 app.include_router(ejemplo.router)
 app.include_router(auth.router)
+app.include_router(getstream.routes)
 
 seed_roles()

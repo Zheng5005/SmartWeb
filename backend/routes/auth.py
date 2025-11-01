@@ -7,6 +7,7 @@ from schemas.s_usuarios import UsuarioLogin, UsuarioCreate
 from services.cifrar import verify_password
 from config import SessionLocal
 from services.jwt import create_access_token, verify_token
+
 router = APIRouter(prefix="/auth", tags=["Auth"])
 
 def get_db():
