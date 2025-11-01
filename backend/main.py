@@ -1,9 +1,8 @@
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
-from backend.services import getstreamFile
 from config import SessionLocal, Base, engine
-from routes import auth, ejemplo
+from routes import auth, ejemplo, getstreamFile
 from model.models import Roles
 
 app = FastAPI()
