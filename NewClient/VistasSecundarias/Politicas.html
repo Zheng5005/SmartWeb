@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Política de Privacidad - SMARTWEB</title>
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --primary-dark: #0e2a47;
+      --primary-medium: #265c8b;
+      --primary-light: #3a7bb6;
+      --accent-color: #6a0dad;
+      --accent-hover: #5a0b9d;
+      --light-bg: #f8f9fa;
+      --card-bg: #ffffff;
+      --text-dark: #2d3748;
+      --text-light: #718096;
+    }
+
+    body {
+      background: var(--light-bg);
+      font-family: 'Poppins', sans-serif;
+      color: var(--text-dark);
+      line-height: 1.6;
+    }
+
+    /* Navbar */
+    .navbar {
+      background: var(--primary-dark);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      padding: 12px 0;
+    }
+
+    .navbar-brand {
+      font-weight: 700;
+      font-size: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: white !important;
+    }
+
+    .logo-img {
+      height: 40px;
+      width: auto;
+    }
+
+    /* Header */
+    .privacy-header {
+      background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-medium) 100%);
+      color: white;
+      padding: 4rem 0;
+      text-align: center;
+    }
+
+    .privacy-header h1 {
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    .privacy-header p {
+      font-size: 1.2rem;
+      opacity: 0.9;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* Content */
+    .privacy-content {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 3rem;
+      margin: -50px auto 3rem auto;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      max-width: 1200px;
+      position: relative;
+    }
+
+    .last-updated {
+      background: var(--accent-color);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      position: absolute;
+      top: -15px;
+      right: 30px;
+    }
+
+    .section-title {
+      color: var(--primary-dark);
+      font-weight: 700;
+      margin: 2.5rem 0 1rem 0;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--primary-light);
+    }
+
+    .section-title:first-child {
+      margin-top: 0;
+    }
+
+    .subsection-title {
+      color: var(--primary-medium);
+      font-weight: 600;
+      margin: 1.5rem 0 0.5rem 0;
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      background: #f8f9fa;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .data-table th {
+      background: var(--primary-medium);
+      color: white;
+      padding: 1rem;
+      text-align: left;
+      font-weight: 600;
+    }
+
+    .data-table td {
+      padding: 1rem;
+      border-bottom: 1px solid #dee2e6;
+    }
+
+    .data-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .highlight-box {
+      background: #f8f9fa;
+      border-left: 4px solid var(--accent-color);
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+      border-radius: 0 8px 8px 0;
+    }
+
+    .security-features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+
+    .security-card {
+      background: white;
+      border: 1px solid #e9ecef;
+      border-radius: 8px;
+      padding: 1.5rem;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .security-card i {
+      font-size: 2rem;
+      color: var(--primary-medium);
+      margin-bottom: 1rem;
+    }
+
+    .contact-info {
+      background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary-medium) 100%);
+      color: white;
+      padding: 2rem;
+      border-radius: 12px;
+      margin: 2rem 0;
+    }
+
+    .gdpr-badge {
+      background: #146eb4;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 1rem;
+    }
+
+    /* Footer */
+    footer {
+      background: var(--primary-dark);
+      color: white;
+      padding: 2.5rem 0 1.5rem;
+    }
+
+    .footer-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .footer-logo {
+      font-weight: 700;
+      font-size: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: white;
+    }
+
+    .footer-logo-img {
+      height: 30px;
+      width: auto;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 20px;
+    }
+
+    .footer-links a {
+      color: rgba(255, 255, 255, 0.7);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .footer-links a:hover {
+      color: white;
+    }
+
+    .copyright {
+      text-align: center;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 0.9rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .privacy-content {
+        margin: -30px 15px 2rem 15px;
+        padding: 2rem 1.5rem;
+      }
+      
+      .last-updated {
+        position: static;
+        margin-bottom: 1rem;
+        display: inline-block;
+      }
+      
+      .data-table {
+        font-size: 0.9rem;
+      }
+      
+      .footer-content {
+        flex-direction: column;
+        gap: 20px;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg">
+    <div class="container">
+      <a class="navbar-brand" href="#">
+        <img src="../logo.png" alt="SMARTWEB" class="logo-img">
+        SMARTWEB
+      </a>
+    </div>
+  </nav>
+
+  <!-- Header -->
+  <div class="privacy-header">
+    <div class="container">
+      <h1>Política de Privacidad</h1>
+      <p>Tu privacidad es nuestra prioridad. Entiende cómo protegemos y utilizamos tu información.</p>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="container">
+    <div class="privacy-content">
+      <div class="last-updated">
+        <i class="fas fa-clock me-2"></i>Última actualización: 15 de Marzo, 2024
+      </div>
+
+      <div class="gdpr-badge">
+        <i class="fas fa-shield-alt"></i>
+        Cumplimiento GDPR y Leyes Internacionales
+      </div>
+
+      <h2 class="section-title">1. Introducción</h2>
+      <p>En SMARTWEB nos comprometemos a proteger tu privacidad. Esta política explica cómo recopilamos, utilizamos y protegemos tu información personal cuando utilizas nuestra plataforma educativa.</p>
+
+      <div class="highlight-box">
+        <strong>Transparencia:</strong> Creemos en la transparencia sobre el uso de tus datos. Esta política detalla claramente nuestras prácticas de privacidad.
+      </div>
+
+      <h2 class="section-title">2. Información que Recopilamos</h2>
+      
+      <h3 class="subsection-title">2.1 Información Personal</h3>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Tipo de Información</th>
+            <th>Ejemplos</th>
+            <th>Propósito</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Información de registro</td>
+            <td>Nombre, email, fecha de nacimiento</td>
+            <td>Crear y gestionar tu cuenta</td>
+          </tr>
+          <tr>
+            <td>Información académica</td>
+            <td>Cursos, progreso, calificaciones</td>
+            <td>Proporcionar servicios educativos</td>
+          </tr>
+          <tr>
+            <td>Datos de videollamada</td>
+            <td>Video, audio, chat durante sesiones</td>
+            <td>Facilitar clases en tiempo real</td>
+          </tr>
+          <tr>
+            <td>Información técnica</td>
+            <td>IP, navegador, dispositivo</td>
+            <td>Mejorar seguridad y rendimiento</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3 class="subsection-title">2.2 Información de Instructores</h3>
+      <p>Los instructores proporcionan información adicional como:</p>
+      <ul>
+        <li>Certificaciones y cualificaciones</li>
+        <li>Información bancaria para pagos</li>
+        <li>Material educativo y currículum</li>
+        <li>Historial de enseñanza</li>
+      </ul>
+
+      <h2 class="section-title">3. Cómo Utilizamos tu Información</h2>
+      
+      <h3 class="subsection-title">3.1 Propósitos Principales</h3>
+      <ul>
+        <li><strong>Proveer servicios educativos:</strong> Conectar estudiantes con instructores</li>
+        <li><strong>Gestionar videollamadas:</strong> Facilitar sesiones en tiempo real</li>
+        <li><strong>Procesar pagos:</strong> Gestionar transacciones seguras</li>
+        <li><strong>Comunicaciones:</strong> Enviar notificaciones importantes</li>
+        <li><strong>Mejora del servicio:</strong> Analizar uso para mejoras</li>
+      </ul>
+
+      <h3 class="subsection-title">3.2 Base Legal</h3>
+      <p>Procesamos tu información basándonos en:</p>
+      <ul>
+        <li><strong>Consentimiento:</strong> Cuando nos das permiso explícito</li>
+        <li><strong>Contrato:</strong> Para proporcionar los servicios acordados</li>
+        <li><strong>Interés legítimo:</strong> Para mejorar nuestros servicios</li>
+        <li><strong>Obligación legal:</strong> Cuando la ley lo requiere</li>
+      </ul>
+
+      <h2 class="section-title">4. Compartición de Información</h2>
+      
+      <h3 class="subsection-title">4.1 Con Instructores</h3>
+      <p>Compartimos información limitada con instructores para:</p>
+      <ul>
+        <li>Gestionar asistencia a clases</li>
+        <li>Proporcionar retroalimentación académica</li>
+        <li>Coordinar sesiones de videollamada</li>
+      </ul>
+
+      <h3 class="subsection-title">4.2 Proveedores de Servicios</h3>
+      <p>Trabajamos con terceros confiables como:</p>
+      <ul>
+        <li><strong>GetStream:</strong> Para servicios de videollamada y chat</li>
+        <li><strong>Proveedores de pago:</strong> Para procesar transacciones</li>
+        <li><strong>Servicios de hosting:</strong> Para almacenamiento seguro</li>
+      </ul>
+
+      <h3 class="subsection-title">4.3 Requisitos Legales</h3>
+      <p>Podemos divulgar información cuando la ley lo requiera o para proteger nuestros derechos legales.</p>
+
+      <h2 class="section-title">5. Seguridad de Datos</h2>
+      
+      <div class="security-features">
+        <div class="security-card">
+          <i class="fas fa-lock"></i>
+          <h4>Encriptación</h4>
+          <p>Datos encriptados en tránsito y en reposo</p>
+        </div>
+        <div class="security-card">
+          <i class="fas fa-shield-alt"></i>
+          <h4>Autenticación</h4>
+          <p>Verificación de dos factores disponible</p>
+        </div>
+        <div class="security-card">
+          <i class="fas fa-user-shield"></i>
+          <h4>Acceso Controlado</h4>
+          <p>Acceso restringido a datos sensibles</p>
+        </div>
+        <div class="security-card">
+          <i class="fas fa-sync-alt"></i>
+          <h4>Copias de Seguridad</h4>
+          <p>Backups regulares y seguros</p>
+        </div>
+      </div>
+
+      <h2 class="section-title">6. Retención de Datos</h2>
+      <p>Mantenemos tu información solo durante el tiempo necesario para los fines descritos:</p>
+      <ul>
+        <li><strong>Datos de cuenta:</strong> Mientras tu cuenta esté activa</li>
+        <li><strong>Datos de sesiones:</strong> Hasta 2 años para fines educativos</li>
+        <li><strong>Datos de pago:</strong> Según requerimientos legales fiscales</li>
+        <li><strong>Grabaciones:</strong> Solo con consentimiento explícito</li>
+      </ul>
+
+      <h2 class="section-title">7. Tus Derechos</h2>
+      
+      <h3 class="subsection-title">7.1 Derechos del Usuario</h3>
+      <p>Tienes derecho a:</p>
+      <ul>
+        <li><strong>Acceso:</strong> Solicitar copia de tus datos</li>
+        <li><strong>Rectificación:</strong> Corregir información inexacta</li>
+        <li><strong>Eliminación:</strong> Solicitar borrado de datos</li>
+        <li><strong>Portabilidad:</strong> Obtener datos en formato reutilizable</li>
+        <li><strong>Oposición:</strong> Oponerte al procesamiento de datos</li>
+      </ul>
+
+      <h3 class="subsection-title">7.2 Ejercer tus Derechos</h3>
+      <p>Para ejercer cualquiera de estos derechos, contáctanos a través de los medios proporcionados al final de esta política.</p>
+
+      <h2 class="section-title">8. Cookies y Tecnologías Similares</h2>
+      <p>Utilizamos cookies para:</p>
+      <ul>
+        <li>Mantener sesiones de usuario seguras</li>
+        <li>Recordar preferencias de usuario</li>
+        <li>Analizar uso de la plataforma</li>
+        <li>Mejorar experiencia del usuario</li>
+      </ul>
+
+      <h2 class="section-title">9. Transferencias Internacionales</h2>
+      <p>Como plataforma internacional, tus datos pueden ser procesados en diferentes países. Garantizamos protección adecuada mediante:</p>
+      <ul>
+        <li>Cláusulas contractuales estándar</li>
+        <li>Certificaciones de privacidad</li>
+        <li>Estándares de seguridad uniformes</li>
+      </ul>
+
+      <h2 class="section-title">10. Cambios en esta Política</h2>
+      <p>Podemos actualizar esta política periódicamente. Te notificaremos sobre cambios significativos mediante:</p>
+      <ul>
+        <li>Notificaciones en la plataforma</li>
+        <li>Email a la dirección registrada</li>
+        <li>Actualización de la fecha en esta página</li>
+      </ul>
+
+      <div class="contact-info">
+        <h3><i class="fas fa-headset me-2"></i>Contacto y Ejercicio de Derechos</h3>
+        <p>Si tienes preguntas sobre esta política o deseas ejercer tus derechos de privacidad:</p>
+        <p><i class="fas fa-envelope me-2"></i> privacidad@smartweb.edu</p>
+        <p><i class="fas fa-phone me-2"></i> +1 (555) 123-4567</p>
+        <p><i class="fas fa-map-marker-alt me-2"></i> Oficina de Protección de Datos, SMARTWEB International</p>
+      </div>
+
+      <div class="alert alert-info">
+        <i class="fas fa-info-circle me-2"></i>
+        <strong>Nota importante:</strong> Esta política se complementa con nuestros <a href="#" style="color: var(--accent-color);">Términos de Servicio</a>. Te recomendamos leer ambos documentos completamente.
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-logo">
+          <img src="../logo.png" alt="SMARTWEB" class="footer-logo-img">
+          SMARTWEB
+        </div>
+        <div class="footer-links">
+          <a href="#">Inicio</a>
+          <a href="#">Política de Privacidad</a>
+          <a href="#">Términos de Servicio</a>
+          <a href="#">Contacto</a>
+        </div>
+      </div>
+      <div class="copyright">
+        © 2025 SMARTWEB — Plataforma Educativa Internacional. Todos los derechos reservados.
+      </div>
+    </div>
+  </footer>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

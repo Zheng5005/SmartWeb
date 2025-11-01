@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sesión en Vivo - SMARTWEB</title>
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --primary-dark: #0e2a47;
+      --primary-medium: #265c8b;
+      --primary-light: #3a7bb6;
+      --accent-color: #6a0dad;
+      --accent-hover: #5a0b9d;
+      --light-bg: #1a1a1a;
+      --card-bg: #2d2d2d;
+      --text-light: #ffffff;
+      --text-muted: #a0a0a0;
+    }
+
+    body {
+      background: var(--light-bg);
+      font-family: 'Poppins', sans-serif;
+      color: var(--text-light);
+      overflow: hidden;
+    }
+
+    /* Navbar de la videollamada */
+    .call-navbar {
+      background: var(--primary-dark);
+      padding: 10px 0;
+      border-bottom: 1px solid #444;
+    }
+
+    .navbar-brand {
+      font-weight: 700;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: white !important;
+    }
+
+    .logo-img {
+      height: 35px;
+      width: auto;
+    }
+
+    .call-info {
+      text-align: center;
+      flex-grow: 1;
+    }
+
+    .call-title {
+      font-weight: 600;
+      margin: 0;
+      font-size: 1.1rem;
+    }
+
+    .call-status {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin: 0;
+    }
+
+    /* Contenedor principal de video */
+    .video-container {
+      height: calc(100vh - 140px);
+      display: flex;
+      gap: 10px;
+      padding: 10px;
+      background: #000;
+    }
+
+    /* Video principal (instructor) */
+    .main-video {
+      flex: 3;
+      background: #000;
+      border-radius: 12px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .video-element {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 12px;
+    }
+
+    .video-overlay {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      right: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .user-info {
+      background: rgba(0, 0, 0, 0.7);
+      padding: 8px 16px;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .user-name {
+      font-weight: 600;
+    }
+
+    .user-role {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    /* Videos de participantes */
+    .participants-sidebar {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-width: 300px;
+    }
+
+    .participant-video {
+      background: var(--card-bg);
+      border-radius: 8px;
+      aspect-ratio: 16/9;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .participant-video .video-element {
+      border-radius: 8px;
+    }
+
+    .participant-info {
+      position: absolute;
+      bottom: 8px;
+      left: 8px;
+      right: 8px;
+      background: rgba(0, 0, 0, 0.7);
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+    }
+
+    .more-participants {
+      background: var(--card-bg);
+      border-radius: 8px;
+      aspect-ratio: 16/9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    /* Controles de video */
+    .controls-container {
+      background: var(--primary-dark);
+      padding: 15px 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+      border-top: 1px solid #444;
+    }
+
+    .control-btn {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+
+    .control-btn:hover {
+      transform: scale(1.1);
+    }
+
+    .btn-mute {
+      background: #444;
+      color: white;
+    }
+
+    .btn-mute.active {
+      background: #e53e3e;
+      color: white;
+    }
+
+    .btn-video {
+      background: #444;
+      color: white;
+    }
+
+    .btn-video.active {
+      background: #e53e3e;
+      color: white;
+    }
+
+    .btn-end-call {
+      background: #e53e3e;
+      color: white;
+      width: 60px;
+      height: 60px;
+    }
+
+    .btn-share {
+      background: #444;
+      color: white;
+    }
+
+    .btn-share.active {
+      background: var(--accent-color);
+      color: white;
+    }
+
+    .btn-chat {
+      background: #444;
+      color: white;
+    }
+
+    /* Chat lateral */
+    .chat-sidebar {
+      position: fixed;
+      right: -400px;
+      top: 60px;
+      bottom: 80px;
+      width: 400px;
+      background: var(--card-bg);
+      transition: right 0.3s;
+      display: flex;
+      flex-direction: column;
+      border-left: 1px solid #444;
+    }
+
+    .chat-sidebar.open {
+      right: 0;
+    }
+
+    .chat-header {
+      padding: 15px 20px;
+      border-bottom: 1px solid #444;
+      display: flex;
+      justify-content: between;
+      align-items: center;
+    }
+
+    .chat-title {
+      font-weight: 600;
+      margin: 0;
+    }
+
+    .close-chat {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+
+    .chat-messages {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+    }
+
+    .message {
+      margin-bottom: 15px;
+      padding: 10px 15px;
+      border-radius: 12px;
+      max-width: 80%;
+    }
+
+    .message.own {
+      background: var(--primary-medium);
+      margin-left: auto;
+    }
+
+    .message.other {
+      background: #444;
+    }
+
+    .message-sender {
+      font-weight: 600;
+      font-size: 0.8rem;
+      margin-bottom: 4px;
+    }
+
+    .message-text {
+      margin: 0;
+    }
+
+    .chat-input {
+      padding: 15px 20px;
+      border-top: 1px solid #444;
+      display: flex;
+      gap: 10px;
+    }
+
+    .chat-input input {
+      flex: 1;
+      background: #444;
+      border: none;
+      border-radius: 20px;
+      padding: 10px 15px;
+      color: white;
+    }
+
+    .chat-input button {
+      background: var(--accent-color);
+      border: none;
+      border-radius: 20px;
+      padding: 10px 20px;
+      color: white;
+      cursor: pointer;
+    }
+
+    /* Indicadores de estado */
+    .connection-status {
+      position: fixed;
+      top: 70px;
+      left: 20px;
+      background: rgba(0, 0, 0, 0.8);
+      padding: 8px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .status-online {
+      color: #48bb78;
+    }
+
+    .recording-indicator {
+      position: fixed;
+      top: 70px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #e53e3e;
+      color: white;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .participants-sidebar {
+        display: none;
+      }
+      
+      .chat-sidebar {
+        width: 100%;
+        right: -100%;
+      }
+      
+      .controls-container {
+        gap: 10px;
+      }
+      
+      .control-btn {
+        width: 45px;
+        height: 45px;
+        font-size: 1rem;
+      }
+      
+      .btn-end-call {
+        width: 50px;
+        height: 50px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Navbar de la videollamada -->
+  <nav class="call-navbar">
+    <div class="container-fluid">
+      <div class="d-flex align-items-center justify-content-between">
+        <a class="navbar-brand" style="color: white !important;" href="#">
+          <img src="logo.png" alt="SMARTWEB Logo" class="logo-img">
+          SMARTWEB
+        </a>
+        
+        <div class="call-info">
+          <h2 class="call-title">Matemáticas Avanzadas - Álgebra Lineal</h2>
+          <p class="call-status">Sesión en vivo • 24 participantes • 01:28:15</p>
+        </div>
+        
+        <div class="d-flex gap-2">
+          <button class="btn btn-sm btn-outline-light">
+            <i class="fas fa-users"></i> 24
+          </button>
+          <button class="btn btn-sm btn-outline-light" id="toggleChat">
+            <i class="fas fa-comment"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Indicadores de estado -->
+  <div class="connection-status">
+    <i class="fas fa-circle status-online"></i>
+    <span>Conectado</span>
+  </div>
+
+  <div class="recording-indicator">
+    <i class="fas fa-circle"></i>
+    <span>Grabando</span>
+  </div>
+
+  <!-- Contenedor principal de video -->
+  <div class="video-container">
+    
+    <!-- Video principal (instructor) -->
+    <div class="main-video">
+      <video class="video-element" id="mainVideo" autoplay muted></video>
+      <div class="video-overlay">
+        <div class="user-info">
+          <i class="fas fa-chalkboard-teacher"></i>
+          <div>
+            <div class="user-name">Prof. Juan Pérez</div>
+            <div class="user-role">Instructor</div>
+          </div>
+        </div>
+        <div class="d-flex gap-2">
+          <button class="btn btn-sm btn-outline-light">
+            <i class="fas fa-expand"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sidebar de participantes -->
+    <div class="participants-sidebar">
+      
+      <!-- Participante 1 -->
+      <div class="participant-video">
+        <video class="video-element" autoplay muted></video>
+        <div class="participant-info">
+          <i class="fas fa-user-graduate"></i>
+          María González
+        </div>
+      </div>
+
+      <!-- Participante 2 -->
+      <div class="participant-video">
+        <video class="video-element" autoplay></video>
+        <div class="participant-info">
+          <i class="fas fa-user-graduate"></i>
+          Carlos López
+        </div>
+      </div>
+
+      <!-- Participante 3 -->
+      <div class="participant-video">
+        <video class="video-element" autoplay muted></video>
+        <div class="participant-info">
+          <i class="fas fa-user-graduate"></i>
+          Ana Martínez
+        </div>
+      </div>
+
+      <!-- Más participantes -->
+      <div class="more-participants">
+        <i class="fas fa-users"></i>
+        <span>+20 participantes</span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Controles de video -->
+  <div class="controls-container">
+    <button class="control-btn btn-mute active" id="toggleMic">
+      <i class="fas fa-microphone-slash"></i>
+    </button>
+    
+    <button class="control-btn btn-video active" id="toggleVideo">
+      <i class="fas fa-video-slash"></i>
+    </button>
+    
+    <button class="control-btn btn-share" id="toggleShare">
+      <i class="fas fa-share"></i>
+    </button>
+    
+    <button class="control-btn btn-end-call" id="endCall">
+      <i class="fas fa-phone-slash"></i>
+    </button>
+    
+    <button class="control-btn btn-chat" id="openChat">
+      <i class="fas fa-comment"></i>
+    </button>
+  </div>
+
+  <!-- Chat lateral -->
+  <div class="chat-sidebar" id="chatSidebar">
+    <div class="chat-header">
+      <h3 class="chat-title">Chat de la Clase</h3>
+      <button class="close-chat" id="closeChat">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    
+    <div class="chat-messages">
+      <div class="message other">
+        <div class="message-sender">Prof. Juan Pérez</div>
+        <p class="message-text">Bienvenidos a la clase de hoy. Hoy veremos álgebra lineal.</p>
+      </div>
+      
+      <div class="message own">
+        <div class="message-sender">Tú</div>
+        <p class="message-text">Buenos días profesor, tengo una duda sobre los vectores.</p>
+      </div>
+      
+      <div class="message other">
+        <div class="message-sender">María González</div>
+        <p class="message-text">¿Podría repetir el último ejercicio?</p>
+      </div>
+    </div>
+    
+    <div class="chat-input">
+      <input type="text" placeholder="Escribe un mensaje..." id="chatInput">
+      <button id="sendMessage">
+        <i class="fas fa-paper-plane"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- GetStream SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/stream-chat"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@stream-io/video-client-sdk"></script>
+
+  <script>
+    // Variables de estado
+    let isMicMuted = true;
+    let isVideoOff = true;
+    let isSharing = false;
+    let isChatOpen = false;
+
+    // Elementos DOM
+    const toggleMic = document.getElementById('toggleMic');
+    const toggleVideo = document.getElementById('toggleVideo');
+    const toggleShare = document.getElementById('toggleShare');
+    const endCall = document.getElementById('endCall');
+    const openChat = document.getElementById('openChat');
+    const closeChat = document.getElementById('closeChat');
+    const toggleChat = document.getElementById('toggleChat');
+    const chatSidebar = document.getElementById('chatSidebar');
+    const chatInput = document.getElementById('chatInput');
+    const sendMessage = document.getElementById('sendMessage');
+
+    // Control de micrófono
+    toggleMic.addEventListener('click', () => {
+      isMicMuted = !isMicMuted;
+      toggleMic.classList.toggle('active', isMicMuted);
+      toggleMic.innerHTML = isMicMuted ? 
+        '<i class="fas fa-microphone-slash"></i>' : 
+        '<i class="fas fa-microphone"></i>';
+      
+      // Aquí se integraría con GetStream para mute/unmute
+      console.log('Mic:', isMicMuted ? 'Muted' : 'Unmuted');
+    });
+
+    // Control de video
+    toggleVideo.addEventListener('click', () => {
+      isVideoOff = !isVideoOff;
+      toggleVideo.classList.toggle('active', isVideoOff);
+      toggleVideo.innerHTML = isVideoOff ? 
+        '<i class="fas fa-video-slash"></i>' : 
+        '<i class="fas fa-video"></i>';
+      
+      // Aquí se integraría con GetStream para encender/apagar video
+      console.log('Video:', isVideoOff ? 'Off' : 'On');
+    });
+
+    // Compartir pantalla
+    toggleShare.addEventListener('click', () => {
+      isSharing = !isSharing;
+      toggleShare.classList.toggle('active', isSharing);
+      
+      // Aquí se integraría con GetStream para compartir pantalla
+      console.log('Screen sharing:', isSharing ? 'Started' : 'Stopped');
+    });
+
+    // Finalizar llamada
+    endCall.addEventListener('click', () => {
+      if (confirm('¿Estás seguro de que quieres salir de la videollamada?')) {
+        // Aquí se integraría con GetStream para dejar la llamada
+        console.log('Call ended');
+        window.location.href = 'HomeStudent.html'; // Redirigir al home
+      }
+    });
+
+    // Control del chat
+    openChat.addEventListener('click', () => {
+      isChatOpen = true;
+      chatSidebar.classList.add('open');
+    });
+
+    toggleChat.addEventListener('click', () => {
+      isChatOpen = !isChatOpen;
+      chatSidebar.classList.toggle('open', isChatOpen);
+    });
+
+    closeChat.addEventListener('click', () => {
+      isChatOpen = false;
+      chatSidebar.classList.remove('open');
+    });
+
+    // Enviar mensaje
+    sendMessage.addEventListener('click', sendChatMessage);
+    chatInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        sendChatMessage();
+      }
+    });
+
+    function sendChatMessage() {
+      const message = chatInput.value.trim();
+      if (message) {
+        // Aquí se integraría con GetStream Chat para enviar mensaje
+        console.log('Message sent:', message);
+        chatInput.value = '';
+        
+        // Simular mensaje enviado (en producción esto vendría del SDK)
+        const messagesContainer = document.querySelector('.chat-messages');
+        const newMessage = document.createElement('div');
+        newMessage.className = 'message own';
+        newMessage.innerHTML = `
+          <div class="message-sender">Tú</div>
+          <p class="message-text">${message}</p>
+        `;
+        messagesContainer.appendChild(newMessage);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      }
+    }
+
+    // Simulación de video (en producción se usaría GetStream Video SDK)
+    document.addEventListener('DOMContentLoaded', () => {
+      // Aquí iría la inicialización de GetStream
+      console.log('GetStream Video SDK inicializado');
+      
+      // Ejemplo de cómo se integraría:
+      /*
+      const client = StreamVideo.getInstance('API_KEY');
+      const call = client.call('default', 'CALL_ID');
+      
+      call.join({ create: true }).then(() => {
+        // Unido a la llamada exitosamente
+        const videoElement = document.getElementById('mainVideo');
+        call.camera.enable().then(() => {
+          call.camera.setTargetElement(videoElement);
+        });
+      });
+      */
+    });
+
+  </script>
+
+</body>
+</html>
