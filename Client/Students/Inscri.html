@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Explorar Cursos - SMARTWEB</title>
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --primary-dark: #0e2a47;
+      --primary-medium: #265c8b;
+      --primary-light: #3a7bb6;
+      --accent-color: #6a0dad;
+      --accent-hover: #5a0b9d;
+      --light-bg: #f4f7fb;
+      --card-bg: #ffffff;
+      --text-dark: #2d3748;
+      --text-light: #718096;
+      --success-color: #48bb78;
+      --warning-color: #ed8936;
+    }
+
+    body {
+      background: var(--light-bg);
+      font-family: 'Poppins', sans-serif;
+      color: var(--text-dark);
+    }
+
+    /* Navbar */
+    .navbar {
+      background: var(--primary-dark);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      padding: 12px 0;
+    }
+
+    .navbar-brand {
+      font-weight: 700;
+      font-size: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: white !important;
+    }
+
+    .logo-img {
+      height: 40px;
+      width: auto;
+    }
+
+    .nav-link {
+      color: #d8e6ff !important;
+      font-weight: 500;
+      transition: all 0.3s;
+      padding: 8px 16px !important;
+      border-radius: 6px;
+    }
+
+    .nav-link:hover {
+      color: #fff !important;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .btn-logout {
+      background: var(--accent-color) !important;
+      color: white !important;
+      border-radius: 6px;
+      padding: 8px 20px !important;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+
+    .btn-logout:hover {
+      background: var(--accent-hover) !important;
+      transform: translateY(-2px);
+    }
+
+    /* Header */
+    .courses-header {
+      background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-medium) 100%);
+      color: white;
+      padding: 3rem 2rem;
+      border-radius: 20px;
+      margin: 2rem auto;
+      text-align: center;
+    }
+
+    .courses-header h1 {
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    /* Search and Filters */
+    .search-section {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 2rem;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+      margin-bottom: 2rem;
+    }
+
+    .search-box {
+      position: relative;
+    }
+
+    .search-box input {
+      padding-left: 3rem;
+      border-radius: 12px;
+      border: 2px solid #e2e8f0;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-light);
+    }
+
+    .filter-tags {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+    }
+
+    .filter-tag {
+      background: #f7fafc;
+      border: 2px solid #e2e8f0;
+      border-radius: 20px;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-size: 0.9rem;
+    }
+
+    .filter-tag:hover, .filter-tag.active {
+      background: var(--primary-medium);
+      color: white;
+      border-color: var(--primary-medium);
+    }
+
+    /* Course Cards */
+    .course-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 2rem;
+      margin-bottom: 3rem;
+    }
+
+    .course-card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+      transition: all 0.3s;
+      border: 1px solid #f1f5f9;
+    }
+
+    .course-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    .course-image {
+      height: 200px;
+      background: linear-gradient(135deg, var(--primary-dark), var(--primary-light));
+      position: relative;
+      overflow: hidden;
+    }
+
+    .course-category {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      background: rgba(255, 255, 255, 0.9);
+      padding: 0.25rem 0.75rem;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--primary-dark);
+    }
+
+    .course-level {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: var(--accent-color);
+      color: white;
+      padding: 0.25rem 0.75rem;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .free-badge {
+      position: absolute;
+      bottom: 1rem;
+      left: 1rem;
+      background: var(--success-color);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .course-content {
+      padding: 1.5rem;
+    }
+
+    .course-title {
+      font-weight: 700;
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+      color: var(--primary-dark);
+    }
+
+    .course-instructor {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      color: var(--text-light);
+      font-size: 0.9rem;
+    }
+
+    .instructor-avatar {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: var(--primary-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .course-description {
+      color: var(--text-light);
+      font-size: 0.9rem;
+      margin-bottom: 1.5rem;
+      line-height: 1.5;
+    }
+
+    .course-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      font-size: 0.85rem;
+    }
+
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--text-light);
+    }
+
+    .btn-enroll {
+      background: var(--accent-color);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 12px 24px;
+      font-weight: 600;
+      width: 100%;
+      transition: all 0.3s;
+    }
+
+    .btn-enroll:hover {
+      background: var(--accent-hover);
+      transform: translateY(-2px);
+    }
+
+    .btn-enrolled {
+      background: var(--success-color);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 12px 24px;
+      font-weight: 600;
+      width: 100%;
+    }
+
+    /* Course Detail Modal */
+    .modal-course-image {
+      height: 200px;
+      background: linear-gradient(135deg, var(--primary-dark), var(--primary-light));
+      border-radius: 12px 12px 0 0;
+      position: relative;
+    }
+
+    .modal-free-badge {
+      position: absolute;
+      bottom: 1rem;
+      left: 1rem;
+      background: var(--success-color);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .instructor-badge {
+      background: var(--primary-light);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .feature-list {
+      list-style: none;
+      padding: 0;
+    }
+
+    .feature-list li {
+      padding: 0.5rem 0;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .feature-list li i {
+      color: var(--success-color);
+    }
+
+    /* Loading State */
+    .loading-courses {
+      text-align: center;
+      padding: 3rem;
+      color: var(--text-light);
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid var(--primary-medium);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 1rem;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 3rem;
+      color: var(--text-light);
+    }
+
+    .empty-state i {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+      color: #cbd5e0;
+    }
+
+    /* Footer */
+    footer {
+      background: var(--primary-dark);
+      color: white;
+      padding: 2.5rem 0 1.5rem;
+    }
+
+    .footer-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .footer-logo {
+      font-weight: 700;
+      font-size: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: white;
+    }
+
+    .footer-logo-img {
+      height: 30px;
+      width: auto;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 20px;
+    }
+
+    .footer-links a {
+      color: rgba(255, 255, 255, 0.7);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .footer-links a:hover {
+      color: white;
+    }
+
+    .copyright {
+      text-align: center;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 0.9rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .course-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .filter-tags {
+        justify-content: center;
+      }
+      
+      .footer-content {
+        flex-direction: column;
+        gap: 20px;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg">
+    <div class="container">
+      <a class="navbar-brand" href="#">
+        <img src="../logo.png" alt="SMARTWEB" class="logo-img">
+        SMARTWEB
+      </a>
+
+      <button class="navbar-toggler bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div id="navMenu" class="collapse navbar-collapse">
+        <ul class="navbar-nav ms-auto align-items-center gap-2">
+          <li class="nav-item"><a class="nav-link" href="HomeStudent.html"><i class="fas fa-home me-1"></i> Inicio</a></li>
+          <li class="nav-item"><a class="nav-link active" href="#"><i class="fas fa-compass me-1"></i> Explorar</a></li>
+          <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-book me-1"></i> Mis Cursos</a></li>
+          <li class="nav-item"><a class="nav-link btn-logout" href="#"><i class="fas fa-sign-out-alt me-1"></i> Cerrar sesión</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Header -->
+  <div class="container">
+    <div class="courses-header">
+      <h1><i class="fas fa-graduation-cap me-2"></i>Explora Nuestros Cursos</h1>
+      <p class="mb-0">Todos nuestros cursos son completamente gratuitos - Aprende sin límites</p>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main class="container">
+    
+    <!-- Search and Filters -->
+    <div class="search-section">
+      <div class="row">
+        <div class="col-md-8">
+          <div class="search-box">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" class="form-control" placeholder="Buscar cursos, instructores o temas..." id="searchInput">
+          </div>
+        </div>
+        <div class="col-md-4">
+          <select class="form-select" id="categoryFilter">
+            <option value="">Todas las categorías</option>
+            <option value="matematicas">Matemáticas</option>
+            <option value="programacion">Programación</option>
+            <option value="idiomas">Idiomas</option>
+            <option value="diseno">Diseño</option>
+            <option value="ciencias">Ciencias</option>
+            <option value="negocios">Negocios</option>
+            <option value="musica">Música</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Courses Grid -->
+    <div class="course-grid" id="coursesGrid">
+      <!-- Los cursos se cargarán dinámicamente -->
+    </div>
+
+    <!-- Loading State -->
+    <div class="loading-courses" id="loadingState">
+      <div class="spinner"></div>
+      <p>Cargando cursos disponibles...</p>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" id="emptyState" style="display: none;">
+      <i class="fas fa-search"></i>
+      <h4>No se encontraron cursos</h4>
+      <p>Intenta con otros términos de búsqueda o categorías</p>
+    </div>
+
+  </main>
+
+  <!-- Course Detail Modal -->
+  <div class="modal fade" id="courseModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-course-image">
+          <div class="modal-free-badge">
+            <i class="fas fa-gift me-2"></i>Curso Gratuito
+          </div>
+        </div>
+        <div class="modal-body p-4">
+          <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal"></button>
+          
+          <h3 id="modalCourseTitle" class="mb-3"></h3>
+          
+          
+
+          <p id="modalDescription" class="mb-4"></p>
+
+          <div class="row mb-4">
+            <div class="col-md-6">
+              <h5>Características del Curso</h5>
+              <ul class="feature-list">
+                <li><i class="fas fa-check"></i> Sesiones en vivo con GetStream</li>
+                <li><i class="fas fa-check"></i> Material de estudio incluido</li>
+                <li><i class="fas fa-check"></i> Certificado de finalización</li>
+                <li><i class="fas fa-check"></i> Acceso desde cualquier dispositivo</li>
+                <li><i class="fas fa-check"></i> Soporte del instructor</li>
+                <li><i class="fas fa-check"></i> Completamente gratuito</li>
+              </ul>
+            </div>
+            <div class="col-md-6">
+              <h5>Detalles</h5>
+              <div class="mb-2"><strong>Duración:</strong> <span id="modalDuration"></span></div>
+              <div class="mb-2"><strong>Nivel:</strong> <span id="modalLevel"></span></div>
+              <div class="mb-2"><strong>Estudiantes:</strong> <span id="modalStudents"></span></div>
+              <div class="mb-2"><strong>Idioma:</strong> Español</div>
+              <div class="mb-2"><strong>Próxima sesión:</strong> <span id="modalNextSession"></span></div>
+              <div class="mb-2"><strong>Costo:</strong> <span class="text-success fw-bold">Gratuito</span></div>
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-between align-items-center">
+            <div class="text-success">
+              <div class="fw-bold fs-4">¡Completamente Gratuito!</div>
+              <div class="text-muted">Sin costos ocultos ni suscripciones</div>
+            </div>
+            <button class="btn btn-enroll" id="modalEnrollBtn">
+              <i class="fas fa-user-plus me-2"></i>Inscribirse Gratis
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-logo">
+          <img src="../logo.png" alt="SMARTWEB" class="footer-logo-img">
+          SMARTWEB
+        </div>
+        <div class="footer-links">
+          <a href="../VistasSecundarias/Politicas.html">Política de Privacidad</a>
+          <a href="../VistasSecundarias/Terminos.html">Términos de Servicio</a>
+          <a href="../AboutUs/AboutUs.html">Contacto</a>
+        </div>
+      </div>
+      <div class="copyright">
+        © 2025 SMARTWEB — Plataforma Educativa Internacional. Todos los derechos reservados.
+      </div>
+    </div>
+  </footer>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    // Datos de ejemplo de cursos (todos gratuitos)
+    const coursesData = [
+      {
+        id: 1,
+        title: "Matemáticas Avanzadas - Álgebra Lineal",
+        instructor: "Dr. Juan Pérez",
+        category: "matematicas",
+        level: "Avanzado",
+        description: "Domina los conceptos fundamentales del álgebra lineal incluyendo vectores, matrices, espacios vectoriales y transformaciones lineales.",
+        students: 24,
+        duration: "8 semanas",
+        rating: 4.8,
+        nextSession: "Lunes, 15 Mar - 3:00 PM",
+        enrolled: false,
+        popular: true,
+        certified: true,
+        beginner: false,
+        advanced: true
+      },
+      {
+        id: 2,
+        title: "Programación Web Full Stack",
+        instructor: "Ing. María González",
+        category: "programacion",
+        level: "Intermedio",
+        description: "Aprende HTML, CSS, JavaScript, React, Node.js y MongoDB para convertirte en desarrollador full stack.",
+        students: 142,
+        duration: "12 semanas",
+        rating: 4.9,
+        nextSession: "Martes, 16 Mar - 2:00 PM",
+        enrolled: false,
+        popular: true,
+        certified: true,
+        beginner: false,
+        advanced: false
+      },
+      {
+        id: 3,
+        title: "Inglés Conversacional para Negocios",
+        instructor: "Prof. Robert Johnson",
+        category: "idiomas",
+        level: "Intermedio",
+        description: "Mejora tu fluidez en inglés con enfoque en situaciones empresariales y profesionales.",
+        students: 89,
+        duration: "10 semanas",
+        rating: 4.7,
+        nextSession: "Miércoles, 17 Mar - 6:00 PM",
+        enrolled: true,
+        popular: true,
+        certified: true,
+        beginner: false,
+        advanced: false
+      },
+      {
+        id: 4,
+        title: "Introducción a Python desde Cero",
+        instructor: "Dr. Carlos López",
+        category: "programacion",
+        level: "Principiante",
+        description: "Aprende los fundamentos de Python desde cero. Perfecto para quienes inician en programación.",
+        students: 315,
+        duration: "6 semanas",
+        rating: 4.6,
+        nextSession: "Jueves, 18 Mar - 4:00 PM",
+        enrolled: false,
+        popular: false,
+        certified: false,
+        beginner: true,
+        advanced: false
+      },
+      {
+        id: 5,
+        title: "Diseño Gráfico con Herramientas Libres",
+        instructor: "Diseñadora Ana Martínez",
+        category: "diseno",
+        level: "Principiante",
+        description: "Domina GIMP, Inkscape y otras herramientas gratuitas para crear diseños profesionales.",
+        students: 67,
+        duration: "8 semanas",
+        rating: 4.5,
+        nextSession: "Viernes, 19 Mar - 10:00 AM",
+        enrolled: false,
+        popular: false,
+        certified: true,
+        beginner: true,
+        advanced: false
+      },
+      {
+        id: 6,
+        title: "Física Cuántica para Todos",
+        instructor: "Dr. Laura Chen",
+        category: "ciencias",
+        level: "Avanzado",
+        description: "Explora los misterios de la física cuántica de manera accesible y fascinante.",
+        students: 45,
+        duration: "10 semanas",
+        rating: 4.9,
+        nextSession: "Sábado, 20 Mar - 11:00 AM",
+        enrolled: false,
+        popular: false,
+        certified: true,
+        beginner: false,
+        advanced: true
+      },
+      {
+        id: 7,
+        title: "Emprendimiento Digital",
+        instructor: "Lic. Pedro Rodríguez",
+        category: "negocios",
+        level: "Intermedio",
+        description: "Aprende a crear y hacer crecer tu negocio en el mundo digital.",
+        students: 78,
+        duration: "8 semanas",
+        rating: 4.7,
+        nextSession: "Lunes, 22 Mar - 7:00 PM",
+        enrolled: false,
+        popular: true,
+        certified: true,
+        beginner: false,
+        advanced: false
+      },
+      {
+        id: 8,
+        title: "Teoría Musical Básica",
+        instructor: "Prof. Sofía Hernández",
+        category: "musica",
+        level: "Principiante",
+        description: "Aprende los fundamentos de la música: notas, escalas, acordes y ritmo.",
+        students: 34,
+        duration: "6 semanas",
+        rating: 4.8,
+        nextSession: "Martes, 23 Mar - 5:00 PM",
+        enrolled: false,
+        popular: false,
+        certified: false,
+        beginner: true,
+        advanced: false
+      }
+    ];
+
+    let filteredCourses = [...coursesData];
+    let currentFilter = 'all';
+
+    // Cargar cursos
+    function loadCourses() {
+      const grid = document.getElementById('coursesGrid');
+      const loading = document.getElementById('loadingState');
+      const empty = document.getElementById('emptyState');
+
+      // Simular carga
+      setTimeout(() => {
+        loading.style.display = 'none';
+
+        if (filteredCourses.length === 0) {
+          empty.style.display = 'block';
+          grid.innerHTML = '';
+          return;
+        }
+
+        empty.style.display = 'none';
+        grid.innerHTML = '';
+
+        filteredCourses.forEach(course => {
+          const courseCard = createCourseCard(course);
+          grid.appendChild(courseCard);
+        });
+      }, 1000);
+    }
+
+    // Crear tarjeta de curso
+    function createCourseCard(course) {
+      const card = document.createElement('div');
+      card.className = 'course-card';
+      card.innerHTML = `
+        <div class="course-image">
+          <div class="course-category">${getCategoryName(course.category)}</div>
+          <div class="course-level">${course.level}</div>
+          <div class="free-badge">
+            <i class="fas fa-gift me-1"></i>Gratuito
+          </div>
+        </div>
+        <div class="course-content">
+          <h3 class="course-title">${course.title}</h3>
+          <div class="course-instructor">
+            <div class="instructor-avatar">${course.instructor.split(' ').map(n => n[0]).join('')}</div>
+            ${course.instructor}
+          </div>
+          <p class="course-description">${course.description}</p>
+          <div class="course-meta">
+            <div class="meta-item">
+              <i class="fas fa-users"></i>
+              ${course.students} estudiantes
+            </div>
+            <div class="meta-item">
+              <i class="fas fa-star text-warning"></i>
+              ${course.rating}
+            </div>
+          </div>
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="text-success fw-bold">
+              <i class="fas fa-gift me-1"></i>Completamente Gratuito
+            </div>
+          </div>
+          <button class="${course.enrolled ? 'btn-enrolled' : 'btn-enroll'}" 
+                  onclick="${course.enrolled ? '' : `enrollInCourse(${course.id})`}">
+            <i class="fas ${course.enrolled ? 'fa-check' : 'fa-user-plus'} me-2"></i>
+            ${course.enrolled ? 'Inscrito' : 'Inscribirse Gratis'}
+          </button>
+        </div>
+      `;
+
+      // Agregar evento para abrir modal
+      card.addEventListener('click', (e) => {
+        if (!e.target.closest('button')) {
+          openCourseModal(course);
+        }
+      });
+
+      return card;
+    }
+
+    // Abrir modal de curso
+    function openCourseModal(course) {
+      document.getElementById('modalCourseTitle').textContent = course.title;
+      document.getElementById('modalInstructor').textContent = course.instructor;
+      document.getElementById('modalDescription').textContent = course.description;
+      document.getElementById('modalDuration').textContent = course.duration;
+      document.getElementById('modalLevel').textContent = course.level;
+      document.getElementById('modalStudents').textContent = course.students;
+      document.getElementById('modalNextSession').textContent = course.nextSession;
+      document.getElementById('modalRating').textContent = course.rating;
+
+      const enrollBtn = document.getElementById('modalEnrollBtn');
+      if (course.enrolled) {
+        enrollBtn.innerHTML = '<i class="fas fa-check me-2"></i>Ya estás inscrito';
+        enrollBtn.className = 'btn btn-enrolled';
+        enrollBtn.disabled = true;
+      } else {
+        enrollBtn.innerHTML = '<i class="fas fa-user-plus me-2"></i>Inscribirse Gratis';
+        enrollBtn.className = 'btn btn-enroll';
+        enrollBtn.onclick = () => enrollInCourse(course.id);
+        enrollBtn.disabled = false;
+      }
+
+      const modal = new bootstrap.Modal(document.getElementById('courseModal'));
+      modal.show();
+    }
+
+    // Inscribirse en curso
+    function enrollInCourse(courseId) {
+      const course = coursesData.find(c => c.id === courseId);
+      
+      if (course.enrolled) {
+        alert('Ya estás inscrito en este curso');
+        return;
+      }
+
+      // Simular proceso de inscripción
+      if (confirm(`¿Estás seguro de que quieres inscribirte en "${course.title}"?`)) {
+        // En producción, aquí se haría la llamada al backend
+        course.enrolled = true;
+        
+        // Actualizar la vista
+        loadCourses();
+        
+        // Cerrar modal si está abierto
+        const modal = bootstrap.Modal.getInstance(document.getElementById('courseModal'));
+        if (modal) modal.hide();
+        
+        alert('¡Inscripción exitosa! Ahora puedes acceder a las sesiones de este curso.');
+      }
+    }
+
+    // Filtrar cursos
+    function filterCourses() {
+      const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+      const category = document.getElementById('categoryFilter').value;
+
+      filteredCourses = coursesData.filter(course => {
+        const matchesSearch = course.title.toLowerCase().includes(searchTerm) ||
+                            course.instructor.toLowerCase().includes(searchTerm) ||
+                            course.description.toLowerCase().includes(searchTerm);
+        
+        const matchesCategory = !category || course.category === category;
+        
+        let matchesFilter = true;
+        if (currentFilter === 'popular') matchesFilter = course.popular;
+        if (currentFilter === 'new') matchesFilter = !course.popular;
+        if (currentFilter === 'beginner') matchesFilter = course.beginner;
+        if (currentFilter === 'advanced') matchesFilter = course.advanced;
+        if (currentFilter === 'certified') matchesFilter = course.certified;
+
+        return matchesSearch && matchesCategory && matchesFilter;
+      });
+
+      loadCourses();
+    }
+
+    // Obtener nombre de categoría
+    function getCategoryName(category) {
+      const categories = {
+        'matematicas': 'Matemáticas',
+        'programacion': 'Programación',
+        'idiomas': 'Idiomas',
+        'diseno': 'Diseño',
+        'ciencias': 'Ciencias',
+        'negocios': 'Negocios',
+        'musica': 'Música'
+      };
+      return categories[category] || category;
+    }
+
+    // Event Listeners
+    document.getElementById('searchInput').addEventListener('input', filterCourses);
+    document.getElementById('categoryFilter').addEventListener('change', filterCourses);
+
+    document.querySelectorAll('.filter-tag').forEach(tag => {
+      tag.addEventListener('click', function() {
+        document.querySelectorAll('.filter-tag').forEach(t => t.classList.remove('active'));
+        this.classList.add('active');
+        currentFilter = this.getAttribute('data-filter');
+        filterCourses();
+      });
+    });
+
+    // Inicializar
+    document.addEventListener('DOMContentLoaded', function() {
+      loadCourses();
+    });
+  </script>
+
+</body>
+</html>
