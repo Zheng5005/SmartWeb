@@ -39,26 +39,23 @@ document.addEventListener("DOMContentLoaded", () => {
       const role = data.role?.toLowerCase();
       console.log(role)
 
-      // if (!role) {
-      //   alert("No se pudo determinar el rol del usuario.");
-      //   return;
-      // }
+       if (!role) {
+         alert("No se pudo determinar el rol del usuario.");
+         return;
+       }
 
       alert(`Inicio de sesión exitoso como ${role} ✅`);
 
       // Redirección según el rol
       switch (role) {
-        case "administrador":
-          window.location.href = "HomeAdmin.html";
+        case "Administrador":
+          window.location.href = "../Homes/HomeAdmin.html";
           break;
-        case "profesor":
+        case "Profesor":
+          window.location.href = "../Homes/HomeTeacher.html";
+          break;
+        case "Estudiante":
           window.location.href = "../Homes/HomeStudent.html";
-          break;
-        case "estudiante":
-          window.location.href = "HomeStudent.html";
-          break;
-        default:
-          window.location.href = "dashboard.html";
           break;
       }
     } catch (error) {
