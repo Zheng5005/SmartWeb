@@ -7,6 +7,8 @@ from schemas.s_usuarios import UsuarioLogin, UsuarioCreate
 from services.cifrar import verify_password
 from config import SessionLocal
 from services.jwt import create_access_token, verify_token
+from services.email import send_email
+from uuid import uuid4
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
 
@@ -19,33 +21,49 @@ def get_db():
 
 @router.post("/register")
 async def register_user(user: UsuarioCreate, db: Session = Depends(get_db)):
-    # Verificar si el email ya existe
     existing_user = db.query(Usuarios).filter(Usuarios.email == user.email).first()
     if existing_user:
         raise HTTPException(status_code=400, detail="El correo ya está registrado")
 
-    # Obtener rol por defecto
-    default_role = db.query(Roles).filter(Roles.nombre_rol == "Estudiante").first()
+    default_role = db.query(Roles).filter(Roles.nombre_rol == user.role).first()
     if not default_role:
-        raise HTTPException(status_code=500, detail="Rol por defecto 'ESTUDIANTE' no encontrado")
+        raise HTTPException(status_code=400, detail="Rol no válido")
 
-    # Hashear contraseña
     hashed_password = hash_password(user.password)
+    activation_token = str(uuid4())
 
-    # Crear Usuario
     nuevo_usuario = Usuarios(
         nombre=user.nombre,
         apellido=user.apellido,
         email=user.email,
         password_hash=hashed_password,
-        role=default_role.id
+        role=default_role.id,
+        token_activacion=activation_token,
+        confirmado=False,
+        status="Inactivo"
     )
 
     db.add(nuevo_usuario)
     db.commit()
     db.refresh(nuevo_usuario)
 
-    return {"message": "Usuario creado exitosamente"}
+    if default_role.nombre_rol == "Estudiante":
+        # Enviar email directo
+        activation_link = f"http://localhost:8000/auth/activate/{activation_token}"
+        send_email(
+            to=user.email,
+            subject="Activa tu cuenta",
+            body=f"Hola {user.nombre}, activa tu cuenta aquí: {activation_link}"
+        )
+    elif default_role.nombre_rol == "Profesor":
+        # En espera de aprobación del administrador
+        send_email(
+            to="admin@tu_dominio.com",
+            subject="Nuevo profesor pendiente de aprobación",
+            body=f"El profesor {user.nombre} {user.apellido} está pendiente de aprobación."
+        )
+
+    return {"message": "Registro exitoso. Verifique su correo si aplica."}
 
 # Login manual
 @router.post("/login")
@@ -68,7 +86,7 @@ async def login_user(user_data: UsuarioLogin, db: Session = Depends(get_db)):
         raise HTTPException(status_code=403, detail="Ya hay una sesión activa")
 
     # Generar token JWT
-    access_token = create_access_token({"sub": str(user.id)})
+    access_token = create_access_token({"sub": str(user.id), "rol": str(user.rol.nombre_rol)})
 
     # Guardar token en la base de datos
     expiracion = datetime.utcnow() + timedelta(hours=2)
@@ -105,3 +123,24 @@ async def logout_user(current_user: Usuarios = Depends(verify_token), db: Sessio
     db.commit()
 
     return {"message": "Sesión cerrada correctamente"}
+
+@router.get("/activate/{token}")
+async def activate_account(token: str, db: Session = Depends(get_db)):
+    user = db.query(Usuarios).filter(Usuarios.token_activacion == token).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="Token inválido")
+
+    user.confirmado = True
+    user.status = "Activo"
+    user.token_activacion = None
+    db.commit()
+    return {"message": "Cuenta activada correctamente"}
+
+@router.get("/verify-token")
+async def verify_user_token(current=Depends(verify_token)):
+    return {
+        "valid": True,
+        "user_id": current["user"].id,
+        "nombre": current["user"].nombre,
+        "rol": current["role"]
+    }

@@ -23,36 +23,28 @@ from config import SECRET_KEY
 
 def create_access_token(data: dict, expires_delta: timedelta = timedelta(hours=2)):
     to_encode = data.copy()
-    expire= datetime.now(timezone.utc) + expires_delta
+    expire = datetime.now(timezone.utc) + expires_delta
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm="HS256")
     return encoded_jwt
 
+# jwt.py
 def verify_token(credentials: HTTPAuthorizationCredentials = Depends(security), db: Session = Depends(get_db)):
     try:
         payload = jwt.decode(credentials.credentials, SECRET_KEY, algorithms=["HS256"])
-        user_id: str = payload.get("sub")
-        if user_id is None:
-            return HTTPException(
-                status_code = status.HTTP_401_UNAUTHORIZED,
-                detail = "Token inválido",
-            )
-        
-        user = db.query(Usuarios).filter(Usuarios.id == int(user_id)).first()
-        if user is None:
-            raise HTTPException(
-                status_code = status.HTTP_401_UNAUTHORIZED,
-                detail = "Usuario no encontrado",
-            )
+        user_id = payload.get("sub")
+        user_role = payload.get("rol")
 
-        return user
+        if user_id is None or user_role is None:
+            raise HTTPException(status_code=401, detail="Token inválido")
+
+        user = db.query(Usuarios).filter(Usuarios.id == int(user_id)).first()
+        if not user:
+            raise HTTPException(status_code=401, detail="Usuario no encontrado")
+
+        return {"user": user, "role": user_role}
+
     except jwt.ExpiredSignatureError:
-        raise HTTPException(
-            status_code = status.HTTP_401_UNAUTHORIZED,
-            detail = "Token expirado",
-        )
+        raise HTTPException(status_code=401, detail="Token expirado")
     except jwt.PyJWTError:
-        raise HTTPException(
-            status_code = status.HTTP_401_UNAUTHORIZED,
-            detail = "Token inválido",
-        )
+        raise HTTPException(status_code=401, detail="Token inválido")
