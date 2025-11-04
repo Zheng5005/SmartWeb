@@ -1,6 +1,5 @@
 from fastapi_mail import ConnectionConfig
 from fastapi_mail import FastMail, MessageSchema, MessageType
-from services.config_email import mail_config
 
 mail_config = ConnectionConfig(
     MAIL_USERNAME="gungraveheat123@gmail.com",
