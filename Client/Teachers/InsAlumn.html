@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Estudiantes Inscritos - SMARTWEB</title>
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --primary-dark: #0e2a47;
+      --primary-medium: #265c8b;
+      --primary-light: #3a7bb6;
+      --accent-color: #6a0dad;
+      --accent-hover: #5a0b9d;
+      --light-bg: #f4f7fb;
+      --card-bg: #ffffff;
+      --text-dark: #2d3748;
+      --text-light: #718096;
+      --success-color: #48bb78;
+      --warning-color: #ed8936;
+    }
+
+    body {
+      background: var(--light-bg);
+      font-family: 'Poppins', sans-serif;
+      color: var(--text-dark);
+    }
+
+    /* Navbar */
+    .navbar {
+      background: var(--primary-dark);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      padding: 12px 0;
+    }
+
+    .navbar-brand {
+      font-weight: 700;
+      font-size: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: white !important;
+    }
+
+    .logo-img {
+      height: 40px;
+      width: auto;
+    }
+
+    .nav-link {
+      color: #d8e6ff !important;
+      font-weight: 500;
+      transition: all 0.3s;
+      padding: 8px 16px !important;
+      border-radius: 6px;
+    }
+
+    .nav-link:hover {
+      color: #fff !important;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .btn-logout {
+      background: var(--accent-color) !important;
+      color: white !important;
+      border-radius: 6px;
+      padding: 8px 20px !important;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+
+    .btn-logout:hover {
+      background: var(--accent-hover) !important;
+      transform: translateY(-2px);
+    }
+
+    /* Header */
+    .students-header {
+      background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-medium) 100%);
+      color: white;
+      padding: 2rem;
+      border-radius: 20px;
+      margin: 2rem auto;
+    }
+
+    .students-header h1 {
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    /* Course Selector */
+    .course-selector {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+      margin-bottom: 2rem;
+    }
+
+    .course-card {
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 1.5rem;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .course-card:hover {
+      border-color: var(--primary-medium);
+      transform: translateY(-2px);
+    }
+
+    .course-card.active {
+      border-color: var(--accent-color);
+      background: rgba(106, 13, 173, 0.05);
+    }
+
+    .course-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, var(--primary-medium), var(--primary-light));
+      color: white;
+      font-size: 1.2rem;
+    }
+
+    /* Stats Cards */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 1.5rem;
+      text-align: center;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+    }
+
+    .stat-number {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+      color: var(--text-light);
+      font-size: 0.9rem;
+    }
+
+    /* Students Table */
+    .students-table-container {
+      background: var(--card-bg);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+      margin-bottom: 3rem;
+    }
+
+    .table-header {
+      background: var(--primary-dark);
+      color: white;
+      padding: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .table-title {
+      font-weight: 700;
+      font-size: 1.3rem;
+      margin: 0;
+    }
+
+    .students-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .students-table th {
+      background: #f7fafc;
+      padding: 1rem 1.5rem;
+      text-align: left;
+      font-weight: 600;
+      color: var(--primary-dark);
+      border-bottom: 2px solid #e2e8f0;
+    }
+
+    .students-table td {
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid #e2e8f0;
+      vertical-align: middle;
+    }
+
+    .students-table tr:hover {
+      background: #f7fafc;
+    }
+
+    .student-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--primary-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .attendance-badge {
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .badge-high {
+      background: #c6f6d5;
+      color: #22543d;
+    }
+
+    .badge-medium {
+      background: #fed7d7;
+      color: #742a2a;
+    }
+
+    .badge-low {
+      background: #feebcb;
+      color: #744210;
+    }
+
+    .action-btn {
+      background: none;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 0.5rem;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .action-btn:hover {
+      background: var(--primary-light);
+      color: white;
+      border-color: var(--primary-light);
+    }
+
+    /* Search and Filters */
+    .search-section {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+      margin-bottom: 2rem;
+    }
+
+    .search-box {
+      position: relative;
+    }
+
+    .search-box input {
+      padding-left: 3rem;
+      border-radius: 10px;
+      border: 2px solid #e2e8f0;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-light);
+    }
+
+    .filter-tags {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+    }
+
+    .filter-tag {
+      background: #f7fafc;
+      border: 2px solid #e2e8f0;
+      border-radius: 20px;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-size: 0.9rem;
+    }
+
+    .filter-tag:hover, .filter-tag.active {
+      background: var(--primary-medium);
+      color: white;
+      border-color: var(--primary-medium);
+    }
+
+    /* Export Section */
+    .export-section {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+      margin-bottom: 2rem;
+    }
+
+    .btn-export {
+      background: var(--success-color);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 0.75rem 1.5rem;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+
+    .btn-export:hover {
+      background: #38a169;
+      transform: translateY(-2px);
+    }
+
+    /* Footer */
+    footer {
+      background: var(--primary-dark);
+      color: white;
+      padding: 2.5rem 0 1.5rem;
+    }
+
+    .footer-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .footer-logo {
+      font-weight: 700;
+      font-size: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: white;
+    }
+
+    .footer-logo-img {
+      height: 30px;
+      width: auto;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 20px;
+    }
+
+    .footer-links a {
+      color: rgba(255, 255, 255, 0.7);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .footer-links a:hover {
+      color: white;
+    }
+
+    .copyright {
+      text-align: center;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 0.9rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .stats-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      
+      .table-header {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+      }
+      
+      .students-table {
+        font-size: 0.9rem;
+      }
+      
+      .students-table th,
+      .students-table td {
+        padding: 0.75rem 1rem;
+      }
+      
+      .footer-content {
+        flex-direction: column;
+        gap: 20px;
+        text-align: center;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .filter-tags {
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg">
+    <div class="container">
+      <a class="navbar-brand" href="#">
+        <img src="../logo.png" alt="SMARTWEB" class="logo-img">
+        SMARTWEB
+      </a>
+
+      <button class="navbar-toggler bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div id="navMenu" class="collapse navbar-collapse">
+        <ul class="navbar-nav ms-auto align-items-center gap-2">
+          <li class="nav-item"><a class="nav-link" href="../Homes/HomeTeacher.html"><i class="fas fa-home me-1"></i> Inicio</a></li>
+          <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-book me-1"></i> Mis Cursos</a></li>
+          <li class="nav-item"><a class="nav-link active" href="#"><i class="fas fa-users me-1"></i> Estudiantes</a></li>
+          <li class="nav-item"><a class="nav-link btn-logout" href="#"><i class="fas fa-sign-out-alt me-1"></i> Cerrar sesión</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Header -->
+  <div class="container">
+    <div class="students-header">
+      <h1><i class="fas fa-users me-2"></i>Estudiantes Inscritos</h1>
+      <p class="mb-0">Gestiona y monitorea el progreso de tus estudiantes</p>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main class="container">
+    
+    <!-- Course Selector -->
+    <div class="course-selector">
+      <h3 class="mb-3"><i class="fas fa-book me-2"></i>Selecciona un Curso</h3>
+      <div class="row g-3" id="coursesList">
+        <!-- Los cursos se cargarán dinámicamente -->
+      </div>
+    </div>
+
+    <!-- Stats Overview -->
+    <div class="stats-grid" id="statsOverview" style="display: none;">
+      <div class="stat-card">
+        <div class="stat-number" id="totalStudents">0</div>
+        <div class="stat-label">Total Estudiantes</div>
+      </div>
+    
+    </div>
+
+    <!-- Search and Filters -->
+    <div class="search-section" id="searchSection" style="display: none;">
+      <div class="row">
+        <div class="col-md-8">
+          <div class="search-box">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" class="form-control" placeholder="Buscar estudiantes por nombre o email..." id="searchStudents">
+          </div>
+        </div>
+        <div class="col-md-4">
+          <select class="form-select" id="attendanceFilter">
+            <option value="">Todos los estudiantes</option>
+            
+          </select>
+        </div>
+      </div>
+      
+      <div class="filter-tags">
+        <div class="filter-tag active" data-filter="all">Todos</div>
+    
+      </div>
+    </div>
+
+    <!-- Export Section -->
+    <div class="export-section" id="exportSection" style="display: none;">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <h5 class="mb-1">Exportar Lista de Estudiantes</h5>
+          <p class="text-muted mb-0">Descarga la información en diferentes formatos</p>
+        </div>
+        <div class="d-flex gap-2">
+          <button class="btn-export" onclick="exportToPDF()">
+            <i class="fas fa-file-pdf me-2"></i>PDF
+          </button>
+          <button class="btn-export" onclick="exportToExcel()">
+            <i class="fas fa-file-excel me-2"></i>Excel
+          </button>
+          <button class="btn-export" onclick="exportToCSV()">
+            <i class="fas fa-file-csv me-2"></i>CSV
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Students Table -->
+    <div class="students-table-container" id="studentsTableContainer" style="display: none;">
+      <div class="table-header">
+        <h3 class="table-title" id="tableTitle">Estudiantes del Curso</h3>
+        <div class="text-white">
+          <i class="fas fa-sync-alt me-2"></i>
+          Actualizado hace 5 minutos
+        </div>
+      </div>
+      
+      <div class="table-responsive">
+        <table class="students-table">
+          <thead>
+            <tr>
+              <th>Estudiante</th>
+              <th>Email</th>
+              <th>Fecha de Inscripción</th>
+              <th>Asistencia</th>
+              <th>Última Conexión</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="studentsTableBody">
+            <!-- Los estudiantes se cargarán dinámicamente -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="text-center py-5" id="emptyState">
+      <i class="fas fa-users fa-4x text-muted mb-3"></i>
+      <h4 class="text-muted">Selecciona un curso para ver los estudiantes inscritos</h4>
+      <p class="text-muted">Elige uno de tus cursos de la lista superior</p>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-logo">
+          <img src="logo.png" alt="SMARTWEB Logo" class="footer-logo-img">
+          SMARTWEB
+        </div>
+        <div class="footer-links">
+          <a href="#">Centro de Ayuda</a>
+          <a href="#">Política de Privacidad</a>
+          <a href="#">Términos de Servicio</a>
+          <a href="#">Contacto</a>
+        </div>
+      </div>
+      <div class="copyright">
+        © 2025 SMARTWEB — Plataforma Educativa Internacional. Todos los derechos reservados.
+      </div>
+    </div>
+  </footer>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    // Datos de ejemplo
+    const teacherCourses = [
+      {
+        id: 1,
+        title: "Matemáticas Avanzadas - Álgebra Lineal",
+        icon: "fa-calculator",
+        totalStudents: 24,
+        activeStudents: 18,
+        attendanceRate: "85%",
+        completedSessions: 12
+      },
+      {
+        id: 2,
+        title: "Programación Web Full Stack",
+        icon: "fa-code",
+        totalStudents: 142,
+        activeStudents: 89,
+        attendanceRate: "78%",
+        completedSessions: 8
+      },
+      {
+        id: 3,
+        title: "Inglés Conversacional para Negocios",
+        icon: "fa-language",
+        totalStudents: 89,
+        activeStudents: 67,
+        attendanceRate: "92%",
+        completedSessions: 10
+      }
+    ];
+
+    const studentsData = {
+      1: [
+        { id: 1, name: "Ana García", email: "ana.garcia@email.com", enrollmentDate: "2024-01-15", attendance: 92, lastConnection: "2024-03-14", active: true },
+        { id: 2, name: "Carlos López", email: "carlos.lopez@email.com", enrollmentDate: "2024-01-20", attendance: 78, lastConnection: "2024-03-13", active: true },
+        { id: 3, name: "María Rodríguez", email: "maria.rodriguez@email.com", enrollmentDate: "2024-02-01", attendance: 45, lastConnection: "2024-03-10", active: false },
+        { id: 4, name: "Juan Martínez", email: "juan.martinez@email.com", enrollmentDate: "2024-01-10", attendance: 95, lastConnection: "2024-03-14", active: true },
+        { id: 5, name: "Laura Hernández", email: "laura.hernandez@email.com", enrollmentDate: "2024-02-15", attendance: 88, lastConnection: "2024-03-12", active: true }
+      ],
+      2: [
+        { id: 6, name: "Pedro Sánchez", email: "pedro.sanchez@email.com", enrollmentDate: "2024-01-08", attendance: 91, lastConnection: "2024-03-14", active: true },
+        { id: 7, name: "Sofia Chen", email: "sofia.chen@email.com", enrollmentDate: "2024-01-12", attendance: 76, lastConnection: "2024-03-11", active: true },
+        { id: 8, name: "Diego Ramírez", email: "diego.ramirez@email.com", enrollmentDate: "2024-02-20", attendance: 82, lastConnection: "2024-03-13", active: true },
+        { id: 9, name: "Elena Morales", email: "elena.morales@email.com", enrollmentDate: "2024-01-25", attendance: 94, lastConnection: "2024-03-14", active: true }
+      ],
+      3: [
+        { id: 10, name: "Miguel Torres", email: "miguel.torres@email.com", enrollmentDate: "2024-01-30", attendance: 89, lastConnection: "2024-03-14", active: true },
+        { id: 11, name: "Isabel Cruz", email: "isabel.cruz@email.com", enrollmentDate: "2024-02-05", attendance: 96, lastConnection: "2024-03-14", active: true },
+        { id: 12, name: "Roberto Díaz", email: "roberto.diaz@email.com", enrollmentDate: "2024-01-18", attendance: 72, lastConnection: "2024-03-09", active: false }
+      ]
+    };
+
+    let selectedCourseId = null;
+    let filteredStudents = [];
+
+    // Cargar cursos del profesor
+    function loadTeacherCourses() {
+      const coursesList = document.getElementById('coursesList');
+      
+      teacherCourses.forEach(course => {
+        const courseCard = document.createElement('div');
+        courseCard.className = 'col-md-4';
+        courseCard.innerHTML = `
+          <div class="course-card" onclick="selectCourse(${course.id})">
+            <div class="d-flex align-items-center gap-3">
+              <div class="course-icon">
+                <i class="fas ${course.icon}"></i>
+              </div>
+              <div>
+                <h5 class="mb-1">${course.title}</h5>
+                <p class="text-muted mb-0">${course.totalStudents} estudiantes</p>
+              </div>
+            </div>
+          </div>
+        `;
+        coursesList.appendChild(courseCard);
+      });
+    }
+
+    // Seleccionar curso
+    function selectCourse(courseId) {
+      selectedCourseId = courseId;
+      
+      // Actualizar UI de cursos
+      document.querySelectorAll('.course-card').forEach(card => {
+        card.classList.remove('active');
+      });
+      event.currentTarget.classList.add('active');
+      
+      // Mostrar secciones
+      document.getElementById('emptyState').style.display = 'none';
+      document.getElementById('statsOverview').style.display = 'grid';
+      document.getElementById('searchSection').style.display = 'block';
+      document.getElementById('exportSection').style.display = 'block';
+      document.getElementById('studentsTableContainer').style.display = 'block';
+      
+      // Actualizar estadísticas
+      updateCourseStats(courseId);
+      
+      // Cargar estudiantes
+      loadStudents(courseId);
+    }
+
+    // Actualizar estadísticas del curso
+    function updateCourseStats(courseId) {
+      const course = teacherCourses.find(c => c.id === courseId);
+      const students = studentsData[courseId];
+      
+      document.getElementById('totalStudents').textContent = course.totalStudents;
+      document.getElementById('activeStudents').textContent = course.activeStudents;
+      document.getElementById('attendanceRate').textContent = course.attendanceRate;
+      document.getElementById('completedSessions').textContent = course.completedSessions;
+      document.getElementById('tableTitle').textContent = `Estudiantes - ${course.title}`;
+    }
+
+    // Cargar estudiantes
+    function loadStudents(courseId) {
+      filteredStudents = studentsData[courseId] || [];
+      renderStudentsTable();
+    }
+
+    // Renderizar tabla de estudiantes
+    function renderStudentsTable() {
+      const tbody = document.getElementById('studentsTableBody');
+      tbody.innerHTML = '';
+      
+      if (filteredStudents.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="6" class="text-center py-4 text-muted">
+              <i class="fas fa-users fa-2x mb-2"></i>
+              <div>No se encontraron estudiantes</div>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+      
+      filteredStudents.forEach(student => {
+        const row = document.createElement('tr');
+        
+        // Determinar badge de asistencia
+        let attendanceBadge = 'badge-low';
+        let attendanceText = 'Baja';
+        if (student.attendance >= 80) {
+          attendanceBadge = 'badge-high';
+          attendanceText = 'Alta';
+        } else if (student.attendance >= 50) {
+          attendanceBadge = 'badge-medium';
+          attendanceText = 'Media';
+        }
+        
+        row.innerHTML = `
+          <td>
+            <div class="d-flex align-items-center gap-3">
+              <div class="student-avatar">
+                ${student.name.split(' ').map(n => n[0]).join('')}
+              </div>
+              <div>
+                <div class="fw-bold">${student.name}</div>
+                <div class="text-muted small">ID: ${student.id}</div>
+              </div>
+            </div>
+          </td>
+          <td>${student.email}</td>
+          <td>${formatDate(student.enrollmentDate)}</td>
+          <td>
+            <span class="attendance-badge ${attendanceBadge}">
+              ${student.attendance}% - ${attendanceText}
+            </span>
+          </td>
+          <td>
+            <div class="d-flex align-items-center gap-2">
+              ${formatDate(student.lastConnection)}
+              ${student.active ? '<i class="fas fa-circle text-success" title="En línea"></i>' : '<i class="fas fa-circle text-muted" title="Desconectado"></i>'}
+            </div>
+          </td>
+          <td>
+            <div class="d-flex gap-2">
+              <button class="action-btn" title="Ver perfil" onclick="viewStudentProfile(${student.id})">
+                <i class="fas fa-eye"></i>
+              </button>
+              <button class="action-btn" title="Enviar mensaje" onclick="sendMessage(${student.id})">
+                <i class="fas fa-envelope"></i>
+              </button>
+              <button class="action-btn" title="Ver progreso" onclick="viewProgress(${student.id})">
+                <i class="fas fa-chart-line"></i>
+              </button>
+            </div>
+          </td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    // Formatear fecha
+    function formatDate(dateString) {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('es-ES', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+      });
+    }
+
+    // Funciones de acción
+    function viewStudentProfile(studentId) {
+      alert(`Ver perfil del estudiante ID: ${studentId}`);
+    }
+
+    function sendMessage(studentId) {
+      alert(`Enviar mensaje al estudiante ID: ${studentId}`);
+    }
+
+    function viewProgress(studentId) {
+      alert(`Ver progreso del estudiante ID: ${studentId}`);
+    }
+
+    // Funciones de exportación
+    function exportToPDF() {
+      alert('Exportando a PDF...');
+    }
+
+    function exportToExcel() {
+      alert('Exportando a Excel...');
+    }
+
+    function exportToCSV() {
+      alert('Exportando a CSV...');
+    }
+
+    // Filtros y búsqueda
+    document.getElementById('searchStudents').addEventListener('input', function() {
+      filterStudents();
+    });
+
+    document.getElementById('attendanceFilter').addEventListener('change', function() {
+      filterStudents();
+    });
+
+    document.querySelectorAll('.filter-tag').forEach(tag => {
+      tag.addEventListener('click', function() {
+        document.querySelectorAll('.filter-tag').forEach(t => t.classList.remove('active'));
+        this.classList.add('active');
+        filterStudents();
+      });
+    });
+
+    function filterStudents() {
+      if (!selectedCourseId) return;
+      
+      const searchTerm = document.getElementById('searchStudents').value.toLowerCase();
+      const attendanceFilter = document.getElementById('attendanceFilter').value;
+      const statusFilter = document.querySelector('.filter-tag.active').getAttribute('data-filter');
+      
+      let students = studentsData[selectedCourseId];
+      
+      // Aplicar filtros
+      if (searchTerm) {
+        students = students.filter(student => 
+          student.name.toLowerCase().includes(searchTerm) || 
+          student.email.toLowerCase().includes(searchTerm)
+        );
+      }
+      
+      if (attendanceFilter) {
+        students = students.filter(student => {
+          if (attendanceFilter === 'high') return student.attendance >= 80;
+          if (attendanceFilter === 'medium') return student.attendance >= 50 && student.attendance < 80;
+          if (attendanceFilter === 'low') return student.attendance < 50;
+          return true;
+        });
+      }
+      
+      if (statusFilter === 'active') {
+        students = students.filter(student => student.active);
+      } else if (statusFilter === 'inactive') {
+        students = students.filter(student => !student.active);
+      } else if (statusFilter === 'new') {
+        const twoWeeksAgo = new Date();
+        twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
+        students = students.filter(student => new Date(student.enrollmentDate) > twoWeeksAgo);
+      }
+      
+      filteredStudents = students;
+      renderStudentsTable();
+    }
+
+    // Inicializar
+    document.addEventListener('DOMContentLoaded', function() {
+      loadTeacherCourses();
+    });
+  </script>
+
+</body>
+</html>
