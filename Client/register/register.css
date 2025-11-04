@@ -1,0 +1,382 @@
+/* --- Variables Globales (Paleta SMARTWEB) --- */
+:root {
+    --primary-dark: #0e2a47; /* Azul muy oscuro (Textos, Botones) */
+    --primary-medium: #265c8b;
+    --primary-light: #3a7bb6; /* Azul brillante */
+    --light-bg: #f4f7fb; /* Fondo gris claro */
+    --accent-color: #ff7e5f;
+    --pastel-blue: #e8f0fe; /* Color pastel para la barra lateral */
+    --gradient-start: #8e2de2;
+    --gradient-end: #4a00e0; 
+}
+
+/* --- Estilos Generales --- */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif; 
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+    background-color: var(--light-bg); 
+    overflow-x: hidden;
+    padding: 0; 
+}
+
+/* Fondo difuminado */
+.background-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('https://conecta.tec.mx/sites/default/files/styles/header_full/public/2020-03/clases-enlinea2.webp?itok=4qDqdNPF'); 
+    background-size: cover;
+    background-position: center;
+    filter: blur(5px); 
+    opacity: 0.5; 
+    z-index: -1; 
+}
+
+.container {
+    width: 100%;
+    max-width: 1100px;
+    padding: 1rem;
+    flex-grow: 1;
+    display: flex;
+    align-items: center; 
+    justify-content: center;
+    position: relative; 
+    z-index: 1; 
+    margin-top: 30px; 
+    margin-bottom: 30px; 
+}
+
+/* Estructura de la caja (login-box) */
+.login-box {
+    display: flex;
+    flex-direction: column;
+    background-color: #fff; 
+    border: 1px solid rgba(14, 42, 71, 0.1); 
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2); 
+    width: 100%;
+    max-height: 80vh;
+    overflow-y: hidden; 
+}
+
+@media (min-width: 900px) {
+    .login-box {
+        flex-direction: row;
+        /* Aseguramos una altura mínima funcional para la caja */
+        min-height: 550px; 
+        max-height: 90vh; 
+    }
+}
+
+/* --- Sección del Formulario (2/3) --- */
+.form-section {
+    width: 100%;
+    padding: 0; 
+    display: flex;
+    flex-direction: column; 
+    /* ¡CORRECCIÓN CRÍTICA! Eliminamos justify-content: center; para que el contenido 
+       se ancle arriba y obligue al contenedor a estirarse verticalmente. */
+    /* justify-content: center; */ 
+    position: relative;
+    flex-grow: 1; 
+}
+
+@media (min-width: 900px) {
+    .form-section {
+        width: 66.66%; 
+        overflow-y: hidden; 
+        border-right: 1px solid rgba(14, 42, 71, 0.1); 
+    }
+}
+
+/* Contenedor que maneja el scroll y el padding del formulario */
+.form-content-wrapper {
+    flex-grow: 1; 
+    display: flex;
+    flex-direction: column;
+    padding: 2rem;
+}
+
+@media (min-width: 900px) {
+    .form-content-wrapper {
+        padding: 2rem; 
+        overflow-y: auto; 
+    }
+}
+
+/* Estilo del Scrollbar (Webkit) */
+.form-content-wrapper::-webkit-scrollbar {
+    width: 8px; 
+}
+
+.form-content-wrapper::-webkit-scrollbar-track {
+    background: #f1f1f1; 
+    border-radius: 10px;
+}
+
+.form-content-wrapper::-webkit-scrollbar-thumb {
+    background: var(--primary-light); 
+    border-radius: 10px;
+}
+
+.form-content-wrapper::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-medium); 
+}
+
+
+/* Estilos de Tipografía */
+.logo h1 {
+    font-size: 2rem;
+    background: linear-gradient(90deg, var(--primary-dark), var(--primary-light)); 
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 800;
+    padding: 2rem 2rem 0 2rem; 
+    margin-bottom: 0; 
+}
+
+form h2 {
+    font-size: 1.8rem; 
+    color: var(--primary-dark);
+    margin-bottom: 0.3rem;
+}
+
+.subtitle {
+    font-size: 0.95rem;
+    opacity: 0.8;
+    margin-bottom: 1.5rem;
+}
+
+/* Inputs y Labels */
+label {
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    color: var(--primary-dark);
+    display: block;
+}
+
+input, textarea {
+    padding: 0.9rem;
+    margin-bottom: 1.2rem;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    width: 100%;
+    font-size: 1rem;
+    transition: border 0.2s ease, box-shadow 0.2s ease;
+    resize: none; 
+}
+
+input:focus, textarea:focus {
+    border-color: var(--primary-light);
+    box-shadow: 0 0 0 3px rgba(58, 123, 182, 0.2);
+    outline: none;
+}
+
+/* Radio buttons (tipo de usuario) */
+.user-type-selection {
+    margin-bottom: 1.2rem;
+}
+.user-type-selection .d-flex {
+    display: flex;
+    gap: 1.5rem;
+    margin-top: 0.5rem;
+}
+.form-check {
+    display: flex;
+    align-items: center;
+}
+.form-check-input {
+    margin-right: 0.5rem;
+    width: auto;
+    margin-bottom: 0;
+}
+.form-check-input:checked {
+    background-color: var(--primary-light);
+    border-color: var(--primary-light);
+}
+.form-check-label {
+    font-weight: 400;
+    margin-bottom: 0;
+}
+
+/* Layout de dos columnas para Nombre y Apellido */
+.name-fields {
+    display: flex;
+    gap: 1.2rem;
+    margin-bottom: 1.2rem;
+}
+.name-fields .field-group {
+    flex: 1;
+}
+.name-fields .field-group input {
+    margin-bottom: 0;
+}
+
+/* Botón de Entrar/Registrarse */
+button {
+    background-color: var(--primary-dark); 
+    color: white;
+    border: none;
+    padding: 1rem; 
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 100%; 
+    margin-top: 0.5rem;
+}
+
+button:hover {
+    background-color: var(--primary-medium);
+    transform: translateY(-1px);
+}
+
+/* Enlace de registro/login */
+.register-link {
+    text-align: center;
+    margin-top: 1.5rem;
+    font-size: 0.95rem;
+}
+
+.register-link p {
+    margin: 0; 
+}
+
+.register-link a {
+    color: var(--primary-light); 
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.register-link a:hover {
+    text-decoration: underline;
+}
+
+/* === ANIMACIÓN CAMPO MOTIVACIÓN === */
+
+/* Estado inicial (oculto) */
+.motivation-field {
+    max-height: 0; 
+    overflow: hidden;
+    opacity: 0; 
+    margin-top: 0; 
+    margin-bottom: 0;
+    transition: max-height 0.4s ease-out, opacity 0.3s ease-in, margin 0.4s ease-out;
+}
+
+/* Estado activo (Profesor seleccionado) */
+.motivation-field.active {
+    max-height: 250px; 
+    opacity: 1;
+    margin-top: 0; 
+    margin-bottom: 1.2rem; 
+}
+
+.motivation-field.active textarea {
+    margin-bottom: 0;
+}
+
+/* --- Sección de la Imagen (Barra Pastel) (1/3) --- */
+.image-section {
+    display: none;
+    background-color: var(--pastel-blue); 
+    color: var(--primary-dark); 
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 2rem;
+    text-align: center;
+    position: relative;
+    height: 100%; 
+}
+
+@media (min-width: 900px) {
+    .image-section {
+        display: flex;
+        width: 33.33%; 
+        border-left: 1px solid rgba(14, 42, 71, 0.1); 
+    }
+}
+
+/* Estilo para el logo dentro de la imagen */
+.image-section img {
+    max-width: 180px; 
+    height: auto;
+    filter: none;
+    margin-bottom: 10px; 
+}
+
+.image-section p {
+    margin-top: 1.5rem;
+    font-size: 1.1rem;
+    font-weight: 600; 
+    color: var(--primary-medium);
+}
+
+/* --- FOOTER --- */
+footer {
+    width: 100%;
+    background: var(--primary-dark); 
+    color: rgba(255, 255, 255, 0.7);
+    padding: 20px 0;
+    font-size: 0.9rem;
+    flex-shrink: 0; 
+    margin-top: auto;
+}
+
+.footer-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap; 
+}
+
+.footer-links {
+    display: flex;
+    gap: 20px;
+}
+
+.footer-links a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.footer-links a:hover {
+    color: white;
+}
+
+.copyright {
+    max-width: 400px;
+    text-align: right;
+    margin-left: 20px; 
+}
+
+@media (max-width: 768px) {
+    .footer-inner {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+    }
+    .copyright {
+        text-align: center;
+        margin-top: 5px;
+        margin-left: 0;
+    }
+}
