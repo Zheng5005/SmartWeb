@@ -3,9 +3,9 @@ from fastapi_mail import FastMail, MessageSchema, MessageType
 from services.config_email import mail_config
 
 mail_config = ConnectionConfig(
-    MAIL_USERNAME="tucuenta@gmail.com",
-    MAIL_PASSWORD="tu_contraseña_de_aplicacion",  # ⚠️ no uses la real
-    MAIL_FROM="tucuenta@gmail.com",
+    MAIL_USERNAME="gungraveheat123@gmail.com",
+    MAIL_PASSWORD="nryc ffut zqjz xskp",
+    MAIL_FROM="gungraveheat123@gmail.com",
     MAIL_PORT=587,
     MAIL_SERVER="smtp.gmail.com",
     MAIL_STARTTLS=True,
