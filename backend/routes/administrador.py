@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from config import SessionLocal
 from model.models import Usuarios, Roles
 from services.jwt import verify_token
+from services.email import send_email
 
 router = APIRouter()
 
