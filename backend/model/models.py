@@ -53,7 +53,7 @@ class EstadoNotificacion(enum.Enum):
 class Roles(Base):
     __tablename__ = "Roles"
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     nombre_rol = Column(String, unique=True, nullable=False)
 
     usuarios = relationship("Usuarios", back_populates="rol")
@@ -71,6 +71,8 @@ class Usuarios(Base):
     creacion_cuenta = Column(DateTime(timezone=True), server_default=func.now())
     ultimo_login = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     status = Column(Enum(EstadoUsuario), default=EstadoUsuario.Activo)
+    confirmado = Column(Boolean, default=False)
+    token_activacion = Column(String, nullable=True) 
 
     rol = relationship("Roles", back_populates="usuarios")
     cursos_dictados = relationship("Cursos", back_populates="profesor")
