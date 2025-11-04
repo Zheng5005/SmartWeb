@@ -1,14 +1,25 @@
-from fastapi import HTTPException
-import smtplib
-from email.mime.text import MIMEText
+from fastapi_mail import ConnectionConfig
+from fastapi_mail import FastMail, MessageSchema, MessageType
+from services.config_email import mail_config
 
-def send_email(to, subject, body):
-    msg = MIMEText(body, "plain")
-    msg["Subject"] = subject
-    msg["From"] = "noreply@tu_dominio.com"
-    msg["To"] = to
+mail_config = ConnectionConfig(
+    MAIL_USERNAME="tucuenta@gmail.com",
+    MAIL_PASSWORD="tu_contraseña_de_aplicacion",  # ⚠️ no uses la real
+    MAIL_FROM="tucuenta@gmail.com",
+    MAIL_PORT=587,
+    MAIL_SERVER="smtp.gmail.com",
+    MAIL_STARTTLS=True,
+    MAIL_SSL_TLS=False,
+    USE_CREDENTIALS=True,
+    VALIDATE_CERTS=True
+)
 
-    with smtplib.SMTP("smtp.tu_dominio.com", 587) as server:
-        server.starttls()
-        server.login("usuario_smtp", "contraseña")
-        server.send_message(msg)
+async def send_email(to: str, subject: str, body: str):
+    message = MessageSchema(
+        subject=subject,
+        recipients=[to],
+        body=body,
+        subtype=MessageType.html  # puedes usar HTML si quieres
+    )
+    fm = FastMail(mail_config)
+    await fm.send_message(message)
