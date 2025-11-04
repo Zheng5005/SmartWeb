@@ -26,12 +26,12 @@ document.addEventListener("DOMContentLoaded", () => {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || "Error al iniciar sesión.");
+        throw new Error(data.detail || "Error al iniciar sesión.");
       }
 
       // Guardar token si viene en la respuesta
-      if (data.token) {
-        localStorage.setItem("token", data.token);
+      if (data.access_token) {
+        localStorage.setItem("token", data.access_token);
       }
       console.log(response)
 
@@ -48,13 +48,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Redirección según el rol
       switch (role) {
-        case "Administrador":
+        case "administrador":
           window.location.href = "../Homes/HomeAdmin.html";
           break;
-        case "Profesor":
+        case "profesor":
           window.location.href = "../Homes/HomeTeacher.html";
           break;
-        case "Estudiante":
+        case "estudiante":
           window.location.href = "../Homes/HomeStudent.html";
           break;
       }
