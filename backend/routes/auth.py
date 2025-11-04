@@ -85,6 +85,10 @@ async def login_user(user_data: UsuarioLogin, db: Session = Depends(get_db)):
     if existing_token:
         raise HTTPException(status_code=403, detail="Ya hay una sesión activa")
 
+    role = db.query(Roles).filter(Roles.id == user.role).first()
+    if not role:
+        raise HTTPException(status_code=500, detail="Rol del usuario no encontrado")
+
     # Generar token JWT
     access_token = create_access_token({"sub": str(user.id), "rol": str(user.rol.nombre_rol)})
 
@@ -94,7 +98,7 @@ async def login_user(user_data: UsuarioLogin, db: Session = Depends(get_db)):
         user_id=user.id,
         jwt_token=access_token,
         expiracion=expiracion,
-        revocado=False
+        revocado=False,
     )
     db.add(new_token)
 
@@ -102,7 +106,7 @@ async def login_user(user_data: UsuarioLogin, db: Session = Depends(get_db)):
     user.status = "Activo"
     db.commit()
 
-    return {"access_token": access_token, "token_type": "bearer"}
+    return {"access_token": access_token, "token_type": "bearer", "role": role.nombre_rol}
 
 @router.post("/logout")
 async def logout_user(current_user: Usuarios = Depends(verify_token), db: Session = Depends(get_db)):
