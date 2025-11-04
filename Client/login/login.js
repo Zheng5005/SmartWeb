@@ -52,7 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
           window.location.href = "HomeAdmin.html";
           break;
         case "profesor":
-          window.location.href = "HomeTeacher.html";
+          window.location.href = "../Homes/HomeStudent.html";
           break;
         case "estudiante":
           window.location.href = "HomeStudent.html";

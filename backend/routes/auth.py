@@ -50,14 +50,14 @@ async def register_user(user: UsuarioCreate, db: Session = Depends(get_db)):
     if default_role.nombre_rol == "Estudiante":
         # Enviar email directo
         activation_link = f"http://localhost:8000/auth/activate/{activation_token}"
-        send_email(
+        await send_email(
             to=user.email,
             subject="Activa tu cuenta",
             body=f"Hola {user.nombre}, activa tu cuenta aquí: {activation_link}"
         )
     elif default_role.nombre_rol == "Profesor":
         # En espera de aprobación del administrador
-        send_email(
+        await send_email(
             to="admin@tu_dominio.com",
             subject="Nuevo profesor pendiente de aprobación",
             body=f"El profesor {user.nombre} {user.apellido} está pendiente de aprobación."
@@ -75,6 +75,9 @@ async def login_user(user_data: UsuarioLogin, db: Session = Depends(get_db)):
 
     if not verify_password(user_data.password, user.password_hash):
         raise HTTPException(status_code=400, detail="Credenciales incorrectas")
+    
+    if not user.confirmado:
+        raise HTTPException(status_code=403, detail="Cuenta no confirmada")
 
     # Control de múltiples sesiones
     existing_token = db.query(AuthToken).filter(
