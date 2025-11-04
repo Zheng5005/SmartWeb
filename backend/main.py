@@ -31,13 +31,25 @@ def get_db():
 # Insertar roles defaults si no existen
 def seed_roles():
     db = SessionLocal(bind=engine)
-    roles_default = ["Estudiante", "Profesor", "Administrador"]
+    roles_default = [
+        {"id": 1, "nombre_rol": "Estudiante"},
+        {"id": 2, "nombre_rol": "Profesor"},
+        {"id": 3, "nombre_rol": "Administrador"},
+    ]
 
-    for rol in roles_default:
-        existe = db.query(Roles).filter_by(nombre_rol=rol).first()
-        if not existe:
-            nuevo_rol = Roles(nombre_rol=rol)
-            db.add(nuevo_rol)
+    for rol_data in roles_default:
+        existente = db.query(Roles).filter_by(id=rol_data["id"]).first()
+        if not existente:
+            # Si no existe con esa ID, verificar si existe por nombre (por si se cambió el ID)
+            mismo_nombre = db.query(Roles).filter_by(nombre_rol=rol_data["nombre_rol"]).first()
+            if mismo_nombre:
+                # Si existe con nombre pero ID diferente → ajustar ID
+                mismo_nombre.id = rol_data["id"]
+            else:
+                # Crear nuevo rol con ID fijo
+                nuevo_rol = Roles(id=rol_data["id"], nombre_rol=rol_data["nombre_rol"])
+                db.add(nuevo_rol)
+
     db.commit()
     db.close()
 

@@ -53,7 +53,7 @@ class EstadoNotificacion(enum.Enum):
 class Roles(Base):
     __tablename__ = "Roles"
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     nombre_rol = Column(String, unique=True, nullable=False)
 
     usuarios = relationship("Usuarios", back_populates="rol")

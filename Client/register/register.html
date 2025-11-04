@@ -2,46 +2,96 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Registro de Usuario | SMARTWEB</title>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Registro | SMARTWEB</title>
+    
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
     
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
     
-    <link rel="stylesheet" href="register.css" />
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f4f6f9;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .register-box {
+            background-color: #fff;
+            border: 1px solid rgba(0, 80, 255, 0.1);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+        }
+        
+        .logo h1 {
+            font-size: 2rem;
+            background: linear-gradient(90deg, #007bff, #00bcd4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+        }
+        
+        .image-section {
+            background-color: rgba(0, 123, 255, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            padding: 2rem;
+        }
+        
+        .image-section img {
+            width: 250px;
+            height: auto;
+        }
+        
+        .image-section p {
+            margin-top: 1rem;
+            opacity: 0.7;
+            font-size: 0.95rem;
+        }
+        
+        .motivation-field {
+            display: none;
+        }
+        
+        @media (max-width: 991.98px) {
+            .image-section {
+                display: none;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div class="register-container d-flex align-items-center justify-content-center">
-        <div class="register-box shadow-lg rounded-4 overflow-hidden row g-0">
-            
-            <div class="image-section col-lg-5 d-none d-lg-flex flex-column justify-content-center align-items-center p-4">
-                <img src="logo.png" alt="SMARTWEB Logo" class="app-logo-image mb-3"> 
-                <h2 class="text-white fw-bold mb-2">¡Bienvenido a SMARTWEB!</h2>
-                <p class="text-center text-white-50 px-3">
-                    Regístrate y comienza a adquirir conocimiento a través de nuestras videollamadas interactivas.
-                </p>
-                <a href="../login/login.html" class="btn btn-outline-light mt-3">
-                    <i class="fas fa-sign-in-alt me-2"></i> Ya tengo una cuenta
-                </a>
-            </div>
-
-            <div class="form-section col-lg-7 p-4 p-md-5">
-                <h3 class="text-center mb-1 text-primary-dark fw-bold">Crea tu cuenta</h3>
-                <p class="text-center mb-4 text-secondary-dark">Selecciona tu tipo de usuario y regístrate.</p>
+    <div class="container">
+        <div class="register-box row g-0">
+            <!-- FORMULARIO -->
+            <div class="form-section col-lg-6 p-4 p-md-5">
+                <div class="logo mb-4">
+                    <h1>SmartWeb</h1>
+                </div>
 
                 <form id="registerForm">
+                    <h2 class="mb-1">Crea tu cuenta</h2>
+                    <p class="text-muted mb-4">Selecciona tu tipo de usuario y regístrate</p>
                     
-                    <div class="mb-4 user-type-selection">
+                    <div class="user-type-selection mb-4">
                         <label class="form-label fw-bold">¿Cómo deseas registrarte?</label>
                         <div class="d-flex gap-3">
-                            <div class="form-check form-check-inline">
+                            <div class="form-check">
                                 <input class="form-check-input" type="radio" name="userType" id="typeStudent" value="student" checked>
                                 <label class="form-check-label" for="typeStudent">Estudiante</label>
                             </div>
-                            <div class="form-check form-check-inline">
+                            <div class="form-check">
                                 <input class="form-check-input" type="radio" name="userType" id="typeTeacher" value="teacher">
                                 <label class="form-check-label" for="typeTeacher">Profesor</label>
                             </div>
@@ -64,29 +114,63 @@
                         <input type="email" class="form-control" id="email" placeholder="hello@ejemplo.com" required>
                     </div>
 
-          <label for="password">Contraseña</label>
-          <input type="password" id="password" placeholder="••••••••" required />
+                    <div class="mb-4">
+                        <label for="password" class="form-label">Contraseña</label>
+                        <input type="password" class="form-control" id="password" placeholder="••••••••" required>
+                    </div>
 
-          <button type="submit" id="registerButton">Registrarse</button>
+                    <!-- Campo de motivación (solo para profesores) -->
+                    <div class="mb-4 motivation-field" id="motivationField">
+                        <label for="motivation" class="form-label">Motivación para ser profesor</label>
+                        <textarea class="form-control" id="motivation" rows="3" placeholder="Cuéntanos por qué quieres ser profesor..."></textarea>
+                    </div>
 
-          <div class="login-link">
-            <p>
-              ¿Tienes una cuenta?
-              <a href="../logo.png">Ingresa</a>
-            </p>
-          </div>
-        </form>
-      </div>
+                    <button type="submit" class="btn btn-outline-primary w-100 py-2" id="registerButton">Registrarse</button>
 
-      <!-- IMAGEN -->
-      <div class="image-section">
-        <img src="../logo.png" alt="SmartWeb" />
-        <p>Aprende a través de videollamadas</p>
-      </div>
+                    <div class="login-link mt-3 text-center">
+                        <p class="mb-0">
+                            ¿Ya tienes una cuenta?
+                            <a href="../login/login.html" class="text-decoration-none">Ingresa</a>
+                        </p>
+                    </div>
+                </form>
+            </div>
+
+            <!-- IMAGEN -->
+            <div class="image-section col-lg-6">
+                <img src="../logo.png" alt="SmartWeb" />
+                <p>Aprende a través de videollamadas</p>
+            </div>
+        </div>
     </div>
-  </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="register.js"></script>
+    <script>
+        // Función para mostrar/ocultar el campo de motivación
+        document.addEventListener('DOMContentLoaded', function() {
+            const studentRadio = document.getElementById('typeStudent');
+            const teacherRadio = document.getElementById('typeTeacher');
+            const motivationField = document.getElementById('motivationField');
+            const motivationInput = document.getElementById('motivation');
+
+            function toggleMotivationField() {
+                if (teacherRadio.checked) {
+                    motivationField.style.display = 'block';
+                    motivationInput.required = true;
+                } else {
+                    motivationField.style.display = 'none';
+                    motivationInput.required = false;
+                }
+            }
+
+            // Event listeners para los radio buttons
+            studentRadio.addEventListener('change', toggleMotivationField);
+            teacherRadio.addEventListener('change', toggleMotivationField);
+
+            // Inicializar el estado al cargar la página
+            toggleMotivationField();
+        });
+    </script>
 </body>
 </html>
