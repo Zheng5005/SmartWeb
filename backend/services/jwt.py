@@ -3,7 +3,7 @@ from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.orm import Session
 from config import SessionLocal
 from datetime import datetime, timedelta, timezone
-from model.models import Usuarios
+from model.models import Usuarios, AuthToken
 from config import SECRET_KEY
 
 import jwt
@@ -28,21 +28,33 @@ def create_access_token(data: dict, expires_delta: timedelta = timedelta(hours=2
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm="HS256")
     return encoded_jwt
 
-# jwt.py
 def verify_token(credentials: HTTPAuthorizationCredentials = Depends(security), db: Session = Depends(get_db)):
+    token_str = credentials.credentials
+
     try:
-        payload = jwt.decode(credentials.credentials, SECRET_KEY, algorithms=["HS256"])
+        payload = jwt.decode(token_str, SECRET_KEY, algorithms=["HS256"])
         user_id = payload.get("sub")
         user_role = payload.get("rol")
 
         if user_id is None or user_role is None:
             raise HTTPException(status_code=401, detail="Token inválido")
 
+        # ✅ Verificar si el token existe y no está revocado
+        token_db = db.query(AuthToken).filter(
+            AuthToken.jwt_token == token_str,
+            AuthToken.revocado == False
+        ).first()
+
+        if not token_db:
+            raise HTTPException(status_code=401, detail="Token revocado o no válido")
+
+        # Buscar usuario
         user = db.query(Usuarios).filter(Usuarios.id == int(user_id)).first()
         if not user:
             raise HTTPException(status_code=401, detail="Usuario no encontrado")
 
-        return {"user": user, "role": user_role}
+        user.role_name = user_role
+        return user
 
     except jwt.ExpiredSignatureError:
         raise HTTPException(status_code=401, detail="Token expirado")

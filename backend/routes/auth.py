@@ -1,4 +1,5 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.orm import Session
 from datetime import datetime, timedelta
 from model.models import Usuarios, AuthToken, Roles
@@ -11,6 +12,7 @@ from services.email import send_email
 from uuid import uuid4
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
+security = HTTPBearer()
 
 def get_db():
     db = SessionLocal()
@@ -43,10 +45,6 @@ async def register_user(user: UsuarioCreate, db: Session = Depends(get_db)):
         status="Inactivo"
     )
 
-    db.add(nuevo_usuario)
-    db.commit()
-    db.refresh(nuevo_usuario)
-
     if default_role.nombre_rol == "Estudiante":
         # Enviar email directo
         activation_link = f"http://localhost:8000/auth/activate/{activation_token}"
@@ -58,10 +56,14 @@ async def register_user(user: UsuarioCreate, db: Session = Depends(get_db)):
     elif default_role.nombre_rol == "Profesor":
         # En espera de aprobación del administrador
         await send_email(
-            to="admin@tu_dominio.com",
+            to="gungraveheat123@gmail.com",
             subject="Nuevo profesor pendiente de aprobación",
             body=f"El profesor {user.nombre} {user.apellido} está pendiente de aprobación."
         )
+
+    db.add(nuevo_usuario)
+    db.commit()
+    db.refresh(nuevo_usuario)
 
     return {"message": "Registro exitoso. Verifique su correo si aplica."}
 
@@ -112,21 +114,29 @@ async def login_user(user_data: UsuarioLogin, db: Session = Depends(get_db)):
     return {"access_token": access_token, "token_type": "bearer", "role": role.nombre_rol}
 
 @router.post("/logout")
-async def logout_user(current_user: Usuarios = Depends(verify_token), db: Session = Depends(get_db)):
-    # Buscar el token activo del usuario
-    token = db.query(AuthToken).filter(
-        AuthToken.user_id == current_user.id,
+async def logout_user(
+    credentials: HTTPAuthorizationCredentials = Depends(security),
+    db: Session = Depends(get_db)
+):
+    token_str = credentials.credentials
+
+    # Buscar el token exacto
+    token_db = db.query(AuthToken).filter(
+        AuthToken.jwt_token == token_str,
         AuthToken.revocado == False
     ).first()
-
-    if not token:
+    
+    if not token_db:
         raise HTTPException(status_code=400, detail="No hay sesión activa")
 
-    # Revocar token
-    token.revocado = True
+    # Marcar token como revocado
+    token_db.revocado = True
 
     # Marcar usuario como inactivo
-    current_user.status = "Inactivo"
+    user = db.query(Usuarios).filter(Usuarios.id == token_db.user_id).first()
+    if user:
+        user.status = "Inactivo"
+
     db.commit()
 
     return {"message": "Sesión cerrada correctamente"}
@@ -147,7 +157,7 @@ async def activate_account(token: str, db: Session = Depends(get_db)):
 async def verify_user_token(current=Depends(verify_token)):
     return {
         "valid": True,
-        "user_id": current["user"].id,
-        "nombre": current["user"].nombre,
-        "rol": current["role"]
+        "user_id": current.id,
+        "nombre": current.nombre,
+        "rol": current.rol.nombre_rol if hasattr(current, "rol") else None
     }

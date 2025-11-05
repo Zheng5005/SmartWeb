@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -7,12 +8,13 @@
 
   <!-- Bootstrap -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
-  
+
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  
+
   <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet" />
 
   <style>
     :root {
@@ -348,9 +350,17 @@
     }
 
     @keyframes pulse {
-      0% { opacity: 1; }
-      50% { opacity: 0.5; }
-      100% { opacity: 1; }
+      0% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.5;
+      }
+
+      100% {
+        opacity: 1;
+      }
     }
 
     /* Footer */
@@ -410,13 +420,13 @@
         flex-direction: column;
         gap: 10px;
       }
-      
+
       .session-card {
         flex-direction: column;
         align-items: flex-start;
         gap: 15px;
       }
-      
+
       .footer-content {
         flex-direction: column;
         gap: 20px;
@@ -435,7 +445,7 @@
         <!-- Logo desde tu archivo local -->
         <img src="logo.png" alt="SMARTWEB Logo" class="logo-img">
         SMARTWEB
-        </a>
+      </a>
 
       <button class="navbar-toggler bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
         <span class="navbar-toggler-icon"></span>
@@ -445,7 +455,11 @@
         <ul class="navbar-nav ms-auto align-items-center gap-2">
           <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-home me-1"></i> Inicio</a></li>
           <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-book me-1"></i> Mis Cursos</a></li>
-<li class="nav-item"><a class="nav-link" href="#" style="background-color: #3a7bb6 !important; color: white !important;"><i class="fas fa-sign-out-alt me-1"></i> Cerrar sesión</a></li>        </ul>
+          <li class="nav-item">
+            <a class="nav-link btn-logout" onclick="logout()">
+              <i class="fas fa-sign-out-alt me-1"></i> Cerrar sesión
+            </a>
+          </li>
       </div>
     </div>
   </nav>
@@ -455,7 +469,7 @@
     <div class="student-hero">
       <h1>¡Hola, Estudiante! 👋</h1>
       <p>Accede a tus sesiones de videollamada programadas y únete a clases en vivo.</p>
-      
+
       <div class="stats-container">
         <div class="stat-item">
           <div class="stat-number">5</div>
@@ -465,7 +479,7 @@
           <div class="stat-number">3</div>
           <div class="stat-label">Sesiones Hoy</div>
         </div>
-     
+
       </div>
     </div>
   </div>
@@ -493,11 +507,12 @@
             <span class="badge bg-success">Sesión activa - Únete ahora</span>
           </div>
         </div>
-        <button class="btn-session" style="background-color: #6a0dad !important; color: white !important;"><i class="fas fa-video me-2"></i> Unirse a Clase</button>
+        <button class="btn-session" style="background-color: #6a0dad !important; color: white !important;"><i
+            class="fas fa-video me-2"></i> Unirse a Clase</button>
       </div>
     </section>
 
-    
+
 
     <!-- Mis Cursos (Solo para acceder a videollamadas) -->
     <section class="mb-5">
@@ -551,7 +566,7 @@
     </section>
 
 
-   
+
   </main>
 
   <!-- Footer -->
@@ -563,7 +578,7 @@
           <img src="logo.png" alt="SMARTWEB Logo" class="footer-logo-img">
           SMARTWEB
         </div>
-         <div class="footer-links">
+        <div class="footer-links">
           <a href="../VistasSecundarias/Politicas.html">Políticas de Privacidad</a>
           <a href="../VistasSecundarias/Terminos.html">Términos de Servicio</a>
           <a href="../AboutUs/AboutUs.html">Contacto</a>
@@ -577,6 +592,13 @@
 
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
+  <script src="./HomeStudent.js"></script>
+  <script src="../auth.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", async () => {
+      await verifyAuth(["Estudiante"]);
+    });
+  </script>
 </body>
+
 </html>

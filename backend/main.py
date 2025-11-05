@@ -3,7 +3,8 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from config import SessionLocal, Base, engine
 from routes import auth, ejemplo, getstreamFile, profesores
-from model.models import Roles
+from model.models import Roles, Usuarios
+from services.cifrar import hash_password
 
 app = FastAPI()
 
@@ -53,6 +54,33 @@ def seed_roles():
     db.commit()
     db.close()
 
+def seed_admin():
+    db = SessionLocal()
+    password = "admin123"  # O usa os.getenv("ADMIN_PASSWORD")
+    
+    existing_admin = db.query(Usuarios).filter(Usuarios.email == "admin@admin.com").first()
+    if existing_admin:
+        db.close()
+        return  # Ya existe, no se crea de nuevo
+    
+    admin_role = db.query(Roles).filter(Roles.nombre_rol == "Administrador").first()
+    if not admin_role:
+        raise Exception("El rol 'Administrador' no existe. Ejecuta seed_roles primero.")
+    
+    nuevo_admin = Usuarios(
+        nombre="Admin",
+        apellido="Principal",
+        email="admin@admin.com",
+        password_hash=hash_password(password),
+        role=admin_role.id,
+        confirmado=True,
+        status="Activo"
+    )
+    
+    db.add(nuevo_admin)
+    db.commit()
+    db.close()
+
 # Ejemplo basico de ruta
 @app.get("/")
 def read_root():
@@ -65,3 +93,4 @@ app.include_router(getstreamFile.router)
 app.include_router(profesores.router)
 
 seed_roles()
+seed_admin()
