@@ -1,70 +1,76 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const userTypeRadios = document.querySelectorAll('input[name="userType"]');
-    const teacherFields = document.getElementById('teacherFields');
-    const registerForm = document.getElementById('registerForm');
-    const registerButton = document.getElementById('registerButton');
+document.addEventListener("DOMContentLoaded", () => {
+  const registerForm = document.getElementById("registerForm");
+  const registerButton = document.getElementById("registerButton");
 
-    const motivationInput = document.getElementById('motivation');
-    const countryInput = document.getElementById('country');
-    const cityInput = document.getElementById('city');
+  registerButton.addEventListener("click", async (event) => {
+    event.preventDefault();
 
-    function toggleTeacherFields() {
-        const isTeacher = document.getElementById('typeTeacher').checked;
+    // Capturar los datos del formulario
+    const nombre = document.getElementById("nombre").value.trim();
+    const apellido = document.getElementById("apellido").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value.trim();
+    const userType = document.querySelector('input[name="userType"]:checked').value;
 
-        if (isTeacher) {
-            teacherFields.classList.remove('hidden');
-            motivationInput.setAttribute('required', 'required');
-            countryInput.setAttribute('required', 'required');
-            cityInput.setAttribute('required', 'required');
-        } else {
-            teacherFields.classList.add('hidden');
-            motivationInput.removeAttribute('required');
-            countryInput.removeAttribute('required');
-            cityInput.removeAttribute('required');
-        }
+    // Validación simple
+    if (!nombre || !apellido || !email || !password) {
+      alert("Por favor, complete todos los campos obligatorios.");
+      return;
     }
 
-    setTimeout(toggleTeacherFields, 50);
+    // Determinar el rol
+    const role = userType === "teacher" ? "Profesor" : "Estudiante";
 
-    userTypeRadios.forEach(radio => {
-        radio.addEventListener('change', toggleTeacherFields);
-    });
+    // Si es profesor, capturar motivación
+    let motivation = "";
+    if (userType === "teacher") {
+      motivation = document.getElementById("motivation").value.trim();
+      if (!motivation) {
+        alert("Por favor, explique su motivación para ser profesor.");
+        return;
+      }
+    }
 
-    registerForm.addEventListener("submit", (e) => {
-        e.preventDefault();
-        
-        registerButton.disabled = true;
-        registerButton.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Registrando...';
-        
-        const userData = {
-            name: document.getElementById('nombre').value,
-            lastName: document.getElementById('apellido').value,
-            email: document.getElementById('email').value,
-            userType: document.querySelector('input[name="userType"]:checked').value,
-        };
+    // Construir el cuerpo de la solicitud
+    const data = {
+      nombre: nombre,
+      apellido: apellido,
+      email: email,
+      password: password,
+      role: role,
+      motivacion: motivation || null
+    };
 
-        let teacherData = {};
-        if (userData.userType === 'teacher') {
-            teacherData = {
-                country: countryInput.value,
-                city: cityInput.value,
-                motivation: motivationInput.value
-            };
-            console.log("--- Información para Email del Administrador ---");
-            console.log(teacherData);
-        }
+    try {
+      const response = await fetch("http://127.0.0.1:8000/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+      });
 
-        console.log("--- Datos principales para Base de Datos ---");
-        console.log(userData);
+      // Leer respuesta del backend
+      const result = await response.json();
 
-        setTimeout(() => {
-            alert(`Registro exitoso como ${userData.userType === 'student' ? 'Estudiante' : 'Profesor'}! (Simulación)`);
-            
-            registerButton.disabled = false;
-            registerButton.innerHTML = '<i class="fas fa-user-plus me-2"></i> Registrarse';
-            
-            registerForm.reset();
-            toggleTeacherFields();
-        }, 2000);
-    });
+      if (!response.ok) {
+        alert(`Error: ${result.detail || "No se pudo registrar"}`);
+        return;
+      }
+
+      // Mostrar mensaje según tipo de usuario
+      if (role === "Estudiante") {
+        alert("Registro exitoso. Revisa tu correo para activar tu cuenta.");
+      } else if (role === "Profesor") {
+        alert("Registro exitoso. Tu solicitud será revisada por un administrador.");
+      }
+
+      // Redirigir al login
+      window.location.href = "../login/login.html";
+
+    } catch (error) {
+      console.error("Error en el registro:", error);
+      alert("Ocurrió un error al conectar con el servidor.");
+    }
+  });
 });
