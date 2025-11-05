@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (userType === "teacher") {
       motivation = document.getElementById("motivation").value.trim();
       if (!motivation) {
-       alert("Por favor, explique su motivación para ser profesor.");
+        alert("Por favor, explique su motivación para ser profesor.");
         return;
       }
     }
@@ -74,4 +74,3 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
-
