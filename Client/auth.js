@@ -19,7 +19,7 @@ function checkAccess(allowedRoles = []) {
 
   const user = decodeJWT(token);
 
-  if (!user || !user.role) {
+  if (!user || !user.rol) {
     alert("Token inválido");
     localStorage.removeItem("token");
     window.location.href = "../login/login.html";
@@ -33,7 +33,7 @@ function checkAccess(allowedRoles = []) {
     return false;
   }
 
-  if (!allowedRoles.includes(user.role)) {
+  if (!allowedRoles.includes(user.rol)) {
     alert("No tienes permiso para acceder aquí");
     window.history.back();
     return false;
