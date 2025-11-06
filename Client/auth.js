@@ -110,7 +110,7 @@ async function logout() {
 
 // 🌐 Redirecciones útiles
 function redirectToLogin() {
-  window.location.href = "../login/login.html";
+  window.location.href = "./login/login.html";
 }
 
 function redirectByRole(role) {
