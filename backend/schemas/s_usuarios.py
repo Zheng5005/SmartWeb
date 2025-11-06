@@ -7,6 +7,8 @@ class UsuarioCreate(BaseModel):
     email: EmailStr
     password: str
     role: str  # e.g., "Estudiante", "Profesor"
+    profesor_institucion: str  # e.g., "Estudiante", "Profesor"
+    profesor_cedula: str  # e.g., "Estudiante", "Profesor"
 
 class UsuarioLogin(BaseModel):
     email: EmailStr

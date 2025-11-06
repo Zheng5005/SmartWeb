@@ -90,6 +90,7 @@ document.addEventListener("DOMContentLoaded", async function () {
           </button>
         </td>`;
       tablaBody.appendChild(row);
+      console.log(p)
     });
 
     // Vincular eventos a los botones
@@ -123,12 +124,13 @@ document.addEventListener("DOMContentLoaded", async function () {
     document.querySelectorAll(".btn-aceptar").forEach(btn => {
       btn.addEventListener("click", async function () {
         const instructorId = this.getAttribute("data-id");
+        console.log(instructorId)
         const instructorName = this.closest("tr").querySelector(".instructor-name").textContent;
 
         if (confirm(`¿Aceptar a ${instructorName} como profesor?`)) {
           try {
-            const res = await fetch(`http://127.0.0.1:8000/approve-profesor/${instructorId}`, {
-              method: "POST",
+            const res = await fetch(`http://127.0.0.1:8000/administrador/approve-profesor/${instructorId}`, {
+              method: "PUT",
               headers: {
                 "Authorization": `Bearer ${token}`,
                 "Content-Type": "application/json",
@@ -155,8 +157,8 @@ document.addEventListener("DOMContentLoaded", async function () {
 
         if (confirm(`¿Rechazar la solicitud de ${instructorName}?`)) {
           try {
-            const res = await fetch(`http://127.0.0.1:8000/deny-profesor/${instructorId}`, {
-              method: "POST",
+            const res = await fetch(`http://127.0.0.1:8000/administrador/deny-profesor/${instructorId}`, {
+              method: "PUT",
               headers: {
                 "Authorization": `Bearer ${token}`,
                 "Content-Type": "application/json",

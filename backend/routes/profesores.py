@@ -22,7 +22,7 @@ async def get_active_courses(professor_id: int, db: Session = Depends(get_db)):
 # Crear curso
 @router.post("/create/course")
 async def create_course(course: CursoCreate, current_user: Usuarios = Depends(verify_token), db: Session = Depends(get_db)):
-    if current_user.role != "Profesor":
+    if current_user.role_name != "Profesor":
         raise HTTPException(status_code=403, detail="No tienes los permisos requeridos")
 
     existing_course = db.query(Cursos).filter(
@@ -34,7 +34,7 @@ async def create_course(course: CursoCreate, current_user: Usuarios = Depends(ve
     new_course = Cursos(
         titulo=course.titulo,
         descripcion=course.descripcion,
-        professor_id=current_user.id,
+        profesor_id=current_user.id,
     )
     db.add(new_course)
     db.commit()
