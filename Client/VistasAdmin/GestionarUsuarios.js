@@ -115,8 +115,47 @@ document.addEventListener('DOMContentLoaded', async function() {
                   data-bs-target="#resetPasswordModal">
             <i class="fas fa-key"></i> Resetear
           </button>
+          <button class="btn btn-danger btn-sm"
+                  data-user-id="${u.id}"
+                  data-user-name="${u.nombre}">
+            <i class="fas fa-trash-alt"></i> Eliminar
+          </button>
         </td>`;
       tablaBody.appendChild(row);
+    });
+
+    initEventListeners()
+  }
+
+
+  function initEventListeners() {
+    // Rechazar solicitud
+    document.querySelectorAll(".btn-danger").forEach(btn => {
+      btn.addEventListener("click", async function () {
+        const userId = this.getAttribute("data-user-id");
+        const userName = this.getAttribute("data-user-name");
+        console.log(userName, userId)
+
+        if (confirm(`¿Eleminar al usuario: ${userName}?`)) {
+          try {
+            const res = await fetch(`http://127.0.0.1:8000/administrador/users/${userId}`, {
+              method: "DELETE",
+              headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json",
+              },
+            });
+
+            if (!res.ok) throw new Error("Error al borrar el usuario");
+
+            alert(`❎ Usuario: ${userName} eliminado.`);
+            this.closest("tr").remove();
+          } catch (err) {
+            alert("❌ Error al borrar el usuario");
+            console.error(err);
+          }
+        }
+      });
     });
   }
 
