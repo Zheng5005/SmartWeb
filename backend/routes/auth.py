@@ -42,7 +42,9 @@ async def register_user(user: UsuarioCreate, db: Session = Depends(get_db)):
         role=default_role.id,
         token_activacion=activation_token,
         confirmado=False,
-        status="Inactivo"
+        status="Inactivo",
+        profesor_institucion=user.profesor_institucion,
+        cedula=user.cedula
     )
 
     if default_role.nombre_rol == "Estudiante":
