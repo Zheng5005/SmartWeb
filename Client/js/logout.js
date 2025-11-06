@@ -55,5 +55,5 @@ function clearLocalSession() {
     localStorage.removeItem('userRole'); // (Opcional) Eliminar el rol
     
     // Redirigir a la página de login
-    window.location.href = '/Client/login/login.html'; // Ajusta esta ruta si es necesario
+    window.location.href = '../login/login.html'; // Ajusta esta ruta si es necesario
 }
