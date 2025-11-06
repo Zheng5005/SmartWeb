@@ -1,39 +1,50 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Panel de Administración - SMARTWEB</title>
-<!-- <script src="../auth.js"></script> -->
+    <!-- <script src="../auth.js"></script> -->
     <script>
-      checkAccess(["Administrador"])
+      checkAccess(["Administrador"]);
     </script>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
-    
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-    
-    <link rel="stylesheet" href="HomeAdmin.css">
-</head>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
 
-<body>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
 
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="HomeAdmin.css" />
+  </head>
+
+  <body>
     <div id="navbar-placeholder"></div>
 
     <div class="container">
       <div class="admin-hero">
         <h1>Panel de Administración</h1>
-        <p>Gestiona usuarios, instructores, cursos y configuración del sistema</p>
+        <p>
+          Gestiona usuarios, instructores, cursos y configuración del sistema
+        </p>
       </div>
     </div>
 
     <main class="container">
-
       <section class="mb-5">
         <div class="section-header">
-          <h2 class="section-title"><i class="fas fa-bolt"></i> Acciones Rápidas</h2>
+          <h2 class="section-title">
+            <i class="fas fa-bolt"></i> Acciones Rápidas
+          </h2>
         </div>
 
         <div class="row g-4">
@@ -45,7 +56,12 @@
               <h5>Gestionar Usuarios</h5>
               <p class="text-muted">Administrar estudiantes y permisos</p>
               <a href="../VistasAdmin/GestionarCursos.html">
-                <button class="btn-admin" href="../VistasAdmin/GestionarUsuarios.html">Acceder</button>
+                <button
+                  class="btn-admin"
+                  href="../VistasAdmin/GestionarUsuarios.html"
+                >
+                  Acceder
+                </button>
               </a>
             </div>
           </div>
@@ -58,7 +74,12 @@
               <h5>Verificar Instructores</h5>
               <p class="text-muted">Revisar solicitudes de instructores</p>
               <a href="../VistasAdmin/GestionarCursos.html">
-                <button class="btn-admin" href="../VistasAdmin/VerificarInstructores.html">Acceder</button>
+                <button
+                  class="btn-admin"
+                  href="../VistasAdmin/VerificarInstructores.html"
+                >
+                  Acceder
+                </button>
               </a>
             </div>
           </div>
@@ -71,18 +92,28 @@
               <h5>Gestionar Cursos</h5>
               <p class="text-muted">Aprobar y moderar cursos</p>
               <a href="../VistasAdmin/GestionarCursos.html">
-                <button class="btn-admin" href="../VistasAdmin/GestionarCursos.html">Acceder</button>
+                <button
+                  class="btn-admin"
+                  href="../VistasAdmin/GestionarCursos.html"
+                >
+                  Acceder
+                </button>
               </a>
             </div>
           </div>
-
         </div>
       </section>
 
       <section class="mb-5">
         <div class="section-header">
-          <h2 class="section-title"><i class="fas fa-clock"></i> Solicitudes Pendientes</h2>
-          <a href="../VistasAdmin/VerificarInstructores.html" class="text-primary">Ver todas</a>
+          <h2 class="section-title">
+            <i class="fas fa-clock"></i> Solicitudes Pendientes
+          </h2>
+          <a
+            href="../VistasAdmin/VerificarInstructores.html"
+            class="text-primary"
+            >Ver todas</a
+          >
         </div>
 
         <div class="admin-table">
@@ -100,8 +131,13 @@
               <tr>
                 <td>
                   <div class="d-flex align-items-center">
-                    <img src="https://ui-avatars.com/api/?name=Carlos+Ruiz&background=0e2a47&color=fff" 
-                          class="rounded-circle me-3" width="40" height="40" alt="">
+                    <img
+                      src="https://ui-avatars.com/api/?name=Carlos+Ruiz&background=0e2a47&color=fff"
+                      class="rounded-circle me-3"
+                      width="40"
+                      height="40"
+                      alt=""
+                    />
                     <div>
                       <strong>Carlos Ruiz</strong>
                       <div class="text-muted small">carlos.ruiz@email.com</div>
@@ -110,17 +146,28 @@
                 </td>
                 <td>Matemáticas Avanzadas</td>
                 <td>15 Mar 2024</td>
-                <td><span class="badge badge-pending text-white">Pendiente</span></td>
                 <td>
-                  <button class="btn btn-success btn-sm me-1"><i class="fas fa-check"></i></button>
-                  <button class="btn btn-danger btn-sm"><i class="fas fa-times"></i></button>
+                  <span class="badge badge-pending text-white">Pendiente</span>
+                </td>
+                <td>
+                  <button class="btn btn-success btn-sm me-1">
+                    <i class="fas fa-check"></i>
+                  </button>
+                  <button class="btn btn-danger btn-sm">
+                    <i class="fas fa-times"></i>
+                  </button>
                 </td>
               </tr>
               <tr>
                 <td>
                   <div class="d-flex align-items-center">
-                    <img src="https://ui-avatars.com/api/?name=Ana+Morales&background=0e2a47&color=fff" 
-                          class="rounded-circle me-3" width="40" height="40" alt="">
+                    <img
+                      src="https://ui-avatars.com/api/?name=Ana+Morales&background=0e2a47&color=fff"
+                      class="rounded-circle me-3"
+                      width="40"
+                      height="40"
+                      alt=""
+                    />
                     <div>
                       <strong>Ana Morales</strong>
                       <div class="text-muted small">ana.morales@email.com</div>
@@ -129,10 +176,16 @@
                 </td>
                 <td>Diseño Gráfico</td>
                 <td>14 Mar 2024</td>
-                <td><span class="badge badge-pending text-white">Pendiente</span></td>
                 <td>
-                  <button class="btn btn-success btn-sm me-1"><i class="fas fa-check"></i></button>
-                  <button class="btn btn-danger btn-sm"><i class="fas fa-times"></i></button>
+                  <span class="badge badge-pending text-white">Pendiente</span>
+                </td>
+                <td>
+                  <button class="btn btn-success btn-sm me-1">
+                    <i class="fas fa-check"></i>
+                  </button>
+                  <button class="btn btn-danger btn-sm">
+                    <i class="fas fa-times"></i>
+                  </button>
                 </td>
               </tr>
             </tbody>
@@ -142,8 +195,12 @@
 
       <section class="mb-5">
         <div class="section-header">
-          <h2 class="section-title"><i class="fas fa-book-open"></i> Cursos Recientes</h2>
-          <a href="../VistasAdmin/GestionarCursos.html" class="text-primary">Ver todos</a>
+          <h2 class="section-title">
+            <i class="fas fa-book-open"></i> Cursos Recientes
+          </h2>
+          <a href="../VistasAdmin/GestionarCursos.html" class="text-primary"
+            >Ver todos</a
+          >
         </div>
 
         <div class="admin-table">
@@ -161,12 +218,16 @@
               <tr>
                 <td>
                   <strong>Programación Web Avanzada</strong>
-                  <div class="text-muted small">HTML, CSS, JavaScript, React</div>
+                  <div class="text-muted small">
+                    HTML, CSS, JavaScript, React
+                  </div>
                 </td>
                 <td>María González</td>
                 <td>142</td>
                 <td>14 Mar 2024</td>
-                <td><span class="badge badge-approved text-white">Activo</span></td>
+                <td>
+                  <span class="badge badge-approved text-white">Activo</span>
+                </td>
               </tr>
               <tr>
                 <td>
@@ -176,24 +237,24 @@
                 <td>Robert Johnson</td>
                 <td>89</td>
                 <td>13 Mar 2024</td>
-                <td><span class="badge badge-approved text-white">Activo</span></td>
+                <td>
+                  <span class="badge badge-approved text-white">Activo</span>
+                </td>
               </tr>
             </tbody>
           </table>
         </div>
       </section>
-
-
     </main>
 
     <div id="footer-placeholder"></div>
 
- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
     <script src="../js/html_includes.js"></script>
-    <script src="../js/logout.js"></script> 
-    
-    <script src="HomeAdmin.js"></script> 
+    <script src="../js/logout.js"></script>
 
-</body>
+    <script src="HomeAdmin.js"></script>
+    <script src="../auth.js"></script>
+  </body>
 </html>
