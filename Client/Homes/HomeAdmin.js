@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(p.nombre)}&background=0e2a47&color=fff"
                  class="rounded-circle me-3" width="40" height="40" alt="${p.nombre}">
             <div>
-              <strong>${p.nombre}</strong>
+              <strong class="instructor-name">${p.nombre}</strong>
               <div class="text-muted small">${p.email}</div>
             </div>
           </div>
@@ -85,10 +85,10 @@ document.addEventListener('DOMContentLoaded', async function() {
           <span class="badge ${p.status === "Activo" ? "bg-success" : "bg-warning"} text-white">${p.status}</span>
         </td>
         <td>
-          <button class="btn btn-success btn-sm me-1" data-id="${p.id}">
+          <button class="btn btn-success btn-sm me-1 btn-aceptar" data-id="${p.id}">
             <i class="fas fa-check"></i>
           </button>
-          <button class="btn btn-danger btn-sm" data-id="${p.id}">
+          <button class="btn btn-danger btn-sm btn-rechazar" data-id="${p.id}">
             <i class="fas fa-times"></i>
           </button>
         </td>
@@ -122,6 +122,69 @@ document.addEventListener('DOMContentLoaded', async function() {
         </td>
       `;
       tablaCursos.appendChild(row);
+    });
+
+    initEventListeners()
+  }
+
+
+  function initEventListeners() {
+
+    // Aceptar solicitud
+    document.querySelectorAll(".btn-aceptar").forEach(btn => {
+      btn.addEventListener("click", async function () {
+        const instructorId = this.getAttribute("data-id");
+        console.log(instructorId)
+        const instructorName = this.closest("tr").querySelector(".instructor-name").textContent;
+
+        if (confirm(`¿Aceptar a ${instructorName} como profesor?`)) {
+          try {
+            const res = await fetch(`http://127.0.0.1:8000/administrador/approve-profesor/${instructorId}`, {
+              method: "PUT",
+              headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json",
+              },
+            });
+
+            if (!res.ok) throw new Error("Error al aprobar instructor");
+
+            alert(`✅ Instructor ${instructorName} aprobado correctamente.`);
+            this.closest("tr").remove();
+          } catch (err) {
+            alert("❌ Error al aprobar instructor.");
+            console.error(err);
+          }
+        }
+      });
+    });
+
+    // Rechazar solicitud
+    document.querySelectorAll(".btn-rechazar").forEach(btn => {
+      btn.addEventListener("click", async function () {
+        const instructorId = this.getAttribute("data-id");
+        const instructorName = this.closest("tr").querySelector(".instructor-name").textContent;
+
+        if (confirm(`¿Rechazar la solicitud de ${instructorName}?`)) {
+          try {
+            const res = await fetch(`http://127.0.0.1:8000/administrador/deny-profesor/${instructorId}`, {
+              method: "PUT",
+              headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json",
+              },
+            });
+
+            if (!res.ok) throw new Error("Error al rechazar instructor");
+
+            alert(`❎ Solicitud de ${instructorName} rechazada.`);
+            this.closest("tr").remove();
+          } catch (err) {
+            alert("❌ Error al rechazar instructor.");
+            console.error(err);
+          }
+        }
+      });
     });
   }
 });
