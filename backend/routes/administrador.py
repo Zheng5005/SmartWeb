@@ -5,7 +5,7 @@ from model.models import Usuarios, Roles
 from services.jwt import verify_token
 from services.email import send_email
 
-router = APIRouter()
+router = APIRouter(prefix="/administrador", tags=["Administrador"])
 
 def get_db():
     db = SessionLocal()
@@ -19,7 +19,7 @@ from services.jwt import verify_token
 
 @router.get("/users")
 async def get_users(current=Depends(verify_token), db: Session = Depends(get_db)):
-    if current["role"] != "Admin":
+    if current.role_name != "Administrador":
         raise HTTPException(status_code=403, detail="Acceso denegado")
 
     usuarios = db.query(Usuarios).join(Roles).filter(Roles.nombre_rol != "Admin").all()
@@ -33,6 +33,24 @@ async def get_users(current=Depends(verify_token), db: Session = Depends(get_db)
             "status": u.status.value
         }
         for u in usuarios
+    ]
+# Obtener los profesores no aceptados
+@router.get("/profesores")
+async def get_profesores(current=Depends(verify_token), db: Session = Depends(get_db)):
+    if current.role_name != "Administrador":
+        raise HTTPException(status_code=403, detail="Acceso denegado")
+
+    profesores = db.query(Usuarios).join(Roles).filter(Roles.nombre_rol == "Profesor").all()
+
+    return [
+        {
+            "id": p.id,
+            "nombre": f"{p.nombre} {p.apellido}",
+            "email": p.email,
+            "rol": p.rol.nombre_rol,
+            "status": p.status.value
+        }
+        for p in profesores
     ]
 
 # Aprobar profesores pendientes
@@ -65,6 +83,35 @@ async def approve_profesor(
     )
 
     return {"message": "Profesor aprobado y notificado"}
+
+# Denegar profesores pendientes
+@router.put("/deny-profesor/{user_id}")
+async def deny_profesor(
+    user_id: int,
+    current=Depends(verify_token),
+    db: Session = Depends(get_db)
+):
+    if current["role"] != "Admin":
+        raise HTTPException(status_code=403, detail="Solo los administradores pueden denegar profesores")
+
+    profesor = db.query(Usuarios).join(Roles).filter(
+        Usuarios.id == user_id, Roles.nombre_rol == "Profesor"
+    ).first()
+
+    if not profesor:
+        raise HTTPException(status_code=404, detail="Profesor no encontrado")
+
+    profesor.confirmado = False
+    profesor.status = "Inactivo"
+    profesor.token_activacion = None
+    db.commit()
+
+    # Enviar correo al profesor
+    send_email(
+        to=profesor.email,
+        subject="Cuenta denegada",
+        body=f"Hola {profesor.nombre}, tu cuenta de profesor ha sido denegada."
+)
 
 # Cambiar el rol de un usuario
 @router.put("/users/{user_id}/role")
