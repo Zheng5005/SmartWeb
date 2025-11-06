@@ -74,7 +74,7 @@ class Usuarios(Base):
     confirmado = Column(Boolean, default=False)
     token_activacion = Column(String, nullable=True)
     profesor_institucion = Column(String, nullable=True, default="")
-    cedula= Column(Integer, nullable=True, default=None)
+    profesor_cedula = Column(Integer, nullable=True, default=None)
 
     rol = relationship("Roles", back_populates="usuarios")
     cursos_dictados = relationship("Cursos", back_populates="profesor")
