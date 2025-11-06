@@ -22,7 +22,7 @@ async def get_users(current=Depends(verify_token), db: Session = Depends(get_db)
     if current.role_name != "Administrador":
         raise HTTPException(status_code=403, detail="Acceso denegado")
 
-    usuarios = db.query(Usuarios).join(Roles).filter(Roles.nombre_rol != "Admin").all()
+    usuarios = db.query(Usuarios).join(Roles).filter(Roles.nombre_rol != "Administrador").all()
 
     return [
         {
