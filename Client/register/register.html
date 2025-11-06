@@ -5,149 +5,97 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Registro | SMARTWEB</title>
     
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
-    
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #f4f6f9;
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .register-box {
-            background-color: #fff;
-            border: 1px solid rgba(0, 80, 255, 0.1);
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-        }
-        
-        .logo h1 {
-            font-size: 2rem;
-            background: linear-gradient(90deg, #007bff, #00bcd4);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-weight: 800;
-        }
-        
-        .image-section {
-            background-color: rgba(0, 123, 255, 0.05);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            padding: 2rem;
-        }
-        
-        .image-section img {
-            width: 250px;
-            height: auto;
-        }
-        
-        .image-section p {
-            margin-top: 1rem;
-            opacity: 0.7;
-            font-size: 0.95rem;
-        }
-        
-        .motivation-field {
-            display: none;
-        }
-        
-        @media (max-width: 991.98px) {
-            .image-section {
-                display: none;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="register.css" /> 
 </head>
 <body>
+    <div class="background-overlay"></div> 
+
     <div class="container">
-        <div class="register-box row g-0">
-            <!-- FORMULARIO -->
-            <div class="form-section col-lg-6 p-4 p-md-5">
-                <div class="logo mb-4">
+        <div class="login-box">
+            <div class="form-section">
+                <div class="logo">
                     <h1>SmartWeb</h1>
                 </div>
 
-                <form id="registerForm">
-                    <h2 class="mb-1">Crea tu cuenta</h2>
-                    <p class="text-muted mb-4">Selecciona tu tipo de usuario y regístrate</p>
-                    
-                    <div class="user-type-selection mb-4">
-                        <label class="form-label fw-bold">¿Cómo deseas registrarte?</label>
-                        <div class="d-flex gap-3">
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="userType" id="typeStudent" value="student" checked>
-                                <label class="form-check-label" for="typeStudent">Estudiante</label>
+                <div class="form-content-wrapper">
+                    <form id="registerForm">
+                        <h2>Crea tu cuenta</h2>
+                        <p class="subtitle">Selecciona tu tipo de usuario y regístrate</p>
+                        
+                        <div class="user-type-selection">
+                            <label class="fw-bold">¿Cómo deseas registrarte?</label>
+                            <div class="d-flex gap-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="userType" id="typeStudent" value="student" checked>
+                                    <label class="form-check-label" for="typeStudent">Estudiante</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="userType" id="typeTeacher" value="teacher">
+                                    <label class="form-check-label" for="typeTeacher">Profesor</label>
+                                </div>
                             </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="userType" id="typeTeacher" value="teacher">
-                                <label class="form-check-label" for="typeTeacher">Profesor</label>
+                        </div>
+
+                        <div class="name-fields">
+                            <div class="field-group">
+                                <label for="nombre">Nombre</label>
+                                <input type="text" id="nombre" placeholder="Juan" required>
+                            </div>
+                            <div class="field-group">
+                                <label for="apellido">Apellido</label>
+                                <input type="text" id="apellido" placeholder="Pérez" required>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="row mb-3">
-                        <div class="col-md-6 mb-3 mb-md-0">
-                            <label for="nombre" class="form-label">Nombre</label>
-                            <input type="text" class="form-control" id="nombre" placeholder="Juan" required>
+                        <label for="email">Email</label>
+                        <input type="email" id="email" placeholder="hello@ejemplo.com" required>
+
+                        <label for="password">Contraseña</label>
+                        <input type="password" id="password" placeholder="••••••••" required>
+
+                        <div class="motivation-field" id="motivationField">
+                            <label for="motivation">Motivación para ser profesor</label>
+                            <textarea id="motivation" rows="3" placeholder="Cuéntanos por qué quieres ser profesor..."></textarea>
                         </div>
-                        <div class="col-md-6">
-                            <label for="apellido" class="form-label">Apellido</label>
-                            <input type="text" class="form-control" id="apellido" placeholder="Pérez" required>
+
+                        <button type="submit" id="registerButton">Registrarse</button>
+
+                        <div class="register-link">
+                            <p>
+                                ¿Ya tienes una cuenta?
+                                <a href="../login/login.html">Ingresa</a>
+                            </p>
                         </div>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Email</label>
-                        <input type="email" class="form-control" id="email" placeholder="hello@ejemplo.com" required>
-                    </div>
-
-                    <div class="mb-4">
-                        <label for="password" class="form-label">Contraseña</label>
-                        <input type="password" class="form-control" id="password" placeholder="••••••••" required>
-                    </div>
-
-                    <!-- Campo de motivación (solo para profesores) -->
-                    <div class="mb-4 motivation-field" id="motivationField">
-                        <label for="motivation" class="form-label">Motivación para ser profesor</label>
-                        <textarea class="form-control" id="motivation" rows="3" placeholder="Cuéntanos por qué quieres ser profesor..."></textarea>
-                    </div>
-
-                    <button type="submit" class="btn btn-outline-primary w-100 py-2" id="registerButton">Registrarse</button>
-
-                    <div class="login-link mt-3 text-center">
-                        <p class="mb-0">
-                            ¿Ya tienes una cuenta?
-                            <a href="../login/login.html" class="text-decoration-none">Ingresa</a>
-                        </p>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
 
-            <!-- IMAGEN -->
-            <div class="image-section col-lg-6">
-                <img src="../logo.png" alt="SmartWeb" />
+            <div class="image-section">
+                <img src="../logo.png" alt="SmartWeb Logo" />
                 <p>Aprende a través de videollamadas</p>
             </div>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <footer>
+        <div class="footer-inner">
+            <div class="footer-links">
+                <a href="../VistasSecundarias/Politicas.html">Políticas de Privacidad</a>
+                <a href="../VistasSecundarias/Terminos.html">Términos de Servicio</a>
+                <a href="../AboutUs/AboutUs.html">Contacto</a>
+            </div>
+            <div class="copyright">
+                © 2025 SMARTWEB — Plataforma Educativa Internacional. Todos los derechos reservados.
+            </div>
+        </div>
+    </footer>
+
     <script src="register.js"></script>
     <script>
-        // Función para mostrar/ocultar el campo de motivación
         document.addEventListener('DOMContentLoaded', function() {
             const studentRadio = document.getElementById('typeStudent');
             const teacherRadio = document.getElementById('typeTeacher');
@@ -156,19 +104,16 @@
 
             function toggleMotivationField() {
                 if (teacherRadio.checked) {
-                    motivationField.style.display = 'block';
+                    motivationField.classList.add('active');
                     motivationInput.required = true;
                 } else {
-                    motivationField.style.display = 'none';
+                    motivationField.classList.remove('active');
                     motivationInput.required = false;
                 }
             }
 
-            // Event listeners para los radio buttons
             studentRadio.addEventListener('change', toggleMotivationField);
             teacherRadio.addEventListener('change', toggleMotivationField);
-
-            // Inicializar el estado al cargar la página
             toggleMotivationField();
         });
     </script>

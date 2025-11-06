@@ -1,162 +1,289 @@
-/* Estilos generales */
+/* --- Variables Globales (Paleta SMARTWEB) --- */
+:root {
+    --primary-dark: #0e2a47; /* Azul muy oscuro (Textos, Botones) */
+    --primary-medium: #265c8b;
+    --primary-light: #3a7bb6; /* Azul brillante */
+    --light-bg: #f4f7fb; /* Fondo gris claro */
+    --accent-color: #ff7e5f;
+    --pastel-blue: #e8f0fe; /* Color pastel para la barra lateral */
+
+    /* Colores para el degradado del icono SVG (para replicar el mockup) */
+    --gradient-start: #8e2de2; 
+    --gradient-end: #4a00e0;   
+}
+
+/* --- Estilos Generales --- */
 * {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  font-family: "Segoe UI", sans-serif;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif; 
 }
 
 body {
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #f4f6f9;
+    min-height: 100vh; /* Ocupa el 100% de la altura de la ventana */
+    display: flex;
+    flex-direction: column; /* Coloca los hijos (container, footer) en columna */
+    align-items: center; 
+    background-color: var(--light-bg); 
+    overflow-x: hidden; /* Previene scroll horizontal */
+    padding: 0; 
+}
+
+/* Fondo difuminado con imagen de stock */
+.background-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* URL de la imagen proporcionada */
+    background-image: url('https://conecta.tec.mx/sites/default/files/styles/header_full/public/2020-03/clases-enlinea2.webp?itok=4qDqdNPF'); 
+    background-size: cover;
+    background-position: center;
+    filter: blur(5px); 
+    opacity: 0.5; 
+    z-index: -1; 
 }
 
 .container {
-  width: 100%;
-  max-width: 1100px;
-  padding: 1rem;
+    width: 100%;
+    max-width: 1100px;
+    padding: 1rem;
+    flex-grow: 1; /* Permite que el container se estire y ocupe todo el espacio libre */
+    display: flex;
+    align-items: center; 
+    justify-content: center;
+    position: relative; 
+    z-index: 1; 
+    /* Margen reducido para asegurar espacio al footer */
+    margin-top: 30px; 
+    margin-bottom: 30px; 
 }
 
 .login-box {
-  display: flex;
-  flex-direction: column;
-  background-color: #fff;
-  border: 1px solid rgba(0, 80, 255, 0.1);
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    background-color: #fff; 
+    border: 1px solid rgba(14, 42, 71, 0.1); 
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2); 
+    width: 100%;
 }
 
 @media (min-width: 900px) {
-  .login-box {
-    flex-direction: row;
-  }
+    .login-box {
+        flex-direction: row;
+        /* Altura mínima reducida para que quepa en el viewport */
+        min-height: 450px; 
+    }
 }
 
-/* FORMULARIO */
+/* --- Sección del Formulario --- */
 .form-section {
-  width: 100%;
-  padding: 2rem;
+    width: 100%;
+    /* Padding reducido para disminuir la altura total */
+    padding: 2rem; 
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
 }
 
 .logo h1 {
-  font-size: 2rem;
-  font-family: monospace;
-  background: linear-gradient(90deg, #007bff, #00bcd4);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  font-weight: 800;
-  margin-bottom: 1.5rem;
-}
-
-form {
-  display: flex;
-  flex-direction: column;
+    font-size: 2rem;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(90deg, var(--primary-dark), var(--primary-light)); 
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 800;
+    margin-bottom: 1.5rem;
 }
 
 form h2 {
-  font-size: 1.5rem;
-  margin-bottom: 0.3rem;
+    font-size: 1.8rem; 
+    color: var(--primary-dark);
+    margin-bottom: 0.3rem;
 }
 
 .subtitle {
-  font-size: 0.9rem;
-  opacity: 0.7;
-  margin-bottom: 1.2rem;
+    font-size: 0.95rem;
+    opacity: 0.8;
+    margin-bottom: 1.5rem;
 }
 
 /* Inputs */
 label {
-  font-weight: 500;
-  margin-bottom: 0.3rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    color: var(--primary-dark);
 }
 
 input {
-  padding: 0.7rem;
-  margin-bottom: 1rem;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  width: 100%;
-  font-size: 1rem;
-  transition: border 0.2s ease;
+    padding: 0.9rem;
+    margin-bottom: 1.2rem;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    width: 100%;
+    font-size: 1rem;
+    transition: border 0.2s ease, box-shadow 0.2s ease;
 }
 
 input:focus {
-  border-color: #007bff;
-  outline: none;
+    border-color: var(--primary-light);
+    box-shadow: 0 0 0 3px rgba(58, 123, 182, 0.2);
+    outline: none;
 }
 
-/* Botón */
+/* Botón de Entrar - Ancho completo */
 button {
-  background-color: white;
-  color: #007bff;
-  border: 1px solid #007bff;
-  padding: 0.7rem;
-  border-radius: 6px;
-  font-weight: 600;
-  font-size: 0.95rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
+    background-color: var(--primary-dark); 
+    color: white;
+    border: none;
+    padding: 1rem; 
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 100%; 
 }
 
 button:hover {
-  background-color: #007bff;
-  color: white;
+    background-color: var(--primary-medium);
+    transform: translateY(-1px);
 }
 
 button:disabled {
-  background-color: #e5e5e5;
-  color: gray;
-  border: none;
-  cursor: not-allowed;
+    background-color: #a0aec0;
+    color: #fff;
+    cursor: not-allowed;
+    transform: none;
 }
 
-/* Enlace de registro */
+/* Enlace de registro - Centrado */
 .register-link {
-  text-align: center;
-  margin-top: 1rem;
-  font-size: 0.9rem;
+    text-align: center; /* Centra el texto */
+    margin-top: 1.5rem;
+    font-size: 0.95rem;
+}
+
+.register-link p {
+    margin: 0; 
 }
 
 .register-link a {
-  color: #007bff;
-  text-decoration: none;
-  font-weight: bold;
+    color: var(--primary-light); 
+    text-decoration: none;
+    font-weight: bold;
 }
 
 .register-link a:hover {
-  text-decoration: underline;
+    text-decoration: underline;
 }
 
-/* IMAGEN */
+/* --- Sección de la Imagen (Barra Pastel) --- */
 .image-section {
-  display: none;
-  background-color: rgba(0, 123, 255, 0.05);
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  width: 50%;
-  padding: 2rem;
-  text-align: center;
+    display: none;
+    background-color: var(--pastel-blue); 
+    color: var(--primary-dark); 
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    width: 50%;
+    padding: 2rem;
+    text-align: center;
+    position: relative;
 }
 
+/* Estilo para tu logo original (.image-section img) */
 .image-section img {
-  width: 250px;
-  height: auto;
+    width: 250px; 
+    height: auto;
+    filter: none;
+    margin-bottom: 10px; 
 }
+
+/* Estilos de Icono SVG (para el diseño del mockup, si se usa) */
+.icon-wrapper {
+    width: 180px; 
+    height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.education-icon {
+    width: 100%;
+    height: 100%;
+}
+
 
 .image-section p {
-  margin-top: 1rem;
-  opacity: 0.7;
-  font-size: 0.95rem;
+    margin-top: 1.5rem;
+    font-size: 1.1rem;
+    font-weight: 600; 
+    color: var(--primary-medium);
 }
 
 @media (min-width: 900px) {
-  .image-section {
-    display: flex;
-  }
+    .image-section {
+        display: flex;
+    }
 }
 
+/* --- FOOTER --- */
+footer {
+    width: 100%;
+    background: var(--primary-dark); 
+    color: rgba(255, 255, 255, 0.7);
+    padding: 20px 0;
+    font-size: 0.9rem;
+    flex-shrink: 0; 
+    margin-top: auto; /* CLAVE: Pega el footer al fondo de la pantalla */
+}
+
+.footer-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap; 
+}
+
+.footer-links {
+    display: flex;
+    gap: 20px;
+}
+
+.footer-links a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.footer-links a:hover {
+    color: white;
+}
+
+.copyright {
+    max-width: 400px; /* Fuerza el salto de línea en pantallas grandes */
+    text-align: right;
+    margin-left: 20px; 
+}
+
+@media (max-width: 768px) {
+    .footer-inner {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+    }
+    .copyright {
+        text-align: center;
+        margin-top: 5px;
+    }
+}
