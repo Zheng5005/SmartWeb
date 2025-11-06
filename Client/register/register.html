@@ -62,6 +62,16 @@
                             <textarea id="motivation" rows="3" placeholder="Cuéntanos por qué quieres ser profesor..."></textarea>
                         </div>
 
+                        <div class="motivation-field" id="collegeField">
+                            <label for="college">Instituto</label>
+                            <input type="text" id="college" placeholder="UNICAES" required>
+                        </div>
+
+                        <div class="motivation-field" id="cedulaField">
+                            <label for="cedula">Cedula Profesional</label>
+                            <input type="text" id="cedula" placeholder="1234" required>
+                        </div>
+
                         <button type="submit" id="registerButton">Registrarse</button>
 
                         <div class="register-link">
@@ -102,10 +112,20 @@
             const motivationField = document.getElementById('motivationField');
             const motivationInput = document.getElementById('motivation');
 
+            const collegeField = document.getElementById('collegeField');
+            const collegeInput = document.getElementById('college');
+            const cedulaField = document.getElementById('cedulaField');
+            const cedulaInput = document.getElementById('cedula');
+
             function toggleMotivationField() {
                 if (teacherRadio.checked) {
                     motivationField.classList.add('active');
                     motivationInput.required = true;
+
+                    collegeField.classList.add('active');
+                    collegeInput.required = true;
+                    cedulaField.classList.add('active');
+                    cedulaInput.required = true;
                 } else {
                     motivationField.classList.remove('active');
                     motivationInput.required = false;

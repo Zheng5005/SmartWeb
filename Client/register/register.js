@@ -12,6 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const password = document.getElementById("password").value.trim();
     const userType = document.querySelector('input[name="userType"]:checked').value;
 
+
     // Validación simple
     if (!nombre || !apellido || !email || !password) {
       alert("Por favor, complete todos los campos obligatorios.");
@@ -23,10 +24,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Si es profesor, capturar motivación
     let motivation = "";
+    let college = "";
+    let cedula = "";
     if (userType === "teacher") {
       motivation = document.getElementById("motivation").value.trim();
-      if (!motivation) {
-        alert("Por favor, explique su motivación para ser profesor.");
+      college = document.getElementById("college").value.trim();
+      cedula = document.getElementById("cedula").value.trim();
+      if (!motivation || !college || !cedula) {
+        alert("Por favor, complete todos los campos para ser profesor.");
         return;
       }
     }
@@ -38,7 +43,9 @@ document.addEventListener("DOMContentLoaded", () => {
       email: email,
       password: password,
       role: role,
-      motivacion: motivation || null
+      motivacion: motivation || null,
+      profesor_institucion: college || null,
+      profesor_cedula: cedula || null
     };
 
     try {
