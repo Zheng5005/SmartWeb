@@ -1,0 +1,45 @@
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: #f4f6f8;
+}
+
+main {
+  max-width: 950px;
+}
+
+form {
+  border: 1px solid #e3e6ea;
+  border-radius: 15px;
+  background-color: #fff;
+}
+
+label {
+  color: #333;
+}
+
+.btn-success {
+  background-color: #28a745;
+  border: none;
+  font-weight: 500;
+}
+
+.btn-success:hover {
+  background-color: #218838;
+}
+
+.btn-outline-primary {
+  border-width: 2px;
+}
+
+.btn-outline-primary:hover {
+  background-color: #007bff;
+  color: white;
+}
+
+.table th {
+  background-color: #f8f9fa;
+}
+
+hr {
+  border-top: 2px solid #e0e0e0;
+}
