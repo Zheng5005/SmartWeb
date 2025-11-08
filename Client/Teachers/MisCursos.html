@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mis Cursos - SMARTWEB</title>
+
+  <!-- Bootstrap y librerías -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Estilos -->
+  <link rel="stylesheet" href="CrearCursoProfesor.css">
+</head>
+
+<body>
+  <!-- NAVBAR -->
+  <div id="navbar-placeholder"></div>
+
+  <main class="container mt-4 mb-5">
+    <div class="text-center mb-4">
+      <h1 class="fw-bold text-primary"><i class="fas fa-book me-2"></i> Mis Cursos</h1>
+      <p class="text-muted">Administra y revisa todos los cursos que has creado.</p>
+    </div>
+
+    <div class="text-end mb-3">
+      <a href="CrearCursos.html" class="btn btn-success">
+        <i class="fas fa-plus-circle"></i> Crear Nuevo Curso
+      </a>
+    </div>
+
+    <div class="table-responsive shadow-sm rounded bg-white p-3">
+      <table class="table table-hover align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>Título</th>
+            <th>Categoría</th>
+            <th>Fecha Creación</th>
+            <th>Estado</th>
+            <th>Sesiones</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="tablaCursos">
+          <tr>
+            <td colspan="6" class="text-center text-muted">Cargando cursos...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <div id="footer-placeholder"></div>
+
+  <!-- Modal Detalle -->
+  <div class="modal fade" id="detalleCursoModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content border-primary">
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title"><i class="fas fa-info-circle me-2"></i> Detalles del Curso</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <p><strong>Título:</strong> <span id="detalleTitulo"></span></p>
+          <p><strong>Descripción:</strong> <span id="detalleDescripcion"></span></p>
+          <p><strong>Sesiones:</strong></p>
+          <ul id="detalleSesiones" class="list-group"></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // 🔹 Navbar
+      fetch("../includes/html/admin_navbar.html")
+        .then(res => res.text())
+        .then(html => document.getElementById("navbar-placeholder").innerHTML = html);
+
+      // 🔹 Footer
+      fetch("../includes/html/footer.html")
+        .then(res => res.text())
+        .then(html => document.getElementById("footer-placeholder").innerHTML = html);
+
+      // 🔹 Simulación de cursos (esto luego se conectará a Firebase)
+      const cursos = [
+        {
+          id: "C001",
+          titulo: "Introducción a la Inteligencia Artificial",
+          categoria: "Tecnología",
+          descripcion: "Aprende los fundamentos de la IA moderna.",
+          fecha: "2025-11-01",
+          estado: "Pendiente",
+          sesiones: [
+            { fecha: "2025-11-12", hora: "10:00 AM" },
+            { fecha: "2025-11-15", hora: "10:00 AM" },
+          ]
+        },
+        {
+          id: "C002",
+          titulo: "Ciberseguridad para Principiantes",
+          categoria: "Tecnología",
+          descripcion: "Conoce las amenazas más comunes y cómo protegerte.",
+          fecha: "2025-10-28",
+          estado: "Activo",
+          sesiones: [
+            { fecha: "2025-11-09", hora: "7:00 PM" },
+          ]
+        },
+        {
+          id: "C003",
+          titulo: "Metodologías Ágiles en la Educación",
+          categoria: "Educación",
+          descripcion: "Aplicación de Scrum y Kanban en entornos educativos.",
+          fecha: "2025-09-20",
+          estado: "Inactivo",
+          sesiones: [
+            { fecha: "2025-11-20", hora: "8:00 PM" },
+          ]
+        },
+      ];
+
+      renderCursos(cursos);
+    });
+
+    function renderCursos(cursos) {
+      const tabla = document.getElementById("tablaCursos");
+      tabla.innerHTML = "";
+
+      if (cursos.length === 0) {
+        tabla.innerHTML = '<tr><td colspan="6" class="text-center text-muted">No tienes cursos creados aún.</td></tr>';
+        return;
+      }
+
+      cursos.forEach(curso => {
+        const badgeClass =
+          curso.estado === "Activo" ? "success" :
+          curso.estado === "Pendiente" ? "warning" : "secondary";
+
+        tabla.innerHTML += `
+          <tr>
+            <td>${curso.titulo}</td>
+            <td>${curso.categoria}</td>
+            <td>${curso.fecha}</td>
+            <td><span class="badge bg-${badgeClass}">${curso.estado}</span></td>
+            <td>${curso.sesiones.length}</td>
+            <td>
+              <button class="btn btn-primary btn-sm me-1" onclick='verDetalle(${JSON.stringify(curso)})'>
+                <i class="fas fa-eye"></i> Ver
+              </button>
+              <button class="btn btn-secondary btn-sm me-1">
+                <i class="fas fa-edit"></i> Editar
+              </button>
+              <button class="btn btn-danger btn-sm">
+                <i class="fas fa-trash"></i> Eliminar
+              </button>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    function verDetalle(curso) {
+      document.getElementById("detalleTitulo").textContent = curso.titulo;
+      document.getElementById("detalleDescripcion").textContent = curso.descripcion;
+
+      const lista = document.getElementById("detalleSesiones");
+      lista.innerHTML = "";
+      curso.sesiones.forEach(s => {
+        lista.innerHTML += `<li class="list-group-item">${s.fecha} — ${s.hora}</li>`;
+      });
+
+      const modal = new bootstrap.Modal(document.getElementById("detalleCursoModal"));
+      modal.show();
+    }
+  </script>
+</body>
+</html>

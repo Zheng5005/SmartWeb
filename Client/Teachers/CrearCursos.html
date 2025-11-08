@@ -140,7 +140,7 @@
     // 🔹 Cargar navbar y footer desde /includes/html/
     document.addEventListener("DOMContentLoaded", () => {
       // Navbar del docente
-      fetch("../includes/html/admin_navbar.html")
+      fetch(".in")
         .then(res => res.text())
         .then(data => document.getElementById("navbar-placeholder").innerHTML = data);
 
