@@ -23,7 +23,7 @@ async function logout() {
             return;
         }
 
-        localStorage.removeItem("access_token");
+        localStorage.removeItem("token");
         localStorage.removeItem("user_role");
         localStorage.removeItem("user_name");
 
