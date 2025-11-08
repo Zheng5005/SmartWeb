@@ -15,9 +15,22 @@ def get_db():
         db.close()
 
 # Obtener los cursos de un profesor (activos e inactivos)
-@router.get("/courses/active/{professor_id}")
-async def get_active_courses(professor_id: int, db: Session = Depends(get_db)):
-    return None
+@router.get("/courses/active/")
+async def get_active_courses(current=Depends(verify_token), db: Session = Depends(get_db)):
+    if current.role_name != "Profesor":
+        raise HTTPException(status_code=403, detail="Acceso denegado")
+
+    return db.query(Cursos).filter(Cursos.profesor_id == current.id).all()
+
+# Obtener la cantidad de cursos activos de 1 profesor
+@router.get("/courses/active/number")
+async def get_active_courses(current=Depends(verify_token), db: Session = Depends(get_db)):
+    if current.role_name != "Profesor":
+        raise HTTPException(status_code=403, detail="Acceso denegado")
+
+    courses_count = db.query(Cursos).filter(Cursos.profesor_id == current.id).all()
+
+    return len(courses_count)
 
 # Crear curso
 @router.post("/create/course")
@@ -50,12 +63,6 @@ async def deactivate_course(course_id: int):
 @router.get("/calendar/{professor_id}")
 async def get_calendar(professor_id: int):
     return None
-
-# Crear enlace para conferencia
-@router.post("/create/conference/link")
-async def create_conference_link():
-    return None
-
 
 
 # Endpoint solo para pruebas
