@@ -60,3 +60,12 @@ def verify_token(credentials: HTTPAuthorizationCredentials = Depends(security), 
         raise HTTPException(status_code=401, detail="Token expirado")
     except jwt.PyJWTError:
         raise HTTPException(status_code=401, detail="Token inválido")
+    
+def verify_token_ws(token: str):
+    if not token:
+        raise jwt.PyJWTError("Missing token")
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms="HS256")
+        return type("User", (), {"id": payload.get("sub")})
+    except jwt.PyJWTError:
+        raise
