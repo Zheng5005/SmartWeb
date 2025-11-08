@@ -1,166 +1,184 @@
-/* Fuente general */
+/* Client/VistasTeacher/MisCursos.css */
+
+/* --- Variables de Color --- */
+:root {
+    --primary-dark: #0e2a47; /* Fondo de Navbar/Footer */
+    --primary-medium: #265c8b;
+    --primary-light: #3a7bb6;
+    --accent-color: #ff7e5f; /* Color de acento/botón Cierre Sesión */
+    --light-bg: #f4f7fb;
+    --card-bg: #ffffff;
+    --text-dark: #333;
+    --header-color: #004aad; 
+}
+
+/* ---------------------------------------------------- */
+/* 1. ESTILOS GENERALES Y DE LA VISTA (Mis Cursos) */
+/* ---------------------------------------------------- */
+
 body {
-  font-family: 'Poppins', sans-serif;
-  background-color: #f4f7fb;
-  color: #333;
-  margin: 0;
-  padding: 0;
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--light-bg);
+    color: var(--text-dark);
+    margin: 0;
+    padding: 0;
 }
 
-/* Contenedor principal */
 main {
-  max-width: 1100px;
-  margin: 0 auto;
+    max-width: 1100px;
+    margin: 0 auto;
 }
 
-/* Encabezado */
-h1 {
-  font-weight: 700;
-  color: #004aad;
-}
-
-p.text-muted {
-  font-size: 0.95rem;
+.text-primary {
+    color: var(--header-color) !important;
 }
 
 /* Botón crear curso */
 .btn-success {
-  background: linear-gradient(135deg, #00b894, #00997c);
-  border: none;
-  font-weight: 500;
-  padding: 10px 20px;
-  transition: all 0.3s ease-in-out;
+    background: linear-gradient(135deg, #00b894, #00997c);
+    border: none;
+    font-weight: 500;
+    padding: 10px 20px;
+    transition: all 0.3s ease-in-out;
 }
 
 .btn-success:hover {
-  background: linear-gradient(135deg, #00997c, #007f66);
-  transform: scale(1.03);
-}
-
-/* Tabla contenedor */
-.table-responsive {
-  border-radius: 15px;
-  overflow: hidden;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    background: linear-gradient(135deg, #00997c, #007f66);
+    transform: scale(1.03);
 }
 
 /* Tabla */
-.table {
-  margin: 0;
-  border-collapse: separate;
-  border-spacing: 0;
+.table-responsive {
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
 
 .table thead {
-  background-color: #eaf0f9;
-  color: #004aad;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.table th,
-.table td {
-  padding: 14px 16px;
-  vertical-align: middle;
-}
-
-.table tbody tr {
-  transition: background-color 0.2s ease-in-out;
+    background-color: #eaf0f9;
+    color: var(--header-color);
 }
 
 .table tbody tr:hover {
-  background-color: #f1f6ff;
+    background-color: #f1f6ff;
 }
 
 /* Badges de estado */
 .badge {
-  font-size: 0.85rem;
-  border-radius: 6px;
-  padding: 6px 10px;
+    font-size: 0.85rem;
+    border-radius: 6px;
+    padding: 6px 10px;
 }
 
-.badge.bg-success {
-  background-color: #00b894 !important;
-}
+.badge.bg-success { background-color: #00b894 !important; }
+.badge.bg-warning { background-color: #f1c40f !important; color: #000 !important; }
+.badge.bg-secondary { background-color: #95a5a6 !important; }
 
-.badge.bg-warning {
-  background-color: #f1c40f !important;
-  color: #000 !important;
-}
-
-.badge.bg-secondary {
-  background-color: #95a5a6 !important;
-}
-
-/* Botones de acción */
+/* Botones de acción (Estilos base) */
 .btn-sm {
-  border: none;
-  font-size: 0.8rem;
-  padding: 6px 10px;
-  transition: all 0.3s ease-in-out;
+    border: none;
+    font-size: 0.8rem;
+    padding: 6px 10px;
+    transition: all 0.3s ease-in-out;
 }
 
-.btn-primary {
-  background-color: #004aad;
-}
-
-.btn-primary:hover {
-  background-color: #003a8c;
-}
-
-.btn-secondary {
-  background-color: #6c757d;
-}
-
-.btn-secondary:hover {
-  background-color: #555e66;
-}
-
-.btn-danger {
-  background-color: #e74c3c;
-}
-
-.btn-danger:hover {
-  background-color: #c0392b;
-}
+.btn-primary { background-color: #004aad; }
+.btn-primary:hover { background-color: #003a8c; }
+.btn-secondary { background-color: #6c757d; }
+.btn-secondary:hover { background-color: #555e66; }
+.btn-danger { background-color: #e74c3c; }
+.btn-danger:hover { background-color: #c0392b; }
 
 /* Modal */
-.modal-content {
-  border-radius: 12px;
+.modal-content { border-radius: 12px; }
+.modal-header.bg-primary { background-color: #004aad !important; }
+.btn-close-white { filter: invert(1) grayscale(100%) brightness(200%); }
+
+/* ---------------------------------------------------- */
+/* CORRECCIÓN DE BOTONES DESORDENADOS */
+/* ---------------------------------------------------- */
+.table td:last-child > div.d-flex {
+    /* Asegura que la celda mantenga la alineación horizontal y permite que el div interno lo organice */
+    height: 100%;
+    align-items: center; 
+}
+.table td:last-child .btn-sm {
+    /* Opcional: Ancho mínimo para que los botones se vean uniformes */
+    min-width: 60px;
+    flex-grow: 1; /* Permite que el botón se estire ligeramente para ocupar el espacio */
 }
 
-.modal-header {
-  border-bottom: none;
+
+/* ---------------------------------------------------- */
+/* 2. ESTILOS DEL NAVBAR Y FOOTER (MODULARES) */
+/* ---------------------------------------------------- */
+
+.navbar {
+    background-color: var(--primary-dark);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
 }
 
-.modal-title {
-  font-weight: 600;
+/* Ajuste del Logo */
+.navbar-brand img {
+    height: 40px; /* Controla el tamaño del logo */
+    width: auto;
+    margin-right: 10px;
 }
 
-.modal-body p {
-  font-size: 0.95rem;
-  margin-bottom: 10px;
+.navbar-brand {
+    color: white !important;
+    font-weight: 600;
 }
 
-.modal-body ul {
-  margin-top: 10px;
+.nav-link {
+    color: rgba(255, 255, 255, 0.8) !important;
+    font-weight: 500;
+    transition: color 0.3s;
 }
 
-/* Responsividad */
-@media (max-width: 768px) {
-  .table th,
-  .table td {
-    font-size: 0.85rem;
-  }
-
-  .btn-sm {
-    font-size: 0.75rem;
-  }
+.nav-link:hover,
+.nav-link.active {
+    color: var(--accent-color) !important;
 }
 
-/* Footer y navbar placeholders */
-#navbar-placeholder,
-#footer-placeholder {
-  width: 100%;
+/* Botón de Cierre de Sesión */
+.btn-logout {
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    font-weight: 600;
+    padding: 8px 15px;
+    border-radius: 5px;
+}
+.btn-logout:hover {
+    background-color: #f75d3c;
+    color: white;
+}
+
+/* Estilo para el Footer */
+footer {
+    background-color: var(--primary-dark);
+    color: rgba(255, 255, 255, 0.7);
+    padding: 25px 0;
+    margin-top: 30px;
+    border-top: 5px solid var(--primary-medium);
+}
+
+footer a {
+    color: rgba(255, 255, 255, 0.9);
+    text-decoration: none;
+}
+
+footer a:hover {
+    color: var(--accent-color);
+    text-decoration: underline;
+}
+
+.footer-text {
+    font-size: 0.9rem;
+}
+
+.footer-logo-img {
+    height: 30px;
+    width: auto;
 }
