@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from config import SessionLocal, Base, engine
-from routes import auth, ejemplo, getstreamFile, profesores, administrador, signaling
+from routes import NewVideoCall, auth, ejemplo, estudiante, getstreamFile, profesores, administrador, signaling
 from model.models import Roles, Usuarios
 from services.cifrar import hash_password
 
@@ -93,6 +93,8 @@ app.include_router(getstreamFile.router)
 app.include_router(profesores.router)
 app.include_router(administrador.router)
 app.include_router(signaling.router)
+app.include_router(estudiante.router)
+app.include_router(NewVideoCall.router)
 
 seed_roles()
 seed_admin()
