@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pagina llamadas</title>
+
+    <link rel="icon" href="favicon.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet" />
+    <link rel="stylesheet" href="llamadas.css" />
+</head>
+
+<body>
+
+    <!-- Modal para unirse o crear llamada -->
+    <div class="modal fade" id="LlamadaModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="LlamadaModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="LlamadaModalLabel">
+                        <i class="bi bi-camera-video-fill me-2"></i> Ingresar a una llamada
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body modal-bg">
+                    <div class="mb-3">
+                        <label for="userNameInput" class="form-label">Tu nombre</label>
+                        <input type="text" class="form-control" id="userNameInput" placeholder="Ejemplo: Juan Pérez">
+                    </div>
+                    <div class="mb-3">
+                        <label for="callIdInput" class="form-label">Código o enlace de llamada (opcional)</label>
+                        <input type="text" class="form-control" id="callIdInput"
+                            placeholder="Ejemplo: hfUuovE7CFkHjqMfT02bP">
+                    </div>
+                </div>
+
+                <div class="modal-footer modal-bg">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button id="ModalButton" type="button" class="btn btn-success">
+                        <i class="bi bi-box-arrow-in-right me-1"></i> Ingresar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="call-container">
+        <!-- Área principal -->
+        <div class="main-video-area" id="mainVideoArea">
+            <div class="main-video">
+                <video id="mainVideo" autoplay muted playsinline></video>
+                <div class="main-info">
+                    <span id="mainUserName">Esperando...</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Panel de participantes (visible por defecto) -->
+        <div class="participants-panel" id="participantsPanel">
+            <div class="participants-header">
+                Participantes
+                <span id="participantCount">(0)</span>
+            </div>
+            <div class="participants-list" id="participantsList">
+                <!-- Miniaturas dinámicas -->
+            </div>
+            <div class="more-participants" id="moreParticipants" style="display:none;">
+                <i class="bi bi-people-fill"></i>
+                <span>+0 más</span>
+            </div>
+        </div>
+
+        <!-- Panel de chat (oculto por defecto) -->
+        <div class="chat-panel" id="chatPanel">
+            <div class="chat-header">Chat en vivo</div>
+            <div class="chat-messages" id="chatMessages">
+                <div class="message">
+                    <div>
+                        <div class="message-author">María Santos</div>
+                        <div class="message-bubble">¡Hola! ¿Cómo están?</div>
+                    </div>
+                </div>
+                <div class="message">
+                    <div>
+                        <div class="message-author">Carlos Rodríguez</div>
+                        <div class="message-bubble">Bien, vamos a comenzar</div>
+                    </div>
+                </div>
+                <div class="message own">
+                    <div>
+                        <div class="message-author">Tú</div>
+                        <div class="message-bubble">Perfecto, empecemos</div>
+                    </div>
+                </div>
+            </div>
+            <div class="chat-input-area">
+                <input type="text" id="chatInput" placeholder="Escribe un mensaje..." />
+            </div>
+        </div>
+
+
+        <!-- Barra de controles -->
+        <div class="controls-bar">
+            <!-- Código de llamada a la izquierda -->
+            <div class="control-group">
+                <p class="call-code">Código de la llamada: <strong>123</strong></p>
+            </div>
+
+            <!-- Controles centrales -->
+            <div class="control-group">
+                <button type="button" class="control-btn active" data-bs-toggle="modal" data-bs-target="#LlamadaModal" title="Unirse o crear llamada">
+                    <i class="bi bi-camera-video"></i>
+                </button>
+                <button class="control-btn active" id="micBtn" title="Micrófono">
+                    <i class="bi bi-mic-fill"></i>
+                </button>
+                <button class="control-btn active" id="camBtn" title="Cámara">
+                    <i class="bi bi-camera-video-fill"></i>
+                </button>
+                <button class="control-btn" id="screenBtn" title="Compartir pantalla">
+                    <i class="bi bi-easel2"></i>
+                </button>
+                <button class="control-btn" id="chatBtn" title="Chat">
+                    <i class="bi bi-chat-fill"></i>
+                </button>
+            </div>
+
+            <!-- Separador -->
+            <div style="width: 1px; height: 30px; background: #404040"></div>
+
+            <!-- Botón de finalizar a la derecha -->
+            <div class="control-group">
+                <button class="control-btn off" id="endBtn" title="Finalizar llamada">
+                    <i class="bi bi-telephone-fill"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"
+        integrity="sha512-AA1Bzp5Q0K1KanKKmvN/4d3IRKVlv9PYgwFPvm32nPO6QS8yH1HO7LbgB1pgiOxPtfeg5zEn2ba64MUcqJx6CA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="stream-video-client.js"></script>
+    <script src="llamadasCode.js"></script>
+    <script src="llamadas.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,132 @@
+
+    :root {
+      --primary-dark: #0e2a47;
+      --primary-medium: #265c8b;
+      --primary-light: #3a7bb6;
+      --accent-color: #ff7e5f;
+      --accent-hover: #e86a4c;
+      --light-bg: #f4f7fb;
+      --card-bg: #ffffff;
+      --text-dark: #2d3748;
+      --text-light: #718096;
+    }
+
+    body {
+      background: var(--light-bg);
+      font-family: 'Poppins', sans-serif;
+      color: var(--text-dark);
+    }
+
+    .navbar {
+      background: var(--primary-dark);
+      padding: 12px 0;
+    }
+
+    .navbar-brand {
+      font-weight: 700;
+      font-size: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: white !important;
+    }
+
+    .logo-img {
+      height: 40px;
+      width: auto;
+    }
+
+    .nav-link {
+      color: #d8e6ff !important;
+      font-weight: 500;
+      transition: 0.3s;
+      border-radius: 6px;
+      padding: 8px 16px !important;
+    }
+
+    .nav-link:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: white !important;
+    }
+
+    /* Hero */
+    .teacher-hero {
+      background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-medium) 100%);
+      color: white;
+      padding: 3rem 2rem;
+      border-radius: 20px;
+      margin: 2rem auto;
+      box-shadow: 0 10px 30px rgba(14, 42, 71, 0.2);
+      text-align: center;
+    }
+
+    .teacher-hero h1 {
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    /* Main card */
+    .card-create-call {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 2rem;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+      border-left: 5px solid var(--primary-medium);
+      max-width: 650px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .card-create-call h4 {
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    .btn-create {
+      background: var(--primary-medium);
+      color: white;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 25px;
+      transition: all 0.3s;
+    }
+
+    .btn-create:hover {
+      background: var(--primary-light);
+      transform: translateY(-2px);
+    }
+
+    .call-result {
+      margin-top: 1.5rem;
+      background: var(--light-bg);
+      border-radius: 8px;
+      padding: 1rem;
+      font-size: 0.95rem;
+      text-align: left;
+      border: 1px solid rgba(0,0,0,0.05);
+      display: none;
+    }
+
+    .copy-btn {
+      margin-top: 10px;
+      background: var(--accent-color);
+      color: white;
+      border: none;
+      padding: 6px 15px;
+      border-radius: 6px;
+      font-weight: 500;
+      transition: 0.3s;
+    }
+
+    .copy-btn:hover {
+      background: var(--accent-hover);
+    }
+
+    footer {
+      background: var(--primary-dark);
+      color: white;
+      text-align: center;
+      padding: 1.5rem;
+      margin-top: 3rem;
+    }
