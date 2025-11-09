@@ -24,7 +24,7 @@ async def get_active_courses(current=Depends(verify_token), db: Session = Depend
 
 # Obtener la cantidad de cursos activos de 1 profesor
 @router.get("/courses/active/number")
-async def get_active_courses(current=Depends(verify_token), db: Session = Depends(get_db)):
+async def get_active_courses_number(current=Depends(verify_token), db: Session = Depends(get_db)):
     if current.role_name != "Profesor":
         raise HTTPException(status_code=403, detail="Acceso denegado")
 
