@@ -11,12 +11,14 @@ import UsuarioHome from "../pages/HomeStudent";
 import GestionarCursos from "../pages/GestionarCursos";
 
 // Paginas extras
-import AboutUs from "../pages/AboutUS";
+import AboutUs from "../pages/AboutUs";
 import PrivacyPolicy from "../pages/PrivacyPolicy";
 import Terms from "../pages/Terms";
 
 import { ProtectedRoute } from "../components/ProtectedRoute";
 import { AuthProvider } from "../context/AuthContext";
+import GestionarUsuarios from "../pages/GestionarUsuarios";
+import VerificarInstructores from "../pages/VerfificarInstructores";
 
 const Layout = ({ children }) => {
     const location = useLocation();
@@ -70,6 +72,22 @@ export const AppRouter = () => {
                             element={
                                 <ProtectedRoute allowedRoles={["administrador"]}>
                                     <GestionarCursos />
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/gestionar-usuarios"
+                            element={
+                                <ProtectedRoute allowedRoles={["administrador"]}>
+                                    <GestionarUsuarios />
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/verificar-instructores"
+                            element={
+                                <ProtectedRoute allowedRoles={["administrador"]}>
+                                    <VerificarInstructores />
                                 </ProtectedRoute>
                             }
                         />

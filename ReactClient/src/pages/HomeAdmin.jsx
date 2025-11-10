@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
+import { formatDate } from "../helpers/date"
 
 export default function AdminHome() {
     const navigate = useNavigate()
@@ -98,15 +99,15 @@ export default function AdminHome() {
                                 title: "Gestionar Usuarios",
                                 desc: "Administrar estudiantes y permisos",
                                 icon: "👤",
-                                link: "/admin/usuarios",
+                                link: "/gestionar-usuarios",
                             },
                             {
                                 title: "Verificar Instructores",
                                 desc: "Revisar solicitudes de instructores",
                                 icon: "👨‍🏫",
-                                link: "/admin/instructores",
+                                link: "/verificar-instructores",
                             },
-                            { title: "Gestionar Cursos", desc: "Aprobar y moderar cursos", icon: "📚", link: "/admin/cursos" },
+                            { title: "Gestionar Cursos", desc: "Aprobar y moderar cursos", icon: "📚", link: "/gestionar-cursos" },
                         ].map((card) => (
                             <div
                                 key={card.title}
@@ -232,7 +233,7 @@ export default function AdminHome() {
                                             </td>
                                             <td>{c.profesor_id || "—"}</td>
                                             <td>{c.estudiantes || 0}</td>
-                                            <td>{c.creacion_curso || "—"}</td>
+                                            <td>{formatDate(c.creacion_curso) || "—"}</td>
                                             <td>
                                                 <span
                                                     className={`badge ${c.estado_curso === "Activo" ? "badge-success text-white" : "badge-neutral"}`}

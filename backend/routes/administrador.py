@@ -49,7 +49,10 @@ async def get_profesores(current=Depends(verify_token), db: Session = Depends(ge
             "nombre": f"{p.nombre} {p.apellido}",
             "email": p.email,
             "rol": p.rol.nombre_rol,
-            "status": p.status.value
+            "status": p.status.value,
+            "cedula": p.profesor_cedula,
+            "instituto": p.profesor_institucion,
+            "fecha": p.creacion_cuenta
         }
         for p in profesores
     ]
@@ -77,7 +80,7 @@ async def approve_profesor(
     db.commit()
 
     # Enviar correo al profesor
-    send_email(
+    await send_email(
         to=profesor.email,
         subject="Cuenta aprobada",
         body=f"Hola {profesor.nombre}, tu cuenta de profesor ha sido aprobada."
@@ -92,7 +95,7 @@ async def deny_profesor(
     current=Depends(verify_token),
     db: Session = Depends(get_db)
 ):
-    if current["role"] != "Admin":
+    if current.role_name != "Administrador":
         raise HTTPException(status_code=403, detail="Solo los administradores pueden denegar profesores")
 
     profesor = db.query(Usuarios).join(Roles).filter(
@@ -108,7 +111,7 @@ async def deny_profesor(
     db.commit()
 
     # Enviar correo al profesor
-    send_email(
+    await send_email(
         to=profesor.email,
         subject="Cuenta denegada",
         body=f"Hola {profesor.nombre}, tu cuenta de profesor ha sido denegada."
