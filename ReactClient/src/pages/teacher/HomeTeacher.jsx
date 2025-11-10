@@ -1,4 +1,7 @@
+import { Link } from 'react-router-dom';
+
 export default function HomeTeacher() {
+
   return (
     <div className="min-h-screen bg-base-100">
       {/* Header */}
@@ -30,21 +33,17 @@ export default function HomeTeacher() {
           {[
             {
               icon: "➕",
-              title: "Crear Nuevo Curso",
-              desc: "Diseña un nuevo curso virtual con módulos, materiales y evaluaciones personalizadas.",
-              action: "Crear Curso",
+              title: "Mis Cursos",
+              desc: "Visualiza y maneja tus cursos",
+              action: "Ver cursos",
+              link: "/profesor/cursos",
             },
             {
               icon: "🎥",
               title: "Programar Videollamada",
               desc: "Organiza sesiones en vivo con tus estudiantes y comparte materiales en tiempo real.",
               action: "Programar Sesión",
-            },
-            {
-              icon: "✓",
-              title: "Revisar Tareas",
-              desc: "Revisa y califica las tareas enviadas por tus estudiantes con herramientas integradas.",
-              action: "Revisar Tareas",
+              link: "/profesor/crear-link"
             },
           ].map((action, idx) => (
             <div
@@ -55,7 +54,9 @@ export default function HomeTeacher() {
                 <div className="text-4xl mb-3">{action.icon}</div>
                 <h3 className="card-title text-lg justify-center">{action.title}</h3>
                 <p className="text-sm opacity-70">{action.desc}</p>
-                <button className="btn btn-primary btn-sm w-full mt-4">{action.action}</button>
+                <Link to={action.link} className="btn btn-primary btn-sm w-full mt-4">
+                    {action.action}
+                </Link>
               </div>
             </div>
           ))}

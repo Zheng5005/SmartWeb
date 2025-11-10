@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
-import NotificationModal from "../components/NotificationModal"
-import { formatDate } from "../helpers/date"
+import NotificationModal from "../../components/NotificationModal"
+import { formatDate } from "../../helpers/date"
 
 export default function VerificarInstructores() {
     const navigate = useNavigate()

@@ -5,10 +5,10 @@ import { Footer } from "../components/Footer";
 
 import Login from "../pages/Login";
 import Register from "../pages/Register";
-import AdminHome from "../pages/HomeAdmin";
-import ProfesorHome from "../pages/HomeTeacher";
-import UsuarioHome from "../pages/HomeStudent";
-import GestionarCursos from "../pages/GestionarCursos";
+import AdminHome from "../pages/admin/HomeAdmin";
+import ProfesorHome from "../pages/teacher/HomeTeacher";
+import UsuarioHome from "../pages/student/HomeStudent";
+import GestionarCursos from "../pages/admin/GestionarCursos";
 
 // Paginas extras
 import AboutUs from "../pages/AboutUs";
@@ -17,8 +17,11 @@ import Terms from "../pages/Terms";
 
 import { ProtectedRoute } from "../components/ProtectedRoute";
 import { AuthProvider } from "../context/AuthContext";
-import GestionarUsuarios from "../pages/GestionarUsuarios";
-import VerificarInstructores from "../pages/VerfificarInstructores";
+import GestionarUsuarios from "../pages/admin/GestionarUsuarios";
+import VerificarInstructores from "../pages/admin/VerfificarInstructores";
+import VisualizarCursos from "../pages/teacher/Cursos";
+
+
 
 const Layout = ({ children }) => {
     const location = useLocation();
@@ -88,6 +91,15 @@ export const AppRouter = () => {
                             element={
                                 <ProtectedRoute allowedRoles={["administrador"]}>
                                     <VerificarInstructores />
+                                </ProtectedRoute>
+                            }
+                        />
+
+                        <Route
+                            path="/profesor/cursos"
+                            element={
+                                <ProtectedRoute allowedRoles={["profesor"]}>
+                                    <VisualizarCursos />
                                 </ProtectedRoute>
                             }
                         />

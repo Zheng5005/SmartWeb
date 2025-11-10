@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { formatDate } from "../helpers/date"
+import { formatDate } from "../../helpers/date"
 
 export default function AdminHome() {
     const navigate = useNavigate()

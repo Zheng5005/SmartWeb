@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
-import NotificationModal from "../components/NotificationModal"
+import NotificationModal from "../../components/NotificationModal"
 
 export default function GestionarUsuarios() {
     const navigate = useNavigate()

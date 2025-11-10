@@ -31,17 +31,17 @@ export default function Navbar() {
                                 </Link>
                             </li>
                             <li>
-                                <Link to="/admin/usuarios" className="gap-2">
+                                <Link to="/gestionar-usuarios" className="gap-2">
                                     <Users size={18} /> Usuarios
                                 </Link>
                             </li>
                             <li>
-                                <Link to="/admin/instructores" className="gap-2">
+                                <Link to="/verificar-instructores" className="gap-2">
                                     <GraduationCap size={18} /> Instructores
                                 </Link>
                             </li>
                             <li>
-                                <Link to="/admin/cursos" className="gap-2">
+                                <Link to="/gestionar-cursos" className="gap-2">
                                     <BookOpen size={18} /> Cursos
                                 </Link>
                             </li>

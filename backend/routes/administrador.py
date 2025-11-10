@@ -41,7 +41,7 @@ async def get_profesores(current=Depends(verify_token), db: Session = Depends(ge
     if current.role_name != "Administrador":
         raise HTTPException(status_code=403, detail="Acceso denegado")
 
-    profesores = db.query(Usuarios).join(Roles).filter(Roles.nombre_rol == "Profesor", Usuarios.status == "Inactivo").all()
+    profesores = db.query(Usuarios).join(Roles).filter(Roles.nombre_rol == "Profesor", Usuarios.confirmado == False).all()
 
     return [
         {
