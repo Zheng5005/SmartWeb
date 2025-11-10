@@ -136,7 +136,7 @@ async def change_user_role(user_id: int, new_role: str, current=Depends(verify_t
     
     user.role = role.id
     db.commit()
-    return None
+    return {"message": "Rol cambiado correctamente"}
 
 # Eliminar un usuario
 @router.delete("/users/{user_id}")

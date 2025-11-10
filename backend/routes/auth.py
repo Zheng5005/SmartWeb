@@ -89,18 +89,27 @@ async def login_user(user_data: UsuarioLogin, db: Session = Depends(get_db)):
         AuthToken.revocado == False
     ).first()
 
+    # 🔥 Nueva lógica: si el token existe pero ya expiró, lo revocamos
     if existing_token:
-        raise HTTPException(status_code=403, detail="Ya hay una sesión activa")
+        now = datetime.utcnow()
+        if existing_token.expiracion < now:
+            existing_token.revocado = True
+            db.commit()
+        else:
+            raise HTTPException(status_code=403, detail="Ya hay una sesión activa")
 
     role = db.query(Roles).filter(Roles.id == user.role).first()
     if not role:
         raise HTTPException(status_code=500, detail="Rol del usuario no encontrado")
 
-    # Generar token JWT
-    access_token = create_access_token({"sub": str(user.id), "rol": str(user.rol.nombre_rol)})
+    # Generar token JWT (con expiración corta, p.ej. 2 minutos para pruebas)
+    access_token = create_access_token(
+        {"sub": str(user.id), "rol": str(role.nombre_rol)},
+        expires_delta=timedelta(minutes=2)
+    )
 
     # Guardar token en la base de datos
-    expiracion = datetime.utcnow() + timedelta(hours=2)
+    expiracion = datetime.utcnow() + timedelta(minutes=2)
     new_token = AuthToken(
         user_id=user.id,
         jwt_token=access_token,
