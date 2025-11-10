@@ -10,10 +10,10 @@ export const Footer = () => (
             </div>
 
             <div className="flex flex-wrap justify-center gap-6 text-sm">
-                <Link to="/politicas" className="link link-hover">
+                <Link to="/privacy-policy" className="link link-hover">
                     Políticas de Privacidad
                 </Link>
-                <Link to="/terminos" className="link link-hover">
+                <Link to="/terms" className="link link-hover">
                     Términos de Servicio
                 </Link>
                 <Link to="/about" className="link link-hover">

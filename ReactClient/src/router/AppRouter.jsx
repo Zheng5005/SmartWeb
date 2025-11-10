@@ -8,7 +8,12 @@ import Register from "../pages/Register";
 import AdminHome from "../pages/HomeAdmin";
 import ProfesorHome from "../pages/HomeTeacher";
 import UsuarioHome from "../pages/HomeStudent";
+import GestionarCursos from "../pages/GestionarCursos";
+
+// Paginas extras
 import AboutUs from "../pages/AboutUS";
+import PrivacyPolicy from "../pages/PrivacyPolicy";
+import Terms from "../pages/Terms";
 
 import { ProtectedRoute } from "../components/ProtectedRoute";
 import { AuthProvider } from "../context/AuthContext";
@@ -60,7 +65,18 @@ export const AppRouter = () => {
                             }
                         />
 
+                        <Route
+                            path="/gestionar-cursos"
+                            element={
+                                <ProtectedRoute allowedRoles={["administrador"]}>
+                                    <GestionarCursos />
+                                </ProtectedRoute>
+                            }
+                        />
+
                         <Route path="/about" element={<AboutUs />} />
+                        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                        <Route path="/terms" element={<Terms />} />
                     </Routes>
                 </Layout>
             </AuthProvider>
