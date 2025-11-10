@@ -13,39 +13,11 @@ export default function GestionarCursos() {
   const [modalOpen, setModalOpen] = useState(false)
   const [confirmModal, setConfirmModal] = useState(null)
   const [notification, setNotification] = useState(null)
+  const [loading, setLoading] = useState(true)
 
   const token = localStorage.getItem("token")
 
-  const cursosData = {
-    C103: {
-      title: "Curso Avanzado de IA con Python",
-      instructor: "Elena Torres",
-      creationDate: "01 Nov 2025",
-      description:
-        "Propuesta para un curso de alto nivel que abarca redes neuronales avanzadas y despliegue de modelos en la nube. Pendiente de revisión.",
-      students: [],
-      status: "pendiente",
-    },
-    C101: {
-      title: "Mastering React Hooks",
-      instructor: "Juan Pérez",
-      creationDate: "15 Sep 2025",
-      description:
-        "Curso completo sobre el uso de Hooks modernos en React.js, incluyendo Reducers, Context y efectos avanzados. ¡Ya aprobado!",
-      students: ["Estudiante A", "Estudiante B", "Estudiante C", "Estudiante D", "Estudiante E"],
-      status: "activo",
-    },
-    C102: {
-      title: "Fundamentos de Diseño UX/UI",
-      instructor: "María González",
-      creationDate: "05 Jun 2025",
-      description:
-        "Introducción al proceso de diseño centrado en el usuario, incluyendo wireframing, prototipado y pruebas de usabilidad.",
-      students: ["Alumno 1", "Alumno 2", "Alumno 3", "Alumno 4"],
-      status: "inactivo",
-    },
-  }
-
+  // 🔹 Cargar cursos desde backend
   useEffect(() => {
     if (!token) {
       setNotification({ type: "error", message: "No estás autenticado. Inicia sesión." })
@@ -55,21 +27,44 @@ export default function GestionarCursos() {
     loadCourses()
   }, [token, navigate])
 
-  const loadCourses = () => {
-    const coursesArray = Object.entries(cursosData).map(([id, data]) => ({ id, ...data }))
-    setCursos(coursesArray)
+  const loadCourses = async () => {
+    setLoading(true)
+    try {
+      const response = await fetch("http://localhost:8000/administrador/all/cursos", {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+
+      if (!response.ok) throw new Error("Error al obtener los cursos")
+
+      const data = await response.json()
+
+      // 🔄 Transformar datos a formato visual
+      const formatted = data.map((c) => ({
+        id: c.id,
+        title: c.titulo,
+        description: c.descripcion,
+        instructor: c.profesor,
+        creationDate: new Date(c.creacion_curso).toLocaleDateString("es-ES", {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+        }),
+        students: Array(c.estudiantes).fill("Estudiante"), // simulación simple para modal
+        status: c.estado_curso ? c.estado_curso.toLowerCase() : "pendiente",
+      }))
+
+      setCursos(formatted)
+    } catch (error) {
+      console.error(error)
+      setNotification({ type: "error", message: "No se pudieron cargar los cursos." })
+    } finally {
+      setLoading(false)
+    }
   }
 
-  const fetchCourseDetails = (courseId) => cursosData[courseId] || null
-
-  const handleViewDetail = (courseId) => {
-    const details = fetchCourseDetails(courseId)
-    if (details) {
-      setSelectedCourse(details)
-      setModalOpen(true)
-    } else {
-      setNotification({ type: "error", message: `Error: Curso con ID ${courseId} no encontrado.` })
-    }
+  const handleViewDetail = (curso) => {
+    setSelectedCourse(curso)
+    setModalOpen(true)
   }
 
   const handleApprove = (courseId, courseTitle) =>
@@ -101,6 +96,7 @@ export default function GestionarCursos() {
   }
 
   const processAction = (action) => {
+    // ⚙️ Aquí podrías integrar PUT/PATCH al backend
     if (action.type === "approve") {
       setNotification({ type: "success", message: `✅ Curso '${action.courseTitle}' aprobado.` })
     } else if (action.type === "reject") {
@@ -114,6 +110,7 @@ export default function GestionarCursos() {
     setConfirmModal(null)
   }
 
+  // 🔍 Filtro y búsqueda
   const filteredCourses = cursos.filter((curso) => {
     const matchEstado = filtroEstado === "todos" || curso.status === filtroEstado
     const query = busqueda.toLowerCase()
@@ -204,85 +201,72 @@ export default function GestionarCursos() {
             )}
           </div>
 
-          <div className="overflow-x-auto bg-white rounded-xl shadow border border-gray-100">
-            <table className="table">
-              <thead>
-                <tr className="bg-gray-100 text-gray-700 text-sm uppercase">
-                  <th>Curso</th>
-                  <th>Instructor</th>
-                  <th>Fecha Creación</th>
-                  <th>Estudiantes</th>
-                  <th>Estado</th>
-                  <th>Acciones</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredCourses.length === 0 ? (
-                  <tr>
-                    <td colSpan="6" className="text-center text-gray-500 py-8">
-                      No hay cursos que coincidan con los filtros 💤
-                    </td>
+          {loading ? (
+            <div className="text-center py-10 text-gray-500">Cargando cursos...</div>
+          ) : (
+            <div className="overflow-x-auto bg-white rounded-xl shadow border border-gray-100">
+              <table className="table">
+                <thead>
+                  <tr className="bg-gray-100 text-gray-700 text-sm uppercase">
+                    <th>Curso</th>
+                    <th>Instructor</th>
+                    <th>Fecha Creación</th>
+                    <th>Estudiantes</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
                   </tr>
-                ) : (
-                  filteredCourses.map((curso) => (
-                    <tr key={curso.id} className="hover:bg-gray-50 transition">
-                      <td className="font-medium text-gray-800">{curso.title}</td>
-                      <td className="text-gray-700">{curso.instructor}</td>
-                      <td className="text-gray-600">{curso.creationDate}</td>
-                      <td className="text-gray-600">{curso.students.length || "—"}</td>
-                      <td>
-                        <span className={getStatusBadgeColor(curso.status)}>
-                          {curso.status.charAt(0).toUpperCase() + curso.status.slice(1)}
-                        </span>
-                      </td>
-                      <td>
-                        <div className="flex gap-2 flex-wrap">
-                          <button
-                            className="btn btn-sm border border-indigo-400 text-indigo-600 hover:bg-indigo-600 hover:text-white transition"
-                            onClick={() => handleViewDetail(curso.id)}
-                          >
-                            👁️ Detalle
-                          </button>
-
-                          {curso.status === "pendiente" && (
-                            <>
-                              <button
-                                className="btn btn-sm border border-green-400 text-green-600 hover:bg-green-600 hover:text-white transition"
-                                onClick={() => handleApprove(curso.id, curso.title)}
-                              >
-                                ✓ Aprobar
-                              </button>
-                              <button
-                                className="btn btn-sm border border-red-400 text-red-600 hover:bg-red-600 hover:text-white transition"
-                                onClick={() => handleReject(curso.id, curso.title)}
-                              >
-                                ✕ Rechazar
-                              </button>
-                            </>
-                          )}
-
-                          {curso.status !== "pendiente" && (
-                            <button
-                              className={`btn btn-sm border ${
-                                curso.status === "activo"
-                                  ? "border-yellow-400 text-yellow-600 hover:bg-yellow-500 hover:text-white"
-                                  : "border-green-400 text-green-600 hover:bg-green-500 hover:text-white"
-                              } transition`}
-                              onClick={() =>
-                                handleToggleStatus(curso.id, curso.status, curso.title)
-                              }
-                            >
-                              {curso.status === "activo" ? "⊘ Inactivar" : "✓ Activar"}
-                            </button>
-                          )}
-                        </div>
+                </thead>
+                <tbody>
+                  {filteredCourses.length === 0 ? (
+                    <tr>
+                      <td colSpan="6" className="text-center text-gray-500 py-8">
+                        No hay cursos que coincidan con los filtros 💤
                       </td>
                     </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
+                  ) : (
+                    filteredCourses.map((curso) => (
+                      <tr key={curso.id} className="hover:bg-gray-50 transition">
+                        <td className="font-medium text-gray-800">{curso.title}</td>
+                        <td className="text-gray-700">{curso.instructor}</td>
+                        <td className="text-gray-600">{curso.creationDate}</td>
+                        <td className="text-gray-600">{curso.students.length || "—"}</td>
+                        <td>
+                          <span className={getStatusBadgeColor(curso.status)}>
+                            {curso.status.charAt(0).toUpperCase() + curso.status.slice(1)}
+                          </span>
+                        </td>
+                        <td>
+                          <div className="flex gap-2 flex-wrap">
+                            <button
+                              className="btn btn-sm border border-indigo-400 text-indigo-600 hover:bg-indigo-600 hover:text-white transition"
+                              onClick={() => handleViewDetail(curso)}
+                            >
+                              👁️ Detalle
+                            </button>
+
+                            {curso.status !== "pendiente" && (
+                              <button
+                                className={`btn btn-sm border ${
+                                  curso.status === "activo"
+                                    ? "border-yellow-400 text-yellow-600 hover:bg-yellow-500 hover:text-white"
+                                    : "border-green-400 text-green-600 hover:bg-green-500 hover:text-white"
+                                } transition`}
+                                onClick={() =>
+                                  handleToggleStatus(curso.id, curso.status, curso.title)
+                                }
+                              >
+                                {curso.status === "activo" ? "⊘ Inactivar" : "✓ Activar"}
+                              </button>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          )}
         </section>
       </main>
 
