@@ -4,283 +4,310 @@ import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import NotificationModal from "../../components/NotificationModal"
 
-export default function GestionarUsuarios() {
-    const navigate = useNavigate()
-    const [usuarios, setUsuarios] = useState([])
-    const [busqueda, setBusqueda] = useState("")
-    const [filtroRol, setFiltroRol] = useState("todos")
-    const [resetUser, setResetUser] = useState(null)
-    const [confirmModal, setConfirmModal] = useState(null)
-    const [notification, setNotification] = useState(null)
-    const token = localStorage.getItem("token")
+export default function GestionarCursos() {
+  const navigate = useNavigate()
+  const [cursos, setCursos] = useState([])
+  const [filtroEstado, setFiltroEstado] = useState("todos")
+  const [busqueda, setBusqueda] = useState("")
+  const [selectedCourse, setSelectedCourse] = useState(null)
+  const [modalOpen, setModalOpen] = useState(false)
+  const [confirmModal, setConfirmModal] = useState(null)
+  const [notification, setNotification] = useState(null)
 
-    // 🔹 Cargar usuarios al iniciar
-    useEffect(() => {
-        if (!token) {
-            setNotification({ type: "error", message: "No estás autenticado. Inicia sesión." })
-            setTimeout(() => navigate("/login"), 2000)
-            return
-        }
+  const token = localStorage.getItem("token")
 
-        loadUsuarios()
-    }, [token, navigate])
+  // 🧠 Datos mock (no tocar)
+  const cursosData = {
+    C103: {
+      title: "Curso Avanzado de IA con Python",
+      instructor: "Elena Torres",
+      creationDate: "01 Nov 2025",
+      description:
+        "Propuesta para un curso de alto nivel que abarca redes neuronales avanzadas y despliegue de modelos en la nube. Pendiente de revisión.",
+      students: [],
+      status: "pendiente",
+    },
+    C101: {
+      title: "Mastering React Hooks",
+      instructor: "Juan Pérez",
+      creationDate: "15 Sep 2025",
+      description:
+        "Curso completo sobre el uso de Hooks modernos en React.js, incluyendo Reducers, Context y efectos avanzados. ¡Ya aprobado!",
+      students: ["Estudiante A", "Estudiante B", "Estudiante C", "Estudiante D", "Estudiante E"],
+      status: "activo",
+    },
+    C102: {
+      title: "Fundamentos de Diseño UX/UI",
+      instructor: "María González",
+      creationDate: "05 Jun 2025",
+      description:
+        "Introducción al proceso de diseño centrado en el usuario, incluyendo wireframing, prototipado y pruebas de usabilidad.",
+      students: ["Alumno 1", "Alumno 2", "Alumno 3", "Alumno 4"],
+      status: "inactivo",
+    },
+  }
 
-    const loadUsuarios = async () => {
-        try {
-            const response = await fetch("http://127.0.0.1:8000/administrador/users", {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Content-Type": "application/json",
-                },
-            })
-
-            if (!response.ok) throw new Error("Error al obtener los usuarios")
-
-            const data = await response.json()
-            setUsuarios(data)
-        } catch (err) {
-            console.error(err)
-            setNotification({
-                type: "error",
-                message: "❌ Error al cargar los usuarios desde el servidor.",
-            })
-        }
+  // 🔹 Cargar cursos solo una vez al montar
+  useEffect(() => {
+    if (!token) {
+      setNotification({ type: "error", message: "No estás autenticado. Inicia sesión." })
+      setTimeout(() => navigate("/login"), 2000)
+      return
     }
+    loadCourses()
+  }, [token])
 
-    const filteredUsuarios = usuarios.filter((u) => {
-        const matchRol = filtroRol === "todos" || u.rol.toLowerCase() === filtroRol
-        const text = busqueda.toLowerCase()
-        const matchTexto =
-            u.nombre.toLowerCase().includes(text) || u.email.toLowerCase().includes(text)
-        return matchRol && matchTexto
+  // 🔹 Cargar datos mock en el estado
+  const loadCourses = () => {
+    const coursesArray = Object.entries(cursosData).map(([id, data]) => ({ id, ...data }))
+    setCursos(coursesArray)
+  }
+
+  // 🔹 Normalización segura
+  const normalizar = (s = "") => String(s).trim().toLowerCase()
+
+  // 🧩 🔥 FILTRO FUNCIONAL (recalculado cuando cambian los filtros o cursos)
+  const filteredCourses = cursos.filter((curso) => {
+    const cursoEstado = normalizar(curso.status)
+    const filtro = normalizar(filtroEstado)
+    const matchesEstado = filtro === "todos" || cursoEstado === filtro
+
+    const q = normalizar(busqueda)
+    const title = normalizar(curso.title)
+    const instructor = normalizar(curso.instructor)
+    const matchesBusqueda = q === "" || title.includes(q) || instructor.includes(q)
+
+    return matchesEstado && matchesBusqueda
+  })
+
+  // 🔹 Función para obtener color del estado
+  const getStatusBadgeColor = (status) => {
+    const s = normalizar(status)
+    switch (s) {
+      case "pendiente":
+        return "bg-yellow-100 text-yellow-700 border border-yellow-200 px-3 py-1 rounded-full text-sm font-medium"
+      case "activo":
+        return "bg-green-100 text-green-700 border border-green-200 px-3 py-1 rounded-full text-sm font-medium"
+      case "inactivo":
+        return "bg-gray-100 text-gray-600 border border-gray-200 px-3 py-1 rounded-full text-sm font-medium"
+      default:
+        return "bg-blue-100 text-blue-700 border border-blue-200 px-3 py-1 rounded-full text-sm font-medium"
+    }
+  }
+
+  const pendingCount = cursos.filter((c) => normalizar(c.status) === "pendiente").length
+
+  // 🧩 Handlers (iguales que antes)
+  const handleViewDetail = (courseId) => {
+    const details = cursosData[courseId]
+    if (details) {
+      setSelectedCourse({ id: courseId, ...details })
+      setModalOpen(true)
+    } else {
+      setNotification({ type: "error", message: `Error: Curso con ID ${courseId} no encontrado.` })
+    }
+  }
+
+  const handleApprove = (courseId, courseTitle) => {
+    setConfirmModal({
+      type: "approve",
+      title: `Confirmar aprobación del curso: ${courseTitle}`,
+      courseId,
+      courseTitle,
     })
+  }
 
-    const getRolBadge = (rol) => {
-        switch (rol.toLowerCase()) {
-            case "profesor":
-                return "badge-info text-white"
-            case "estudiante":
-                return "badge-success text-white"
-            case "administrador":
-                return "badge-primary text-white"
-            default:
-                return "badge-neutral text-white"
-        }
+  const handleReject = (courseId, courseTitle) => {
+    setConfirmModal({
+      type: "reject",
+      title: `Rechazar curso: ${courseTitle}`,
+      message: "Esta acción es irreversible.",
+      courseId,
+      courseTitle,
+    })
+  }
+
+  const handleToggleStatus = (courseId, currentStatus, courseTitle) => {
+    const newStatus = (currentStatus || "").toLowerCase() === "activo" ? "inactivo" : "activo"
+    setConfirmModal({
+      type: "toggle",
+      title: `${newStatus === "inactivo" ? "Inactivar" : "Activar"} el curso: ${courseTitle}`,
+      courseId,
+      courseTitle,
+      newStatus,
+    })
+  }
+
+  const processAction = (action) => {
+    if (!action) return
+    if (action.type === "approve") {
+      setNotification({ type: "success", message: `✅ Curso '${action.courseTitle}' aprobado.` })
+    } else if (action.type === "reject") {
+      setNotification({ type: "error", message: `❎ Curso '${action.courseTitle}' rechazado.` })
+    } else if (action.type === "toggle") {
+      setNotification({
+        type: "success",
+        message: `🔄 Curso '${action.courseTitle}' cambiado a ${action.newStatus.toUpperCase()}.`,
+      })
     }
+    setConfirmModal(null)
+  }
 
-    const handleResetPassword = (user) => {
-        setResetUser(user)
-    }
+  return (
+    <div className="min-h-screen bg-[#f8f9fb]" data-theme="light">
+      {/* Encabezado */}
+      <header className="bg-gradient-to-r from-indigo-700 to-cyan-500 text-white py-10 px-6 shadow">
+        <div className="container mx-auto max-w-6xl">
+          <h1 className="text-4xl font-bold mb-2">📚 Gestión de Cursos</h1>
+          <p className="text-lg opacity-90">
+            Revisa solicitudes de nuevos cursos y administra el catálogo actual.
+          </p>
+        </div>
+      </header>
 
-    const confirmResetPassword = () => {
-        if (!resetUser) return
-        console.log(`Reseteando contraseña para ${resetUser.nombre}`)
-        setNotification({
-            type: "success",
-            message: `🔑 Contraseña de ${resetUser.nombre} reseteada. Se envió al correo.`,
-        })
-        setResetUser(null)
-    }
+      {/* Filtros */}
+      <main className="container mx-auto px-6 py-12 max-w-6xl space-y-12">
+        <section className="bg-white rounded-2xl shadow border border-gray-100 p-6">
+          <h2 className="text-2xl font-bold mb-6 border-l-4 border-indigo-600 pl-3">Filtros</h2>
 
-    const handleDeleteUser = (user) => {
-        setConfirmModal({
-            type: "delete",
-            title: `¿Eliminar usuario ${user.nombre}?`,
-            message: "Esta acción eliminará permanentemente al usuario.",
-            userId: user.id,
-            nombre: user.nombre,
-        })
-    }
-
-    const processAction = async (action) => {
-        if (action.type === "delete") {
-            try {
-                const res = await fetch(`http://127.0.0.1:8000/administrador/users/${action.userId}`, {
-                    method: "DELETE",
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Content-Type": "application/json",
-                    },
-                })
-
-                if (!res.ok) throw new Error("Error al borrar el usuario")
-                setUsuarios((prev) => prev.filter((u) => u.id !== action.userId))
-                setNotification({ type: "success", message: `❎ Usuario ${action.nombre} eliminado.` })
-            } catch (err) {
-                setNotification({ type: "error", message: "❌ Error al borrar el usuario." })
-                console.error(err)
-            }
-        }
-        setConfirmModal(null)
-    }
-
-    return (
-        <div className="min-h-screen bg-base-100">
-            {/* 🔹 Encabezado */}
-            <div className="bg-gradient-to-r from-primary to-primary/80 text-white py-10 px-4">
-                <div className="container mx-auto max-w-6xl">
-                    <h1 className="text-4xl font-bold mb-2">👥 Gestión de Usuarios</h1>
-                    <p className="text-lg opacity-90">
-                        Visualiza y administra estudiantes y profesores del sistema.
-                    </p>
-                </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Filtrar por Estado:
+              </label>
+              <select
+                value={filtroEstado}
+                onChange={(e) => setFiltroEstado(e.target.value)}
+                className="select select-bordered w-full"
+              >
+                <option value="todos">Todos</option>
+                <option value="pendiente">Pendiente de Revisión</option>
+                <option value="activo">Activo</option>
+                <option value="inactivo">Inactivo</option>
+              </select>
             </div>
 
-            {/* 🔹 Filtros */}
-            <main className="container mx-auto px-4 py-10 max-w-6xl mb-5">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-                    <div>
-                        <label htmlFor="filtroRol" className="block label label-text font-semibold mb-2">
-                            Filtrar por Rol:
-                        </label>
-                        <select
-                            id="filtroRol"
-                            value={filtroRol}
-                            onChange={(e) => setFiltroRol(e.target.value)}
-                            className="select select-bordered w-full"
-                        >
-                            <option value="todos">Todos</option>
-                            <option value="estudiante">Estudiante</option>
-                            <option value="profesor">Profesor</option>
-                            <option value="administrador">Administrador</option>
-                        </select>
-                    </div>
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Buscar por Título o Instructor:
+              </label>
+              <input
+                type="text"
+                value={busqueda}
+                onChange={(e) => setBusqueda(e.target.value)}
+                placeholder="Ej: React o Juan Pérez"
+                className="input input-bordered w-full"
+              />
+            </div>
+          </div>
+        </section>
 
-                    <div>
-                        <label htmlFor="busqueda" className="block label label-text font-semibold mb-2">
-                            Buscar por Nombre o Correo:
-                        </label>
-                        <input
-                            type="text"
-                            id="busqueda"
-                            value={busqueda}
-                            onChange={(e) => setBusqueda(e.target.value)}
-                            placeholder="Ej: Juan Pérez o juan@ejemplo.com"
-                            className="input input-bordered w-full"
-                        />
-                    </div>
-                </div>
+        {/* Tabla */}
+        <section>
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-bold border-l-4 border-indigo-600 pl-3">
+              Catálogo de Cursos
+            </h2>
+            {pendingCount > 0 && (
+              <span className="bg-yellow-200 text-yellow-800 px-4 py-1 rounded-full font-medium text-sm">
+                {pendingCount} cursos pendientes
+              </span>
+            )}
+          </div>
 
-                {/* 🔹 Tabla de usuarios */}
-                <section>
-                    <div className="flex items-center justify-between mb-6">
-                        <h2 className="text-2xl font-bold flex items-center gap-2">
-                            <span>📋</span> Listado Completo
-                        </h2>
-                        <span className="badge badge-primary text-white">
-                            {usuarios.length} Usuarios Activos
+          <div className="overflow-x-auto bg-white rounded-xl shadow border border-gray-100">
+            <table className="table">
+              <thead>
+                <tr className="bg-gray-100 text-gray-600 text-sm uppercase">
+                  <th>Curso</th>
+                  <th>Instructor</th>
+                  <th>Fecha Creación</th>
+                  <th>Estudiantes</th>
+                  <th>Estado</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredCourses.length === 0 ? (
+                  <tr>
+                    <td colSpan="6" className="text-center text-gray-500 py-10">
+                      No hay cursos que coincidan con los filtros 💤
+                    </td>
+                  </tr>
+                ) : (
+                  filteredCourses.map((curso) => (
+                    <tr key={curso.id} className="hover:bg-gray-50 transition">
+                      <td className="font-medium text-gray-800">{curso.title}</td>
+                      <td className="text-gray-600">{curso.instructor}</td>
+                      <td className="text-gray-600">{curso.creationDate}</td>
+                      <td className="text-gray-600">
+                        {(curso.students && curso.students.length) || "—"}
+                      </td>
+                      <td>
+                        <span className={getStatusBadgeColor(curso.status)}>
+                          {curso.status.charAt(0).toUpperCase() + curso.status.slice(1)}
                         </span>
-                    </div>
+                      </td>
+                      <td>
+                        <div className="flex gap-2 flex-wrap">
+                          <button
+                            className="btn btn-primary btn-sm btn-outline"
+                            onClick={() => handleViewDetail(curso.id)}
+                          >
+                            👁️ Detalle
+                          </button>
 
-                    <div className="overflow-x-auto bg-base-100 rounded-xl shadow-md border border-base-200">
-                        <table className="table table-zebra">
-                            <thead>
-                                <tr className="bg-base-200 text-base-content">
-                                    <th>Nombre</th>
-                                    <th>Correo Electrónico</th>
-                                    <th>Rol</th>
-                                    <th>Último Acceso</th>
-                                    <th>Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {filteredUsuarios.length === 0 ? (
-                                    <tr>
-                                        <td colSpan="5" className="text-center opacity-60 py-8">
-                                            No hay usuarios que coincidan
-                                        </td>
-                                    </tr>
-                                ) : (
-                                    filteredUsuarios.map((u) => (
-                                        <tr key={u.id}>
-                                            <td>{u.nombre}</td>
-                                            <td>{u.email}</td>
-                                            <td>
-                                                <span className={`badge ${getRolBadge(u.rol)}`}>
-                                                    {u.rol}
-                                                </span>
-                                            </td>
-                                            <td>{u.status || "—"}</td>
-                                            <td>
-                                                <div className="flex flex-wrap gap-2">
-                                                    <button
-                                                        className="btn btn-warning btn-sm btn-outline"
-                                                        onClick={() => handleResetPassword(u)}
-                                                    >
-                                                        🔑 Resetear
-                                                    </button>
-                                                    <button
-                                                        className="btn btn-error btn-sm btn-outline"
-                                                        onClick={() => handleDeleteUser(u)}
-                                                    >
-                                                        🗑️ Eliminar
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    ))
-                                )}
-                            </tbody>
-                        </table>
-                    </div>
-                </section>
-            </main>
+                          {normalizar(curso.status) === "pendiente" && (
+                            <>
+                              <button
+                                className="btn btn-success btn-sm btn-outline"
+                                onClick={() => handleApprove(curso.id, curso.title)}
+                              >
+                                ✓ Aprobar
+                              </button>
+                              <button
+                                className="btn btn-error btn-sm btn-outline"
+                                onClick={() => handleReject(curso.id, curso.title)}
+                              >
+                                ✕ Rechazar
+                              </button>
+                            </>
+                          )}
 
-            {/* 🔹 Modal Reset Password */}
-            {resetUser && (
-                <dialog open className="modal modal-open">
-                    <div className="modal-box rounded-xl max-w-md">
-                        <h3 className="font-bold text-xl mb-4 text-warning">
-                            Confirmar Reseteo de Contraseña
-                        </h3>
-                        <p className="mb-3">
-                            ¿Deseas resetear la contraseña de <strong>{resetUser.nombre}</strong>?
-                        </p>
-                        <p className="text-sm text-error">
-                            Se generará una nueva contraseña temporal y se enviará por correo.
-                        </p>
-                        <div className="modal-action">
-                            <button className="btn btn-outline" onClick={() => setResetUser(null)}>
-                                Cancelar
-                            </button>
-                            <button className="btn btn-warning" onClick={confirmResetPassword}>
-                                Confirmar
-                            </button>
-                        </div>
-                    </div>
-                </dialog>
-            )}
-
-            {/* 🔹 Modal Confirmación Eliminar */}
-            {confirmModal && (
-                <dialog open className="modal modal-open">
-                    <div className="modal-box rounded-xl max-w-md">
-                        <h3 className="font-bold text-xl mb-4">{confirmModal.title}</h3>
-                        <p className="py-4 opacity-80">{confirmModal.message}</p>
-                        <div className="modal-action">
-                            <button className="btn btn-outline" onClick={() => setConfirmModal(null)}>
-                                Cancelar
-                            </button>
+                          {normalizar(curso.status) !== "pendiente" && (
                             <button
-                                className="btn btn-error"
-                                onClick={() => processAction(confirmModal)}
+                              className={`btn btn-sm btn-outline ${
+                                normalizar(curso.status) === "activo"
+                                  ? "btn-warning"
+                                  : "btn-success"
+                              }`}
+                              onClick={() =>
+                                handleToggleStatus(curso.id, curso.status, curso.title)
+                              }
                             >
-                                Confirmar
+                              {normalizar(curso.status) === "activo"
+                                ? "⊘ Inactivar"
+                                : "✓ Activar"}
                             </button>
+                          )}
                         </div>
-                    </div>
-                </dialog>
-            )}
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </main>
 
-            {/* 🔹 Notification Modal */}
-            {notification && (
-                <NotificationModal
-                    type={notification.type}
-                    message={notification.message}
-                    onClose={() => setNotification(null)}
-                />
-            )}
-        </div>
-    )
+      {notification && (
+        <NotificationModal
+          type={notification.type}
+          message={notification.message}
+          onClose={() => setNotification(null)}
+        />
+      )}
+    </div>
+  )
 }
-
