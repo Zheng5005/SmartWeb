@@ -69,12 +69,11 @@ export const AuthProvider = ({ children }) => {
                         Authorization: `Bearer ${token}`,
                     },
                 });
+                if (token) localStorage.removeItem("token");
             }
         } catch (err) {
             console.error("Error cerrando sesión:", err);
         } finally {
-            localStorage.removeItem("token");
-            setUser(null);
             navigate("/login");
         }
     };

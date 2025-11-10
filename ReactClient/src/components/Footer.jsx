@@ -1,15 +1,15 @@
-import { Link } from "react-router-dom";
-import Logo from "../assets/logo.png";
+import { Link } from "react-router-dom"
+import Logo from "../assets/logo.png"
 
 export const Footer = () => (
-    <footer className="footer footer-center bg-base-200 text-base-content p-6 mt-10 border-t border-base-300">
-        <div className="flex flex-col items-center">
-            <div className="flex items-center gap-2 mb-2">
-                <img src={Logo} alt="SMARTWEB Logo" className="w-10 h-10 rounded-lg" />
+    <footer className="footer footer-center bg-base-100 text-base-content p-8 mt-12 border-t border-base-200">
+        <div className="flex flex-col items-center gap-4">
+            <div className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+                <img src={Logo || "/placeholder.svg"} alt="SMARTWEB Logo" className="w-10 h-10 rounded-lg" />
                 <span className="font-bold text-lg">SMARTWEB</span>
             </div>
 
-            <div className="flex flex-wrap justify-center gap-4 text-sm">
+            <div className="flex flex-wrap justify-center gap-6 text-sm">
                 <Link to="/politicas" className="link link-hover">
                     Políticas de Privacidad
                 </Link>
@@ -21,9 +21,9 @@ export const Footer = () => (
                 </Link>
             </div>
 
-            <p className="mt-3 text-xs opacity-70">
+            <p className="text-xs opacity-60">
                 © 2025 SMARTWEB — Plataforma Educativa Internacional. Todos los derechos reservados.
             </p>
         </div>
     </footer>
-);
+)

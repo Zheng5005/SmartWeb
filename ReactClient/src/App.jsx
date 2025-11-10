@@ -2,7 +2,7 @@ import { AppRouter } from "./router/AppRouter";
 
 function App() {
   return (
-    <div data-theme="cupcake">
+    <div data-theme="dark">
       <AppRouter />
     </div>
   );

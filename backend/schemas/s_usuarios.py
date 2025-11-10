@@ -1,5 +1,6 @@
 from pydantic import BaseModel, EmailStr
 from datetime import datetime
+from typing import Optional
 
 class UsuarioCreate(BaseModel):
     nombre: str
@@ -7,8 +8,8 @@ class UsuarioCreate(BaseModel):
     email: EmailStr
     password: str
     role: str  # e.g., "Estudiante", "Profesor"
-    profesor_institucion: str  # e.g., "Estudiante", "Profesor"
-    profesor_cedula: str  # e.g., "Estudiante", "Profesor"
+    profesor_institucion: Optional[str] = None
+    profesor_cedula: Optional[int] = None
 
 class UsuarioLogin(BaseModel):
     email: EmailStr
