@@ -248,7 +248,7 @@ export default function AdminHome() {
                                                 <div className="font-semibold">{c.titulo}</div>
                                                 <div className="text-xs opacity-70">{c.descripcion || "Sin descripción"}</div>
                                             </td>
-                                            <td>{c.profesor_id || "—"}</td>
+                                            <td>{c.profesor || "—"}</td>
                                             <td>{c.estudiantes || 0}</td>
                                             <td>{formatDate(c.creacion_curso) || "—"}</td>
                                             <td>

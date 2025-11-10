@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from config import SessionLocal
-from model.models import Usuarios, Roles, Cursos
+from model.models import Usuarios, Roles, Cursos, Inscritos_Curso
 from services.jwt import verify_token
 from services.email import send_email
 
@@ -158,10 +158,38 @@ async def delete_user(
 
     return {"message": "Usuario eliminado correctamente"}
 
-# Obtener t0dos los cursos
+# Obtener todos los cursos con información detallada
 @router.get("/all/cursos")
 async def get_courses(current=Depends(verify_token), db: Session = Depends(get_db)):
     if current.role_name != "Administrador":
         raise HTTPException(status_code=403, detail="Acceso denegado")
 
-    return db.query(Cursos).all()
+    cursos = db.query(Cursos).all()
+    if not cursos:
+        return []
+
+    data = []
+    for curso in cursos:
+        profesor = db.query(Usuarios).filter(Usuarios.id == curso.profesor_id).first()
+
+        # Contar estudiantes inscritos con invitación aceptada
+        inscritos_count = (
+            db.query(Inscritos_Curso)
+            .filter(
+                Inscritos_Curso.id_curso == curso.id,
+                Inscritos_Curso.estado_invitacion == "Aceptada"
+            )
+            .count()
+        )
+
+        data.append({
+            "id": curso.id,
+            "titulo": curso.titulo,
+            "descripcion": curso.descripcion,
+            "creacion_curso": curso.creacion_curso,
+            "estado_curso": curso.estado_curso.value if curso.estado_curso else None,
+            "profesor": f"{profesor.nombre} {profesor.apellido}" if profesor else "—",
+            "estudiantes": inscritos_count
+        })
+
+    return data
