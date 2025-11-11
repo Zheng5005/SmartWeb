@@ -34,6 +34,7 @@ def verify_token(credentials: HTTPAuthorizationCredentials = Depends(security), 
     try:
         payload = jwt.decode(token_str, SECRET_KEY, algorithms=["HS256"])
         user_id = payload.get("sub")
+        user_name = payload.get("name")
         user_role = payload.get("rol")
 
         if user_id is None or user_role is None:

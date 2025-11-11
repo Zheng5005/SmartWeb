@@ -104,7 +104,7 @@ async def login_user(user_data: UsuarioLogin, db: Session = Depends(get_db)):
 
     # Generar token JWT (con expiración corta, p.ej. 2 minutos para pruebas)
     access_token = create_access_token(
-        {"sub": str(user.id), "rol": str(role.nombre_rol)},
+        {"sub": str(user.id), "name": user.nombre, "rol": str(role.nombre_rol)},
         expires_delta=timedelta(minutes=2)
     )
 
@@ -122,7 +122,7 @@ async def login_user(user_data: UsuarioLogin, db: Session = Depends(get_db)):
     user.status = "Activo"
     db.commit()
 
-    return {"access_token": access_token, "token_type": "bearer", "role": role.nombre_rol}
+    return {"access_token": access_token, "token_type": "bearer", "name": user.nombre, "role": role.nombre_rol}
 
 @router.post("/logout")
 async def logout_user(
