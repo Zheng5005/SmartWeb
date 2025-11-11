@@ -1,8 +1,10 @@
 import { AppRouter } from "./router/AppRouter";
+import { useThemeStore } from "./store/useThemeStore";
 
 function App() {
+  const { theme } = useThemeStore()
   return (
-    <div data-theme="light">
+    <div data-theme={theme}>
       <AppRouter />
     </div>
   );

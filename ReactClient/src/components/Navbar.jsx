@@ -4,6 +4,7 @@ import { Link } from "react-router-dom"
 import { LogOut, Home, Users, BookOpen, GraduationCap, Search } from "lucide-react"
 import Logo from "../assets/logo.png"
 import { useAuth } from "../hooks/useAuth"
+import ThemeSelector from "./ThemeSelector"
 
 export default function Navbar() {
     const { user, logout } = useAuth()
@@ -82,6 +83,8 @@ export default function Navbar() {
                             </li>
                         </>
                     )}
+
+                    <ThemeSelector />
 
                     {role && (
                         <li>
