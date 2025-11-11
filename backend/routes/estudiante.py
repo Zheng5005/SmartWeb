@@ -14,22 +14,48 @@ def get_db():
         db.close()
 
 # Obtener los cursos inscritos de un estudiante (activos e inactivos)
-@router.get("/courses/active/{student_id}")
-async def get_active_courses(student_id: int, current_user: Usuarios = Depends(verify_token), db: Session = Depends(get_db)):
+@router.get("/courses/active")
+async def get_active_courses(
+    current_user: Usuarios = Depends(verify_token),
+    db: Session = Depends(get_db)
+):
     if current_user.role_name != "Estudiante":
         raise HTTPException(status_code=403, detail="Acceso denegado")
-    
-    inscritos = db.query(Inscritos_Curso).filter(Inscritos_Curso.id_estudiante == student_id).all()
-    if not inscritos:
-        raise HTTPException(status_code=404, detail="No se encontraron cursos inscritos")
-    
-    cursos = []
-    for inscrito in inscritos:
-        curso = db.query(Cursos).filter(Cursos.id == inscrito.id_curso).first()
-        cursos.append(curso)
-    
-    return cursos
 
+    # Cursos en los que el usuario está inscrito
+    cursos = (
+        db.query(
+            Cursos.id,
+            Cursos.titulo,
+            Cursos.descripcion,
+            Cursos.creacion_curso,
+            Cursos.estado_curso,
+            Usuarios.nombre.label("profesor_nombre"),
+            Usuarios.apellido.label("profesor_apellido")
+        )
+        .join(Inscritos_Curso, Cursos.id == Inscritos_Curso.id_curso)
+        .join(Usuarios, Cursos.profesor_id == Usuarios.id)
+        .filter(Inscritos_Curso.id_estudiante == current_user.id)
+        .all()
+    )
+
+    if not cursos:
+        return []  # Devolvemos lista vacía en vez de error
+
+    # Combinar el nombre completo del profesor
+    result = [
+        {
+            "id": c.id,
+            "titulo": c.titulo,
+            "descripcion": c.descripcion,
+            "estado_curso": c.estado_curso,
+            "creacion_curso": c.creacion_curso,
+            "profesor_id": f"{c.profesor_nombre} {c.profesor_apellido}"
+        }
+        for c in cursos
+    ]
+
+    return result
 # Obtener los detalles de un curso
 @router.get("/courses/details/{course_id}")
 async def get_course_details(course_id: int, current_user: Usuarios = Depends(verify_token), db: Session = Depends(get_db)):
@@ -54,15 +80,15 @@ async def get_course_details(course_id: int, current_user: Usuarios = Depends(ve
     return {"curso": curso, "estudiantes": inscritos, "profesor": profesor}
 
 # Inscribirse en un curso (con código de curso)
-@router.post("/courses/enroll")
-async def enroll_in_course(course_code: str, student_id: int, current_user: Usuarios = Depends(verify_token), db: Session = Depends(get_db)):
+@router.post("/courses/enroll/{course_code}")
+async def enroll_in_course(course_code: int, current_user: Usuarios = Depends(verify_token), db: Session = Depends(get_db)):
     if current_user.role_name != "Estudiante":
         raise HTTPException(status_code=403, detail="Acceso denegado")
 
     # Verificar si el estudiante ya está inscrito en el curso
     inscripcion_existente = db.query(Inscritos_Curso).filter(
         Inscritos_Curso.id_curso == course_code,
-        Inscritos_Curso.id_estudiante == student_id
+        Inscritos_Curso.id_estudiante == current_user.id
     ).first()
     if inscripcion_existente:
         raise HTTPException(status_code=400, detail="Ya estás inscrito en este curso")
@@ -72,16 +98,11 @@ async def enroll_in_course(course_code: str, student_id: int, current_user: Usua
     if not curso:
         raise HTTPException(status_code=404, detail="Curso no encontrado")
 
-    # Verificar si el estudiante está inscrito en otro curso
-    inscripcion_existente = db.query(Inscritos_Curso).filter(
-        Inscritos_Curso.id_estudiante == student_id
-    ).first()
-    
     nueva_inscripcion = Inscritos_Curso(
         id_curso=course_code,
-        id_estudiante=student_id,
+        id_estudiante=current_user.id,
         estado_invitacion="Aceptada",
-        enlace_unico="1223009" 
+        enlace_unico="122300977" 
     )
     
     db.add(nueva_inscripcion)
@@ -131,3 +152,51 @@ async def get_calendar(student_id: int, current=Depends(verify_token), db: Sessi
         })
 
     return {"calendario": calendario, "total": len(calendario)}
+
+
+@router.get("/available")
+async def get_available_courses(
+    current_user: Usuarios = Depends(verify_token),
+    db: Session = Depends(get_db)
+):
+    # Obtener IDs de cursos en los que el usuario está inscrito
+    enrolled_course_ids = (
+        db.query(Inscritos_Curso.id_curso)
+        .filter(Inscritos_Curso.id_estudiante == current_user.id)
+        .all()
+    )
+
+    # Convertir resultados [(1,), (2,), ...] → [1, 2, ...]
+    enrolled_course_ids = [c[0] for c in enrolled_course_ids]
+
+    # Consulta base: solo cursos activos
+    query = (
+        db.query(Cursos, Usuarios)
+        .join(Usuarios, Cursos.profesor_id == Usuarios.id)
+        .filter(Cursos.estado_curso == "Activo")
+    )
+
+    # Si el usuario tiene cursos inscritos, los excluimos
+    if enrolled_course_ids:
+        query = query.filter(~Cursos.id.in_(enrolled_course_ids))
+
+    # Ejecutar consulta
+    available_courses = query.all()
+
+    # Formatear respuesta
+    cursos_response = [
+        {
+            "id": curso.id,
+            "titulo": curso.titulo,
+            "descripcion": curso.descripcion,
+            "profesor": f"{profesor.nombre} {profesor.apellido}",
+            "status": curso.estado_curso,
+        }
+        for curso, profesor in available_courses
+    ]
+
+    return {
+        "message": "Cursos disponibles encontrados",
+        "cursos": cursos_response
+    }
+

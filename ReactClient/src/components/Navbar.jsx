@@ -1,7 +1,7 @@
 "use client"
 
 import { Link } from "react-router-dom"
-import { LogOut, Home, Users, BookOpen, GraduationCap } from "lucide-react"
+import { LogOut, Home, Users, BookOpen, GraduationCap, Search } from "lucide-react"
 import Logo from "../assets/logo.png"
 import { useAuth } from "../hooks/useAuth"
 
@@ -58,6 +58,11 @@ export default function Navbar() {
                             <li>
                                 <Link to="/usuario/miscursos" className="gap-2">
                                     <BookOpen size={18} /> Mis Cursos
+                                </Link>
+                            </li>
+                            <li>
+                                <Link to="/usuario/discover" className="gap-2">
+                                    <Search size={18} /> Descubrir
                                 </Link>
                             </li>
                         </>

@@ -21,7 +21,8 @@ import GestionarUsuarios from "../pages/admin/GestionarUsuarios";
 import VerificarInstructores from "../pages/admin/VerfificarInstructores";
 import VisualizarCursos from "../pages/teacher/Cursos";
 
-
+import DescubrirCursos from "../pages/student/Discover";
+import MyCourses from "../pages/student/MyCourses";
 
 const Layout = ({ children }) => {
     const location = useLocation();
@@ -100,6 +101,23 @@ export const AppRouter = () => {
                             element={
                                 <ProtectedRoute allowedRoles={["profesor"]}>
                                     <VisualizarCursos />
+                                </ProtectedRoute>
+                            }
+                        />
+
+                        <Route
+                            path="/usuario/Discover"
+                            element={
+                                <ProtectedRoute allowedRoles={["estudiante"]}>
+                                    <DescubrirCursos />
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/usuario/miscursos"
+                            element={
+                                <ProtectedRoute allowedRoles={["estudiante"]}>
+                                    <MyCourses />
                                 </ProtectedRoute>
                             }
                         />
