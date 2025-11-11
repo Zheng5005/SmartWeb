@@ -8,10 +8,8 @@ export default function CreateCourseModal({ onClose, onCreate }) {
         if (!titulo.trim() || !descripcion.trim()) return
 
         let NuevoCurso = {
-          id: 45, // Quitar
           titulo: titulo,
           descripcion: descripcion,
-          estado: "activo" //Quitar
         }
 
         onCreate(NuevoCurso)

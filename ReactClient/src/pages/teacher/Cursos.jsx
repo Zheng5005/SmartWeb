@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import NotificationModal from "../../components/NotificationModal"
 import CreateCourseModal from "../../components/CreateCourseModal"
+import { formatDate } from "../../helpers/date"
 
 export default function VisualizarCursos() {
     const navigate = useNavigate()
@@ -13,24 +14,6 @@ export default function VisualizarCursos() {
     const [createModalOpen, setCreateModalOpen] = useState(false)
     const [notification, setNotification] = useState(null)
     const token = localStorage.getItem("token")
-
-    // Datos de ejemplo iniciales (mock)
-    const mockCursos = [
-        {
-            id: 1,
-            titulo: "Introducción a Python",
-            descripcion: "Aprende los fundamentos de Python desde cero.",
-            estado: "activo",
-            fecha: "01 Ene 2025",
-        },
-        {
-            id: 2,
-            titulo: "Diseño UX/UI Básico",
-            descripcion: "Conceptos básicos del diseño centrado en el usuario.",
-            estado: "inactivo",
-            fecha: "15 Feb 2025",
-        },
-    ]
 
     useEffect(() => {
         if (!token) {
@@ -42,32 +25,80 @@ export default function VisualizarCursos() {
         loadCursos()
     }, [token, navigate])
 
-    const loadCursos = () => {
+    const loadCursos = async () => {
         // En tu caso real harías un fetch aquí
-        setCursos(mockCursos)
+        try {
+            const courses = await fetch("http://127.0.0.1:8000/courses/active", {
+              headers: {Authorization: `Bearer ${token}`}
+            })
+
+            if (!courses.ok) throw new Error("Error al cargar los datos.")
+
+            setCursos(await courses.json())
+        } catch (err) {
+            console.error(err)
+            setNotification({
+                type: "error",
+                message: "❌ Error al cargar los cursos desde el servidor.",
+            })
+        }
     }
 
-    const handleToggleStatus = (cursoId) => {
-        setCursos((prev) =>
-            prev.map((c) =>
-                c.id === cursoId
-                    ? { ...c, estado: c.estado === "activo" ? "inactivo" : "activo" }
-                    : c
-            )
-        )
-        setNotification({
+    const handleToggleStatus = async (cursoId, cursoEstado) => {
+        const link = cursoEstado === "Activo" ? `http://127.0.0.1:8000/deactivate/course/${cursoId}` : `http://127.0.0.1:8000/activate/course/${cursoId}`;
+        try {
+          const res = await fetch(link, {
+            method: "PUT",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          })
+
+          if (!res.ok) throw new Error("Error al realizar la accion")
+
+          setNotification({
             type: "success",
             message: "✅ Estado del curso actualizado correctamente.",
-        })
+          })
+
+          setCursos((prev) =>
+            prev.map((c) =>
+                c.id === cursoId
+                    ? { ...c, estado_curso: c.estado_curso === "Activo" ? "Inactivo" : "Activo" }
+                    : c
+            )
+          )
+        } catch (error) {
+          console.log(error)
+          setNotification({
+            type: "error",
+            message: "Ocurrio un error, intentelo mas tarde",
+          })
+        }
     }
 
-    const handleCreateCourse = (nuevoCurso) => {
+    const handleCreateCourse = async (nuevoCurso) => {
       try {
+        const res = await fetch("http://127.0.0.1:8000/create/course", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(nuevoCurso),
+        });
+
+        if (!res.ok) throw new Error("Error al crear el curso.")
+        const data = await res.json()
+
         setNotification({
             type: "success",
             message: `🎉 Curso "${nuevoCurso.titulo}" creado correctamente.`,
         })
-        setCursos((prev) => [...prev, nuevoCurso])
+        console.log(data)
+
+        setCursos((prev) => [...prev, data.curso])
       } catch (error) {
         console.log(error)
         setNotification({
@@ -80,7 +111,7 @@ export default function VisualizarCursos() {
     }
 
     const filteredCursos = cursos.filter((c) => {
-        const matchesEstado = filtroEstado === "todos" || c.estado === filtroEstado
+        const matchesEstado = filtroEstado === "todos" || c.estado_curso === filtroEstado
         const matchesBusqueda =
             busqueda === "" ||
             c.titulo.toLowerCase().includes(busqueda.toLowerCase())
@@ -89,15 +120,16 @@ export default function VisualizarCursos() {
 
     const getEstadoBadge = (estado) => {
         switch (estado) {
-            case "activo":
+            case "Activo":
                 return "badge-success text-white"
-            case "inactivo":
+            case "Inactivo":
                 return "badge-neutral text-white"
             default:
                 return "badge-gray"
         }
     }
 
+  console.log(cursos)
     return (
         <div className="min-h-screen bg-base-100">
             {/* Header */}
@@ -123,8 +155,8 @@ export default function VisualizarCursos() {
                             className="select select-bordered w-full"
                         >
                             <option value="todos">Todos</option>
-                            <option value="activo">Activo</option>
-                            <option value="inactivo">Inactivo</option>
+                            <option value="Activo">Activo</option>
+                            <option value="Inactivo">Inactivo</option>
                         </select>
                     </div>
 
@@ -179,21 +211,21 @@ export default function VisualizarCursos() {
                                     <tr key={c.id}>
                                         <td className="font-semibold">{c.titulo}</td>
                                         <td>{c.descripcion}</td>
-                                        <td>{c.fecha}</td>
+                                        <td>{formatDate(c.creacion_curso)}</td>
                                         <td>
-                                            <span className={`badge ${getEstadoBadge(c.estado)}`}>
-                                                {c.estado.charAt(0).toUpperCase() + c.estado.slice(1)}
+                                            <span className={`badge ${getEstadoBadge(c.estado_curso)}`}>
+                                                {c.estado_curso.charAt(0).toUpperCase() + c.estado_curso.slice(1)}
                                             </span>
                                         </td>
                                         <td>
                                             <button
-                                                className={`btn btn-sm btn-outline ${c.estado === "activo"
+                                                className={`btn btn-sm btn-outline ${c.estado_curso.toLowerCase() === "activo"
                                                     ? "btn-warning"
                                                     : "btn-success"
                                                 }`}
-                                                onClick={() => handleToggleStatus(c.id)}
+                                                onClick={() => handleToggleStatus(c.id, c.estado_curso)}
                                             >
-                                                {c.estado === "activo" ? "⊘ Desactivar" : "✓ Activar"}
+                                                {c.estado_curso.toLowerCase() === "activo" ? "⊘ Desactivar" : "✓ Activar"}
                                             </button>
                                         </td>
                                     </tr>
@@ -215,6 +247,7 @@ export default function VisualizarCursos() {
             {/* Notificación */}
             {notification && (
                 <NotificationModal
+                    isOpen={true}
                     type={notification.type}
                     message={notification.message}
                     onClose={() => setNotification(null)}

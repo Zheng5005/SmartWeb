@@ -51,8 +51,19 @@ async def create_course(course: CursoCreate, current_user: Usuarios = Depends(ve
     )
     db.add(new_course)
     db.commit()
+    db.refresh(new_course)  # 👈 Esto actualiza el objeto con los datos reales en DB
 
-    return {"message": "Curso creado exitosamente"}
+    return {
+        "message": "Curso creado exitosamente",
+        "curso": {
+            "id": new_course.id,
+            "titulo": new_course.titulo,
+            "descripcion": new_course.descripcion,
+            "estado_curso": new_course.estado_curso,
+            "profesor_id": new_course.profesor_id,
+            "creacion_curso": new_course.creacion_curso
+        },
+    }
 
 # Desactivar curso
 @router.put("/deactivate/course/{course_id}")
@@ -68,6 +79,21 @@ async def deactivate_course(course_id: int, current_user: Usuarios = Depends(ver
     db.commit()
     
     return {"message": "Curso desactivado exitosamente"}
+
+# Desactivar curso
+@router.put("/activate/course/{course_id}")
+async def activate_course(course_id: int, current_user: Usuarios = Depends(verify_token), db: Session = Depends(get_db)):
+    if current_user.role_name != "Profesor":
+        raise HTTPException(status_code=403, detail="Acceso denegado")
+    
+    course = db.query(Cursos).filter(Cursos.id == course_id).first()
+    if not course:
+        raise HTTPException(status_code=404, detail="Curso no encontrado")
+    
+    course.estado_curso = "Activo"
+    db.commit()
+    
+    return {"message": "Curso Activado exitosamente"}
 
 # Calendario de conferencias
 @router.get("/calendar/{professor_id}")
