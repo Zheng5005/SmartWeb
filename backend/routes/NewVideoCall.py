@@ -1,7 +1,6 @@
-
 from os import name
 from fastapi import APIRouter, Depends, HTTPException
-from model.models import Inscritos_Curso, Usuarios
+from model.models import Inscritos_Curso, Roles, Usuarios
 from pydantic import BaseModel
 from getstream import Stream
 from getstream.models import UserRequest
@@ -17,16 +16,6 @@ router = APIRouter(prefix="/hope", tags=["hope"])
 
 client = Stream(api_key=STREAM_API_KEY, api_secret=STREAM_API_SECRET)
 
-# Modelos Pydantic
-class CreateCallRequest(BaseModel):
-    user_id: str
-
-class JoinCallRequest(BaseModel):
-    user_id: str
-    call_id: str
-
-active_calls = {}
-
 def get_db():
     db = SessionLocal()
     try:
@@ -34,31 +23,8 @@ def get_db():
     finally:
         db.close()
 
-@router.post("/createtoken")
-async def create_token(current=Depends(verify_token), db: Session = Depends(get_db)):
-    rol = ""
-    user = db.query(Usuarios).filter(Usuarios.id == current.id).first()
-
-    if not user:
-        raise HTTPException(status_code=400, detail="Credenciales incorrectas")
-
-    print(f"Creando llamada para usuario: {user.id}")
-        
-    if user.rol == "Profesor":
-        rol = "admin"
-    else:
-        rol = "guest"
-    # Crear usuario en GetStream
-    client.upsert_users(UserRequest(id=str(user.id), name=f"{user.nombre} {user.apellido}", role=rol))
-
-    # ✅ USAR EL MÉTODO OFICIAL DEL SDK PARA GENERAR TOKENS
-    user_token = client.create_token(user_id=str(user.id))
-    print(f"Token generado por SDK: {user_token[:50]}...")
-
-    return {"getStreamToken": user_token}
-
 @router.post("/createCall")
-async def create_call(curso_id: int, data:dict, current=Depends(verify_token), db:Session = Depends(get_db)):
+async def create_call(curso_id: int, current=Depends(verify_token), db:Session = Depends(get_db)):
     integrantes = db.query(Inscritos_Curso).filter(
         Inscritos_Curso.id_curso == curso_id,
         Inscritos_Curso.estado_invitacion == "Aceptada"
@@ -66,7 +32,7 @@ async def create_call(curso_id: int, data:dict, current=Depends(verify_token), d
 
     members = [{"user_id": str(current.id), "role": "admin"}]
     for ins in integrantes:
-        members.append({"user_id": str(ins.id_estudiante), "role": "guest"})
+        members.append({"user_id": str(ins.id_estudiante), "role": "user"})
 
     # Registrar usuarios en GetStream
     for m in members:
@@ -90,4 +56,30 @@ async def create_call(curso_id: int, data:dict, current=Depends(verify_token), d
         "curso_id": curso_id,
         "total_miembro": len(members),
         "miembros": members
+    }
+
+@router.post("/joinCall")
+async def join_call(curso_id: int, current=Depends(verify_token), db:Session = Depends(get_db)):
+    miembro = db.query(Inscritos_Curso).filter(
+        Inscritos_Curso.id_curso == curso_id,
+        Inscritos_Curso.id_estudiante == current.id
+    ).first()
+
+    profesor = (
+        db.query(Usuarios)
+        .join(Roles)
+        .filter(Usuarios.id == current.id, Roles.nombre_rol == "Profesor")
+        .first()
+    )
+
+    if not miembro and not profesor:
+        raise HTTPException(status_code=403, detail="No perteneces a este curso")
+
+     # Crear el token de GetStream
+    client.upsert_users(UserRequest(id=str(current.id), name=f"{current.nombre} {current.apellido}"))
+    user_token = client.create_token(user_id=str(current.id))
+
+    return {
+        "authorized": True,
+        "getStreamToken": user_token
     }
