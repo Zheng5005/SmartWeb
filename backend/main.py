@@ -5,7 +5,6 @@ from config import SessionLocal, Base, engine
 from routes import NewVideoCall, auth, ejemplo, estudiante, getstreamFile, profesores, administrador, signaling
 from model.models import Roles, Usuarios
 from services.cifrar import hash_password
-from mangum import Mangum
 
 app = FastAPI()
 
@@ -99,5 +98,3 @@ app.include_router(NewVideoCall.router)
 
 seed_roles()
 seed_admin()
-
-handler = Mangum(app)
