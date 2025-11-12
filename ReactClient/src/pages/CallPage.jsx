@@ -6,6 +6,7 @@ import {
   StreamTheme,
   SpeakerLayout,
   CallControls,
+  CallParticipantsList,
 } from "@stream-io/video-react-sdk";
 import { StreamChat } from "stream-chat";
 import {
@@ -27,16 +28,17 @@ export default function CallPage() {
   const [call, setCall] = useState(null);
   const [chatClient, setChatClient] = useState(null);
   const [channel, setChannel] = useState(null);
-  const [showChat, setShowChat] = useState(true);
+  const [showChat, setShowChat] = useState(false);
+  const [showParticipantList, setShowParticipantList] = useState(false)
   const params = useParams()
-  const { user } = useAuth();
 
   const apiKey = "fv5e9c5j23md";
 
   const JWT = localStorage.getItem("token");
   const payload = JSON.parse(atob(JWT.split(".")[1]));
   const userId = String(payload.sub); // 👈 fuerza a string
-  const nombre = String(payload.rol); // 👈 fuerza a string
+  const nombre = String(payload.name); // 👈 fuerza a string
+  const rol = String(payload.rol)
 
 const tokenStreamProvider = async () => {
   const response = await fetch(`http://127.0.0.1:8000/hope/joinCall?curso_id=${params.cursoId}`, {
@@ -58,11 +60,10 @@ const tokenStreamProvider = async () => {
 };
 
 useEffect(() => {
-
   const userGetStream = {
     id: userId,
     name: nombre,
-    image: `https://getstream.io/random_png/?id=guest&name=${user.nombre}`,
+    image: `https://getstream.io/random_png/?id=guest&name=${nombre}`,
   };
 
   const init = async () => {
@@ -134,7 +135,7 @@ useEffect(() => {
             {/* Header */}
             <header className="meeting-header">
               <div className="meeting-info">
-                <img src="/logo.png" alt="Logo" className="meeting-logo" />
+                <img src="../assets/logo.png" alt="Logo" className="meeting-logo" />
                 <h2 className="meeting-title">SMARTWEB Meet</h2>
               </div>
               <div className="meeting-actions">
@@ -144,6 +145,14 @@ useEffect(() => {
                 >
                   <i className="fas fa-comments"></i>
                 </button>
+                {(rol == "Profesor") &&
+                  <button
+                    className="chat-toggle-btn"
+                    onClick={() => setShowParticipantList(!showParticipantList)}
+                  >
+                    👥
+                  </button>
+                }
                 <button
                   className="exit-btn"
                   onClick={() => {
@@ -187,6 +196,24 @@ useEffect(() => {
                       </Window>
                     </Channel>
                   </Chat>
+                </div>
+              </div>
+            )}
+
+            {/* Listado de participante flotante encima */}
+            {showParticipantList && (
+              <div className="floating-chat">
+                <div className="floating-chat-header">
+                  <span>Lista de participantes</span>
+                  <button
+                    className="close-chat-btn"
+                    onClick={() => setShowParticipantList(false)}
+                  >
+                    ✕
+                  </button>
+                </div>
+                <div className="floating-chat-body">
+                  <CallParticipantsList />
                 </div>
               </div>
             )}

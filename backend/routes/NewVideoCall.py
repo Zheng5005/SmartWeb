@@ -1,6 +1,7 @@
+from functools import cached_property
 from os import name
 from fastapi import APIRouter, Depends, HTTPException
-from model.models import Inscritos_Curso, Roles, Usuarios
+from model.models import CalidadVideo, Inscritos_Curso, Participantes_Sesion_V, Roles, Sesiones_Virtuales, Usuarios
 from pydantic import BaseModel
 from getstream import Stream
 from getstream.models import UserRequest
@@ -16,6 +17,15 @@ router = APIRouter(prefix="/hope", tags=["hope"])
 
 client = Stream(api_key=STREAM_API_KEY, api_secret=STREAM_API_SECRET)
 
+class CallCreate(BaseModel):
+    curso_id: int
+    titulo: str
+    descripcion: str
+    hora_inicio: datetime
+    hora_fin: datetime
+    origen: str
+
+
 def get_db():
     db = SessionLocal()
     try:
@@ -24,9 +34,9 @@ def get_db():
         db.close()
 
 @router.post("/createCall")
-async def create_call(curso_id: int, current=Depends(verify_token), db:Session = Depends(get_db)):
+async def create_call(Info: CallCreate, current=Depends(verify_token), db:Session = Depends(get_db)):
     integrantes = db.query(Inscritos_Curso).filter(
-        Inscritos_Curso.id_curso == curso_id,
+        Inscritos_Curso.id_curso == Info.curso_id,
         Inscritos_Curso.estado_invitacion == "Aceptada"
     ).all()
 
@@ -50,10 +60,25 @@ async def create_call(curso_id: int, current=Depends(verify_token), db:Session =
         )
     )
 
+    new_session=Sesiones_Virtuales(
+        id_curso=Info.curso_id,
+        titulo=Info.titulo,
+        descripcion=Info.descripcion,
+        hora_inicio=Info.hora_inicio,
+        hora_fin=Info.hora_fin,
+        enlace_llamada=f"{Info.origen}/call/{enlace}/{Info.curso_id}",
+        calidad_video=CalidadVideo.p4K,
+        grabacion_url=Info.origen,
+    )
+
+    db.add(new_session)
+    db.commit()
+    db.refresh(new_session)  # 👈 Esto actualiza el objeto con los datos reales en DB
+
     return {
         "message": "Sesion creada",
-        "enlace_llamada": enlace,
-        "curso_id": curso_id,
+        "enlace_llamada": new_session.enlace_llamada,
+        "curso_id": new_session.id_curso,
         "total_miembro": len(members),
         "miembros": members
     }

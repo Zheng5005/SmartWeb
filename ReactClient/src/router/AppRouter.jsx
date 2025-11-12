@@ -28,12 +28,13 @@ import CreateCallPage from "../pages/teacher/CrearCall";
 
 const Layout = ({ children }) => {
     const location = useLocation();
-    const hideNavbar = ["/login", "/register"].includes(location.pathname);
+    const hideNavbar = ["/login", "/register"].includes(location.pathname) || location.pathname.startsWith("/call/");
+    const hideFooter = location.pathname.startsWith("/call/");
     return (
         <>
             {!hideNavbar && <Navbar />}
             <main className="min-h-screen">{children}</main>
-            <Footer />
+            {!hideFooter && <Footer />}
         </>
     );
 };

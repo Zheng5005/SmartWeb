@@ -1,6 +1,32 @@
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { formatIndividualDate, formatDate } from '../../helpers/date';
 
 export default function HomeTeacher() {
+  const JWT = localStorage.getItem("token");
+  const payload = JSON.parse(atob(JWT.split(".")[1]));
+
+  const [sessions, setSessions] = useState([])
+
+  useEffect(() => {
+    async function fetchData(){
+      try {
+        
+        const res = await fetch(`http://127.0.0.1:8000/calendar/${payload.sub}`,{
+            headers: {
+              Authorization: `Bearer ${JWT}`,
+            },
+        })
+
+        const data = await res.json()
+
+        setSessions(data.calendario)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    fetchData()
+  }, [])
 
   return (
     <div className="min-h-screen bg-base-100">
@@ -73,40 +99,21 @@ export default function HomeTeacher() {
         </div>
 
         <div className="space-y-4">
-          {[
-            {
-              title: "Matemáticas Avanzadas - Álgebra Lineal",
-              date: "Lunes, 10 Febrero",
-              time: "4:00 PM - 5:30 PM",
-              students: 24,
-            },
-            {
-              title: "Introducción a Física - Leyes de Newton",
-              date: "Miércoles, 12 Febrero",
-              time: "2:00 PM - 3:30 PM",
-              students: 18,
-            },
-            {
-              title: "Fundamentos de Programación - Funciones",
-              date: "Viernes, 14 Febrero",
-              time: "7:00 PM - 8:30 PM",
-              students: 32,
-            },
-          ].map((session, idx) => (
+            {sessions.map((session, idx) => (
             <div
               key={idx}
               className="card bg-base-100 shadow-md border-l-4 border-primary hover:shadow-lg transition-shadow"
             >
               <div className="card-body md:flex-row md:items-center md:justify-between">
                 <div>
-                  <h3 className="font-semibold text-lg mb-2">{session.title}</h3>
+                  <h3 className="font-semibold text-lg mb-2">{session.sesion}</h3>
                   <p className="text-sm opacity-70 flex flex-wrap gap-4">
-                    <span>📅 {session.date}</span>
-                    <span>🕐 {session.time}</span>
-                    <span>👥 {session.students} estudiantes</span>
+                    <span>📅 {formatDate(session.hora_inicio)}</span>
+                      <span>🕐 {formatIndividualDate(session.hora_inicio, "hour")}:{formatIndividualDate(session.hora_inicio, "minutes")} - {formatIndividualDate(session.hora_fin, "hour")}:{formatIndividualDate(session.hora_fin, "minutes")}</span>
+                    <span>👥 {session.participantes} estudiantes</span>
                   </p>
                 </div>
-                <button className="btn btn-outline btn-primary btn-sm mt-4 md:mt-0 md:flex-shrink-0">Iniciar</button>
+                <Link to={session.enlace_llamada} className="btn btn-outline btn-primary btn-sm mt-4 md:mt-0 md:flex-shrink-0">Iniciar</Link>
               </div>
             </div>
           ))}
@@ -149,6 +156,7 @@ export default function HomeTeacher() {
           ))}
         </div>
       </section>
+
     </div>
   )
 }
