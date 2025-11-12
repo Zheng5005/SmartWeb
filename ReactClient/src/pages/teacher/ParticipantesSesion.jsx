@@ -85,7 +85,7 @@ export default function ParticipantesSesion() {
                   />
                   <div>
                     <h3 className="font-semibold text-gray-800">{p.nombre}</h3>
-                    <p className="text-sm text-gray-500">ID: {p.id_usuario}</p>
+                    <p className="text-sm text-gray-500">ID: {p.email}</p>
                   </div>
                 </div>
               </div>

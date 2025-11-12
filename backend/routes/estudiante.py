@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 import uuid
 from config import SessionLocal
 from fastapi import APIRouter, Depends, HTTPException
@@ -131,18 +132,35 @@ async def get_calendar(student_id: int, current=Depends(verify_token), db: Sessi
     # Obtener IDs de los cursos
     cursos_ids = [i.id_curso for i in inscripciones]
 
+    # 🗓 Calcular inicio y fin de la semana actual
+    today = datetime.now()
+    start_of_week = today - timedelta(days=today.weekday())  # lunes
+    end_of_week = start_of_week + timedelta(days=6)          # domingo
+
     # Buscar todas las sesiones virtuales de esos cursos
     sesiones = db.query(Sesiones_Virtuales).filter(
-        Sesiones_Virtuales.id_curso.in_(cursos_ids)
+        Sesiones_Virtuales.id_curso.in_(cursos_ids),
+        Sesiones_Virtuales.hora_inicio >= start_of_week,
+        Sesiones_Virtuales.hora_fin <= end_of_week
     ).order_by(Sesiones_Virtuales.hora_inicio.asc()).all()
 
     if not sesiones:
         return {"message": "No hay sesiones programadas"}
 
     calendario = []
+    now = datetime.now()
+
     for sesion in sesiones:
         curso = db.query(Cursos).filter(Cursos.id == sesion.id_curso).first()
         profesor = db.query(Usuarios).filter(Usuarios.id == curso.profesor_id).first()
+
+        # 🕒 Determinar estado de la llamada
+        if sesion.hora_fin and sesion.hora_fin < now:
+            estado = "concluida"
+        elif sesion.hora_inicio <= now <= sesion.hora_fin:
+            estado = "en_curso"
+        else:
+            estado = "futura"
 
         calendario.append({
             "curso": curso.titulo,
@@ -152,6 +170,7 @@ async def get_calendar(student_id: int, current=Depends(verify_token), db: Sessi
             "hora_fin": sesion.hora_fin,
             "enlace_llamada": sesion.enlace_llamada,
             "profesor": f"{profesor.nombre} {profesor.apellido}",
+            "estado": estado
         })
 
     return {"calendario": calendario, "total": len(calendario)}

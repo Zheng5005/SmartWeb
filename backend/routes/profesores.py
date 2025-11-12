@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 from config import SessionLocal
 from model.models import Cursos, RoleLlamada, Usuarios, Sesiones_Virtuales, Participantes_Sesion_V
 from schemas.s_cursos import CursoCreate, CursoResponse
@@ -129,7 +130,8 @@ async def participant_call(sesion_id: int, current_user: Usuarios = Depends(veri
         if usuario:
             resultado.append({
                 "id_usuario": usuario.id,
-                "nombre": f"{usuario.nombre} {usuario.apellido}"
+                "nombre": f"{usuario.nombre} {usuario.apellido}",
+                "email": usuario.email
             })
     
     return {"participantes": resultado}
@@ -151,15 +153,24 @@ async def get_calendar(professor_id: int, current=Depends(verify_token), db: Ses
 
     cursos_ids = [c.id for c in cursos]
 
+    # 🗓 Calcular el rango de la semana actual (lunes a domingo)
+    today = datetime.now()
+    start_of_week = today - timedelta(days=today.weekday())  # lunes
+    end_of_week = start_of_week + timedelta(days=6)          # domingo
+
     # Buscar todas las sesiones virtuales asociadas a esos cursos
     sesiones = db.query(Sesiones_Virtuales).filter(
-        Sesiones_Virtuales.id_curso.in_(cursos_ids)
+        Sesiones_Virtuales.id_curso.in_(cursos_ids),
+        Sesiones_Virtuales.hora_inicio >= start_of_week,
+        Sesiones_Virtuales.hora_fin <= end_of_week
     ).order_by(Sesiones_Virtuales.hora_inicio.asc()).all()
 
     if not sesiones:
         return {"message": "No hay sesiones programadas"}
 
     calendario = []
+    now = datetime.now()
+
     for sesion in sesiones:
         # Contar participantes (si existen)
         participantes_count = db.query(Participantes_Sesion_V).filter(
@@ -170,6 +181,14 @@ async def get_calendar(professor_id: int, current=Depends(verify_token), db: Ses
         # Buscar título del curso
         curso = db.query(Cursos).filter(Cursos.id == sesion.id_curso).first()
 
+        # 🕒 Determinar estado de la sesión
+        if sesion.hora_fin and sesion.hora_fin < now:
+            estado = "concluida"
+        elif sesion.hora_inicio <= now <= sesion.hora_fin:
+            estado = "en_curso"
+        else:
+            estado = "futura"
+
         calendario.append({
             "curso": curso.titulo,
             "sesion": sesion.titulo,
@@ -179,7 +198,73 @@ async def get_calendar(professor_id: int, current=Depends(verify_token), db: Ses
             "enlace_llamada": sesion.enlace_llamada,
             "calidad_video": sesion.calidad_video.value if sesion.calidad_video else None,
             "participantes": participantes_count,
-            "sesion_id": sesion.id_sesion
+            "sesion_id": sesion.id_sesion,
+            "estado": estado
         })
 
     return {"profesor": current.nombre, "total_sesiones": len(calendario), "calendario": calendario}
+
+@router.get("/courses/{course_id}/sessions")
+async def get_course_sessions(course_id: int, current=Depends(verify_token), db: Session = Depends(get_db)):
+    # Validar si el curso existe
+    curso = db.query(Cursos).filter(Cursos.id == course_id).first()
+    if not curso:
+        raise HTTPException(status_code=404, detail="Curso no encontrado")
+
+    # Verificar permisos (solo Profesor o Estudiante del curso)
+    if current.role_name not in ["Profesor", "Estudiante"]:
+        raise HTTPException(status_code=403, detail="Acceso denegado")
+
+    # Si es estudiante, verificar que esté inscrito
+    if current.role_name == "Estudiante":
+        inscripcion = db.query(Cursos).join(Cursos.inscritos).filter(
+            Cursos.id == course_id,
+            Cursos.inscritos.any(id_estudiante=current.id)
+        ).first()
+        if not inscripcion:
+            raise HTTPException(status_code=403, detail="No estás inscrito en este curso")
+
+    # Obtener todas las sesiones del curso
+    sesiones = db.query(Sesiones_Virtuales).filter(
+        Sesiones_Virtuales.id_curso == course_id
+    ).order_by(Sesiones_Virtuales.hora_inicio.asc()).all()
+
+    if not sesiones:
+        return {"message": "No hay sesiones programadas para este curso"}
+
+    now = datetime.now()
+    sesiones_data = []
+
+    for sesion in sesiones:
+        # Calcular estado actual
+        if sesion.hora_fin and sesion.hora_fin < now:
+            estado = "concluida"
+        elif sesion.hora_inicio <= now <= sesion.hora_fin:
+            estado = "en_curso"
+        else:
+            estado = "futura"
+
+        # Contar participantes (solo PARTICIPANTES, no HOST)
+        participantes_count = db.query(Participantes_Sesion_V).filter(
+            (Participantes_Sesion_V.id_sesion == sesion.id_sesion) &
+            (Participantes_Sesion_V.role_llamada == RoleLlamada.PARTICIPANTE)
+        ).count()
+
+        sesiones_data.append({
+            "sesion_id": sesion.id_sesion,
+            "titulo": sesion.titulo,
+            "descripcion": sesion.descripcion,
+            "hora_inicio": sesion.hora_inicio,
+            "hora_fin": sesion.hora_fin,
+            "enlace_llamada": sesion.enlace_llamada,
+            "calidad_video": sesion.calidad_video.value if sesion.calidad_video else None,
+            "estado": estado,
+            "participantes": participantes_count
+        })
+
+    return {
+        "curso": curso.titulo,
+        "profesor": f"{curso.profesor.nombre} {curso.profesor.apellido}",
+        "total_sesiones": len(sesiones_data),
+        "sesiones": sesiones_data
+    }

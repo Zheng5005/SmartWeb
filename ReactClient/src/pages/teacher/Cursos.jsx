@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import NotificationModal from "../../components/NotificationModal"
 import CreateCourseModal from "../../components/CreateCourseModal"
 import { formatDate } from "../../helpers/date"
@@ -227,6 +227,7 @@ export default function VisualizarCursos() {
                                             >
                                                 {c.estado_curso.toLowerCase() === "activo" ? "⊘ Desactivar" : "✓ Activar"}
                                             </button>
+                                            <Link to={`/curso/${c.id}`} className="btn btn-sm btn-outline">Detalles</Link>
                                         </td>
                                     </tr>
                                 ))

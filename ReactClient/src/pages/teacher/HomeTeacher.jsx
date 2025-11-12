@@ -102,7 +102,11 @@ export default function HomeTeacher() {
             {sessions.map((session, idx) => (
             <div
               key={idx}
-              className="card bg-base-100 shadow-md border-l-4 border-primary hover:shadow-lg transition-shadow"
+                className={`card bg-base-100 shadow-md border-l-4 border-primary hover:shadow-lg transition-shadow space-y-4
+                  ${session.estado == "concluida" ? "bg-gray-200 text-gray-500"
+                  : session.estado === "en_curso" ? "bg-green-100 border-l-4 border-green-500"
+                  : "bg-white"}
+                `}
             >
               <div className="card-body md:flex-row md:items-center md:justify-between">
                 <div>

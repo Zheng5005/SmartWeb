@@ -51,7 +51,7 @@ const HomeStudent = () => {
           </Link>
           <div className="stat bg-white rounded-2xl p-6 shadow border border-gray-100 hover:shadow-md transition">
             <div className="stat-value text-3xl font-bold text-indigo-600">{total}</div>
-            <div className="stat-desc text-gray-600 font-medium">Sesiones pendientes</div>
+            <div className="stat-desc text-gray-600 font-medium">Sesiones en la semana</div>
           </div>
         </div>
       </section>
@@ -68,7 +68,11 @@ const HomeStudent = () => {
         {calendar.map((session, idx) => (
               <div
                 key={idx}
-                className="card bg-base-100 shadow-md border-l-4 border-primary hover:shadow-lg transition-shadow space-y-4"
+                className={`card bg-base-100 shadow-md border-l-4 border-primary hover:shadow-lg transition-shadow space-y-4
+                  ${session.estado == "concluida" ? "bg-gray-200 text-gray-500"
+                  : session.estado === "en_curso" ? "bg-green-100 border-l-4 border-green-500"
+                  : "bg-white"}
+                `}
               >
                 <div className="card-body md:flex-row md:items-center md:justify-between">
                   <div>
@@ -81,10 +85,15 @@ const HomeStudent = () => {
                     </p>
                     <p>{calendar.descripcion}</p>
                   </div>
-                  <Link to={session.enlace_llamada} className="btn btn-outline btn-primary btn-sm mt-4 md:mt-0 md:flex-shrink-0">🚀 Unirse a Clase</Link>
+                  {
+                    session.estado != "concluida" && session.estado != "futura" ? (
+                      <Link to={session.enlace_llamada} className="btn btn-outline btn-primary btn-sm mt-4 md:mt-0 md:flex-shrink-0">🚀 Unirse a Clase</Link>
+                    ) : null
+                  }
                 </div>
               </div>
         ))}
+
       </section>
 
       {/* Mis Cursos */}
