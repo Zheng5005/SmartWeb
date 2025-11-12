@@ -1,5 +1,5 @@
 from config import SessionLocal
-from model.models import Cursos, Usuarios, Sesiones_Virtuales, Participantes_Sesion_V
+from model.models import Cursos, RoleLlamada, Usuarios, Sesiones_Virtuales, Participantes_Sesion_V
 from schemas.s_cursos import CursoCreate, CursoResponse
 from services.jwt import verify_token
 from sqlalchemy.orm import Session
@@ -90,7 +90,7 @@ async def deactivate_course(course_id: int, current_user: Usuarios = Depends(ver
     
     return {"message": "Curso desactivado exitosamente"}
 
-# Desactivar curso
+# Activar curso
 @router.put("/activate/course/{course_id}")
 async def activate_course(course_id: int, current_user: Usuarios = Depends(verify_token), db: Session = Depends(get_db)):
     if current_user.role_name != "Profesor":
@@ -104,6 +104,35 @@ async def activate_course(course_id: int, current_user: Usuarios = Depends(verif
     db.commit()
     
     return {"message": "Curso Activado exitosamente"}
+
+# Participantes de la llamada
+@router.get("/participants/call/{sesion_id}")
+async def participant_call(sesion_id: int, current_user: Usuarios = Depends(verify_token), db: Session = Depends(get_db)):
+    if current_user.role_name != "Profesor":
+        raise HTTPException(status_code=403, detail="Acceso denegado")
+    
+    participantes = (
+        db.query(Participantes_Sesion_V)
+        .filter(
+            Participantes_Sesion_V.id_sesion == sesion_id,
+            Participantes_Sesion_V.role_llamada != RoleLlamada.HOST
+        )
+        .all()
+    )
+
+    if not participantes:
+        return {"message": "No hay participantes registrados (excepto el HOST) en esta sesión"}
+
+    resultado = []
+    for p in participantes:
+        usuario = db.query(Usuarios).filter(Usuarios.id == p.id_usuario).first()
+        if usuario:
+            resultado.append({
+                "id_usuario": usuario.id,
+                "nombre": f"{usuario.nombre} {usuario.apellido}"
+            })
+    
+    return {"participantes": resultado}
 
 # Calendario de conferencias
 @router.get("/calendar/{professor_id}")
@@ -134,7 +163,8 @@ async def get_calendar(professor_id: int, current=Depends(verify_token), db: Ses
     for sesion in sesiones:
         # Contar participantes (si existen)
         participantes_count = db.query(Participantes_Sesion_V).filter(
-            Participantes_Sesion_V.id_sesion == sesion.id_sesion
+            (Participantes_Sesion_V.id_sesion == sesion.id_sesion) &
+            (Participantes_Sesion_V.role_llamada == RoleLlamada.PARTICIPANTE)
         ).count()
 
         # Buscar título del curso
@@ -148,7 +178,8 @@ async def get_calendar(professor_id: int, current=Depends(verify_token), db: Ses
             "hora_fin": sesion.hora_fin,
             "enlace_llamada": sesion.enlace_llamada,
             "calidad_video": sesion.calidad_video.value if sesion.calidad_video else None,
-            "participantes": participantes_count
+            "participantes": participantes_count,
+            "sesion_id": sesion.id_sesion
         })
 
     return {"profesor": current.nombre, "total_sesiones": len(calendario), "calendario": calendario}

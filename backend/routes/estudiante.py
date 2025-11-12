@@ -1,3 +1,4 @@
+import uuid
 from config import SessionLocal
 from fastapi import APIRouter, Depends, HTTPException
 from model.models import Inscritos_Curso, Cursos, Usuarios, Sesiones_Virtuales
@@ -98,11 +99,13 @@ async def enroll_in_course(course_code: int, current_user: Usuarios = Depends(ve
     if not curso:
         raise HTTPException(status_code=404, detail="Curso no encontrado")
 
+    enlace = uuid.uuid4()
+
     nueva_inscripcion = Inscritos_Curso(
         id_curso=course_code,
         id_estudiante=current_user.id,
         estado_invitacion="Aceptada",
-        enlace_unico="122300977" 
+        enlace_unico=enlace 
     )
     
     db.add(nueva_inscripcion)

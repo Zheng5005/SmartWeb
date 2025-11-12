@@ -1,7 +1,8 @@
 from functools import cached_property
 from os import name
+from typing import ChainMap
 from fastapi import APIRouter, Depends, HTTPException
-from model.models import CalidadVideo, Inscritos_Curso, Participantes_Sesion_V, Roles, Sesiones_Virtuales, Usuarios
+from model.models import CalidadVideo, Inscritos_Curso, Participantes_Sesion_V, RoleLlamada, Roles, Sesiones_Virtuales, Usuarios
 from pydantic import BaseModel
 from getstream import Stream
 from getstream.models import UserRequest
@@ -35,6 +36,9 @@ def get_db():
 
 @router.post("/createCall")
 async def create_call(Info: CallCreate, current=Depends(verify_token), db:Session = Depends(get_db)):
+    if current.role_name != "Profesor":
+        raise HTTPException(status_code=403, detail="No tienes permisos para crear llamadas")
+
     integrantes = db.query(Inscritos_Curso).filter(
         Inscritos_Curso.id_curso == Info.curso_id,
         Inscritos_Curso.estado_invitacion == "Aceptada"
@@ -75,12 +79,41 @@ async def create_call(Info: CallCreate, current=Depends(verify_token), db:Sessio
     db.commit()
     db.refresh(new_session)  # 👈 Esto actualiza el objeto con los datos reales en DB
 
+    # 🔥 Registrar a todos los participantes en la tabla Participantes_Sesion_V
+    participantes = []
+
+    # Agregar al profesor como HOST
+    participantes.append(
+        Participantes_Sesion_V(
+            id_sesion=new_session.id_sesion,
+            id_usuario=current.id,
+            hora_unido=datetime.utcnow(),
+            role_llamada=RoleLlamada.HOST
+        )
+    )
+
+    # Agregar a todos los alumnos inscritos
+    for ins in integrantes:
+        participante = Participantes_Sesion_V(
+            id_sesion=new_session.id_sesion,
+            id_usuario=ins.id_estudiante,
+            hora_unido=None,  # Se actualizará cuando realmente se unan
+            role_llamada=RoleLlamada.PARTICIPANTE
+        )
+        participantes.append(participante)
+
+    db.add_all(participantes)
+    db.commit()
+
     return {
-        "message": "Sesion creada",
+        "message": "Sesión creada exitosamente",
         "enlace_llamada": new_session.enlace_llamada,
-        "curso_id": new_session.id_curso,
-        "total_miembro": len(members),
-        "miembros": members
+        "miembros": [
+            {
+                "nombre": f"{db.query(Usuarios).get(p.id_usuario).nombre} {db.query(Usuarios).get(p.id_usuario).apellido}"
+            }
+            for p in participantes
+        ]
     }
 
 @router.post("/joinCall")

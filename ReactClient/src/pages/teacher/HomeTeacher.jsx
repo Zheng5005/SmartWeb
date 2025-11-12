@@ -114,6 +114,7 @@ export default function HomeTeacher() {
                   </p>
                 </div>
                 <Link to={session.enlace_llamada} className="btn btn-outline btn-primary btn-sm mt-4 md:mt-0 md:flex-shrink-0">Iniciar</Link>
+                <Link to={`/profesor/sesion/${session.sesion_id}/participantes`} className="btn btn-outline btn-primary btn-sm mt-4 md:mt-0 md:flex-shrink-0">Participantes</Link>
               </div>
             </div>
           ))}

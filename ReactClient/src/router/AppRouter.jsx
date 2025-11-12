@@ -25,6 +25,7 @@ import DescubrirCursos from "../pages/student/Discover";
 import MyCourses from "../pages/student/MyCourses";
 import CallPage from "../pages/CallPage";
 import CreateCallPage from "../pages/teacher/CrearCall";
+import ParticipantesSesion from "../pages/teacher/ParticipantesSesion";
 
 const Layout = ({ children }) => {
     const location = useLocation();
@@ -104,6 +105,15 @@ export const AppRouter = () => {
                             element={
                                 <ProtectedRoute allowedRoles={["profesor"]}>
                                     <VisualizarCursos />
+                                </ProtectedRoute>
+                            }
+                        />
+
+                        <Route
+                            path="/profesor/sesion/:sesion_id/participantes"
+                            element={
+                                <ProtectedRoute allowedRoles={["profesor"]}>
+                                    <ParticipantesSesion />
                                 </ProtectedRoute>
                             }
                         />

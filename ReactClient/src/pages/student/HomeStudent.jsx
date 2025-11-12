@@ -1,6 +1,38 @@
 "use client"
 
+import { BookOpen } from "lucide-react"
+import { useEffect, useState } from "react"
+import { Link } from "react-router-dom"
+import { formatDate, formatIndividualDate } from "../../helpers/date"
+
 const HomeStudent = () => {
+  const JWT = localStorage.getItem("token");
+  const payload = JSON.parse(atob(JWT.split(".")[1]));
+
+  const [calendar, setCalendar] = useState([])
+  const [total, setTotal] = useState(0)
+
+  useEffect(() => {
+    async function fetchData(){
+      try {
+        const res = await fetch(`http://127.0.0.1:8000/students/calendar/student/${payload.sub}`,{
+            headers: {
+              Authorization: `Bearer ${JWT}`,
+            },
+        })
+
+        const data = await res.json()
+        console.log(data)
+
+        setCalendar(data.calendario)
+        setTotal(data.total)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    fetchData()
+  }, [])
+
   return (
     <main className="container mx-auto py-10 px-6 font-sans max-w-6xl bg-gray-50 min-h-screen">
       {/* Header de bienvenida */}
@@ -11,13 +43,15 @@ const HomeStudent = () => {
         </p>
 
         <div className="flex flex-col sm:flex-row justify-center gap-6">
+          <Link className="stat bg-white rounded-2xl p-6 shadow border border-gray-100 hover:shadow-md transition">
+            <div className="stat-value text-3xl font-bold text-indigo-600">
+              <BookOpen size={30} />
+            </div>
+            <span className="stat-desc text-gray-600 font-medium">Cursos Inscritos</span>
+          </Link>
           <div className="stat bg-white rounded-2xl p-6 shadow border border-gray-100 hover:shadow-md transition">
-            <div className="stat-value text-3xl font-bold text-indigo-600">5</div>
-            <div className="stat-desc text-gray-600 font-medium">Cursos Inscritos</div>
-          </div>
-          <div className="stat bg-white rounded-2xl p-6 shadow border border-gray-100 hover:shadow-md transition">
-            <div className="stat-value text-3xl font-bold text-indigo-600">3</div>
-            <div className="stat-desc text-gray-600 font-medium">Sesiones Hoy</div>
+            <div className="stat-value text-3xl font-bold text-indigo-600">{total}</div>
+            <div className="stat-desc text-gray-600 font-medium">Sesiones pendientes</div>
           </div>
         </div>
       </section>
@@ -31,29 +65,26 @@ const HomeStudent = () => {
           </span>
         </div>
 
-        <div className="card bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl transition">
-          <div className="card-body flex flex-col md:flex-row items-start md:items-center justify-between gap-6 p-6">
-            <div>
-              <h3 className="text-lg font-semibold text-gray-800 mb-3">
-                Matemáticas Avanzadas — Álgebra Lineal
-              </h3>
-              <div className="flex flex-wrap gap-4 text-sm text-gray-500">
-                <span>📅 Hoy</span>
-                <span>🕐 3:00 PM - 4:30 PM</span>
-                <span>👨‍🏫 Juan Pérez</span>
-                <span>👥 24 estudiantes</span>
+        {calendar.map((session, idx) => (
+              <div
+                key={idx}
+                className="card bg-base-100 shadow-md border-l-4 border-primary hover:shadow-lg transition-shadow space-y-4"
+              >
+                <div className="card-body md:flex-row md:items-center md:justify-between">
+                  <div>
+                    <h3 className="font-semibold text-lg mb-2">{session.curso}</h3>
+                    <h4 className="font-semibold text-lg mb-2">{session.sesion}</h4>
+                    <p className="text-sm opacity-70 flex flex-wrap gap-4">
+                      <span>📅 {formatDate(session.hora_inicio)}</span>
+                        <span>🕐 {formatIndividualDate(session.hora_inicio, "hour")}:{formatIndividualDate(session.hora_inicio, "minutes")} - {formatIndividualDate(session.hora_fin, "hour")}:{formatIndividualDate(session.hora_fin, "minutes")}</span>
+                      <span>👨‍🏫 {session.profesor}</span>
+                    </p>
+                    <p>{calendar.descripcion}</p>
+                  </div>
+                  <Link to={session.enlace_llamada} className="btn btn-outline btn-primary btn-sm mt-4 md:mt-0 md:flex-shrink-0">🚀 Unirse a Clase</Link>
+                </div>
               </div>
-              <div className="mt-4">
-                <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-medium border border-green-200">
-                  Sesión activa
-                </span>
-              </div>
-            </div>
-            <button className="btn btn-primary w-full md:w-auto shadow-sm hover:shadow-md">
-              🚀 Unirse a Clase
-            </button>
-          </div>
-        </div>
+        ))}
       </section>
 
       {/* Mis Cursos */}
