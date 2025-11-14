@@ -23,10 +23,12 @@ const HomeStudent = () => {
         })
 
         const data = await res.json()
-        setCalendar(data.calendario)
-        setTotal(data.total)
+        setCalendar(data.calendario ?? [])
+        setTotal(data.total ?? 0)
       } catch (error) {
         console.log(error)
+        setCalendar([])
+        setTotal(0)
       }
     }
 
@@ -77,7 +79,7 @@ const HomeStudent = () => {
         </div>
 
         {/* LISTA DE SESIONES */}
-        {calendar.map((session, idx) => (
+        {(calendar || []).map((session, idx) => (
           <div
             key={idx}
             className={`card shadow-md border border-base-300 hover:shadow-lg transition 

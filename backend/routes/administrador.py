@@ -52,7 +52,8 @@ async def get_profesores(current=Depends(verify_token), db: Session = Depends(ge
             "status": p.status.value,
             "cedula": p.profesor_cedula,
             "instituto": p.profesor_institucion,
-            "fecha": p.creacion_cuenta
+            "fecha": p.creacion_cuenta,
+            #"motivacion": p.motivacion
         }
         for p in profesores
     ]
