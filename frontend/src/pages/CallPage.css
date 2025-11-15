@@ -1,11 +1,9 @@
-/* ============================================================
-   🎨 FONDO GENERAL
-============================================================ */
+
 .meeting-container {
   position: relative;
   width: 100%;
   height: 100vh;
-  background: radial-gradient(circle at center, #141a23 0%, #0d1117 100%);
+  background: radial-gradient(circle at center, #161b22 0%, #0d1117 100%);
   color: white;
   overflow: hidden;
   display: flex;
@@ -13,19 +11,30 @@
 }
 
 
-/* ============================================================
-   🟦 NAVBAR DELGADO Y ELEGANTE
-============================================================ */
 .meeting-header {
-  height: 70px; /* MÁS DELGADO */
-  background: #0f141a;
+  height: 68px;
+  background: rgba(14, 18, 25, 0.92);
+  backdrop-filter: blur(10px);
   border-bottom: 1px solid rgba(255,255,255,0.05);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 28px;
+  padding: 0 26px;
   box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
+
+  position: absolute;
+  top: -80px;
+  left: 0;
+  width: 100%;
+  transition: all .35s ease;
+  z-index: 100;
 }
+
+/* ⭐ Aparece cuando se mueve el mouse */
+.meeting-container:hover .meeting-header {
+  top: 0;
+}
+
 
 .meeting-info {
   display: flex;
@@ -34,14 +43,14 @@
 }
 
 .meeting-logo {
-  width: 46px;
+  width: 45px;
   border-radius: 10px;
 }
 
 .meeting-title {
-  font-size: 1.45rem; /* un poco más sobrio */
+  font-size: 1.4rem;
   font-weight: 600;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.4px;
 }
 
 .meeting-actions {
@@ -54,8 +63,7 @@
   background: #1e2630;
   border: 1px solid #2f3a48;
   color: white;
-  font-size: 0.95rem;
-  padding: 8px 14px; /* MÁS PEQUEÑO */
+  padding: 8px 14px;
   border-radius: 8px;
   transition: 0.25s ease;
 }
@@ -66,8 +74,6 @@
 
 .exit-btn {
   background: #ef4444 !important;
-  padding: 8px 18px !important;
-  border-radius: 8px;
 }
 
 .exit-btn:hover {
@@ -75,74 +81,67 @@
 }
 
 
-/* ============================================================
-   🎥 ÁREA DEL VIDEO (espaciado arreglado)
-============================================================ */
+
+
 .sw-video-area {
   flex: 1;
 
-  /* 🔥 ESPACIO PERFECTO DEBAJO DEL NAVBAR */
-  padding-top: 90px;
+  /* 🌟 ahora el video queda centrado con espacio arriba y abajo */
+  padding-top: 120px;
+  padding-bottom: 130px;
 
-  /* 🔥 ESPACIO PERFECTO SOBRE LA BARRA DE CONTROLES */
-  padding-bottom: 110px;
-
-  padding-left: 30px;
-  padding-right: 30px;
+  padding-left: 40px;
+  padding-right: 40px;
 
   display: flex;
   justify-content: center;
   align-items: center;
-  overflow: hidden;
 }
 
 .sw-video-area > div {
   border-radius: 18px !important;
   overflow: hidden;
-
-  /* sombra sutil estilo Google Meet */
-  box-shadow: 0 12px 24px rgba(0,0,0,0.25);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.3);
 }
 
 
-/* ============================================================
-   🎛️ BARRA DE CONTROLES DELGADA + DINÁMICA
-============================================================ */
+
+
 .sw-controls {
   width: fit-content;
   max-width: 80%;
   margin: auto;
 
-  padding: 10px 18px;   /* más pequeña */
-  background: rgba(20, 24, 33, 0.72);
+  padding: 12px 20px;
+  background: rgba(20, 24, 33, 0.78);
   backdrop-filter: blur(14px);
-  border-radius: 18px;
+  border-radius: 20px;
   border: 1px solid rgba(255,255,255,0.07);
 
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-
-  bottom: -80px;
+  bottom: -100px;
   opacity: 0;
-  transition: all 0.35s ease;
+  transition: all .35s ease;
 }
 
+
+/* ⭐ Cuando el mouse se mueve, aparece */
 .meeting-container:hover .sw-controls {
-  bottom: 25px; /* SUBE SOLO UN POCO */
+  bottom: 32px;
   opacity: 1;
 }
 
 
-/* ============================================================
-   💬 CHAT FLOTANTE MÁS BONITO
-============================================================ */
+
+
 .floating-chat {
   position: absolute;
   right: 20px;
-  top: 85px;
-  width: 350px;            /* más compacto */
-  height: 460px;           /* menos alto */
+  top: 100px;
+  width: 360px;
+  height: 470px;
   background: #161b22;
   border: 1px solid #2d323a;
   border-radius: 14px;
@@ -151,12 +150,12 @@
   flex-direction: column;
   z-index: 80;
   box-shadow: 0 10px 22px rgba(0,0,0,0.45);
-  animation: fade 0.3s ease-in-out;
+  animation: fade .3s ease-in-out;
 }
 
 .floating-chat-header {
   background: #1e252d;
-  padding: 10px;
+  padding: 12px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -167,12 +166,14 @@
   flex: 1;
   background: #0f1319;
   overflow-y: auto;
+  padding: 12px;
 }
 
 .close-chat-btn {
   background: transparent;
   border: none;
-  font-size: 16px;
+  color: white;
+  font-size: 18px;
 }
 
 .close-chat-btn:hover {
@@ -180,22 +181,17 @@
 }
 
 
-/* ============================================================
-   👥 PARTICIPANTES: MÁS SEPARADOS DEL BORDE
-============================================================ */
+
 .floating-chat-body .participants-list,
 .floating-chat-body > div {
   padding: 16px !important;
 }
 
 
-/* ============================================================
-   ⏳ LOADING
-============================================================ */
+
 .loading-container {
   height: 100vh;
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
 }
@@ -213,15 +209,8 @@
   100% { transform: rotate(360deg); }
 }
 
-.loading-text {
-  margin-top: 10px;
-  color: #ccc;
-}
 
 
-/* ============================================================
-   🔄 ANIMACIONES
-============================================================ */
 @keyframes fade {
   from { opacity: 0; transform: translateY(-6px); }
   to   { opacity: 1; transform: translateY(0); }
