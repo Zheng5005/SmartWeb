@@ -63,14 +63,15 @@ export const AuthProvider = ({ children }) => {
         try {
             const token = localStorage.getItem("token");
             if (token) {
-                await fetch(url + `/auth/logout`, {
+                const res = await fetch(url + `/auth/logout`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
                         Authorization: `Bearer ${token}`,
                     },
                 });
-                if (token) localStorage.removeItem("token");
+                if (!res.ok) throw new Error();
+                else localStorage.removeItem("token");
             }
         } catch (err) {
             console.error("Error cerrando sesión:", err);
