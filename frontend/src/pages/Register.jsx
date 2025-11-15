@@ -6,6 +6,7 @@ import { Link } from "react-router-dom"
 import NotificationModal from "../components/NotificationModal"
 
 export default function Register() {
+  const [loading, setLoading] = useState(false)
   const [userType, setUserType] = useState("student")
   const [formData, setFormData] = useState({
     nombre: "",
@@ -39,11 +40,13 @@ export default function Register() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    setLoading(true)
 
     const { nombre, apellido, email, password, motivation, college, cedula } = formData
 
     if (!nombre || !apellido || !email || !password) {
       showModal("error", "Campos Requeridos", "Por favor, complete todos los campos obligatorios.")
+      setLoading(false)
       return
     }
 
@@ -52,6 +55,7 @@ export default function Register() {
 
     if (userType === "teacher" && (!motivation || !college || !cedula)) {
       showModal("error", "Información Incompleta", "Por favor, complete todos los campos para ser profesor.")
+      setLoading(false)
       return
     }
 
@@ -85,6 +89,7 @@ export default function Register() {
         }
 
         showModal("error", "Error de Registro", errorMessage)
+        setLoading(false)
         return
       }
 
@@ -101,6 +106,8 @@ export default function Register() {
     } catch (error) {
       console.error("Error en el registro:", error)
       showModal("error", "Error de Conexión", "Ocurrió un error al conectar con el servidor.")
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -244,8 +251,15 @@ export default function Register() {
               </>
             )}
 
-            <button className="btn btn-primary w-full mt-6 font-semibold" id="registerButton">
-              Registrarse
+            {/* Botón */}
+            <button
+              type="submit"
+              className="btn btn-primary w-full mt-6 font-semibold"
+              disabled={loading}
+            >
+              {loading ? (
+                <span className="loading loading-spinner loading-sm"></span>
+              ) : "Registrarse"}
             </button>
 
             <p className="text-sm text-center opacity-70">

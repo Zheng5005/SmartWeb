@@ -190,13 +190,6 @@ export default function GestionarUsuarios() {
                         <div className="flex justify-center gap-2">
 
                           <button
-                            className="btn btn-warning btn-sm btn-outline"
-                            onClick={() => handleResetPassword(u)}
-                          >
-                            🔑 Resetear
-                          </button>
-
-                          <button
                             className="btn btn-error btn-sm btn-outline"
                             onClick={() => handleDeleteUser(u)}
                           >

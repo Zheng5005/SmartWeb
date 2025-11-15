@@ -65,6 +65,7 @@ export default function CreateCallPage() {
       alert("Ocurrió un error al crear la llamada");
     } finally {
       setLoading(false);
+      clearForm()
     }
   };
 
@@ -73,6 +74,14 @@ export default function CreateCallPage() {
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
+
+  const clearForm = () => {
+    setSelectedCourse("")
+    setTitulo("")
+    setDescripcion("")
+    setHoraInicio("")
+    setHoraFin("")
+  }
 
   return (
     <div className="min-h-screen bg-base-200 flex items-center justify-center p-6">
@@ -149,6 +158,7 @@ export default function CreateCallPage() {
           <button
             className={`btn btn-primary w-full ${loading ? "loading" : ""}`}
             onClick={handleCreateCall}
+            disabled={loading}
           >
             {loading ? "Creando..." : "Crear enlace"}
           </button>

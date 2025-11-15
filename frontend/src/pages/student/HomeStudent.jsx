@@ -48,14 +48,14 @@ const HomeStudent = () => {
         <div className="flex flex-col sm:flex-row justify-center gap-6">
 
           {/* Cursos */}
-          <div className="stat bg-base-100 rounded-xl shadow border border-base-200 hover:shadow-lg transition cursor-pointer">
+          <Link to="/usuario/miscursos" className="stat bg-base-100 rounded-xl shadow border border-base-200 hover:shadow-lg transition cursor-pointer">
             <div className="stat-value text-primary flex justify-center">
               <BookOpen size={30} />
             </div>
             <div className="stat-desc text-base-content text-center font-medium">
               Cursos Inscritos
             </div>
-          </div>
+          </Link>
 
           {/* Sesiones */}
           <div className="stat bg-base-100 rounded-xl shadow border border-base-200 hover:shadow-lg transition">
@@ -125,57 +125,6 @@ const HomeStudent = () => {
         ))}
       </section>
 
-      {/* MIS CURSOS */}
-      <section>
-        <h2 className="text-2xl font-bold text-base-content mb-8">📚 Mis Cursos</h2>
-
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
-
-          {[
-            {
-              icon: "🗣️",
-              title: "Inglés Conversacional",
-              schedule: "Lunes y Miércoles - 6:00 PM",
-              sessions: "12 sesiones/mes",
-            },
-            {
-              icon: "💻",
-              title: "Programación Web",
-              schedule: "Martes y Jueves - 2:00 PM",
-              sessions: "8 sesiones/mes",
-            },
-            {
-              icon: "🎨",
-              title: "Diseño Gráfico",
-              schedule: "Jueves - 10:00 AM",
-              sessions: "4 sesiones/mes",
-            },
-          ].map((course, idx) => (
-            <div
-              key={idx}
-              className="card bg-base-100 rounded-xl shadow border border-base-300 hover:shadow-lg transition hover:-translate-y-1"
-            >
-              <div className="card-body items-center text-center">
-
-                <div className="text-5xl">{course.icon}</div>
-
-                <h3 className="text-lg font-semibold text-base-content">
-                  {course.title}
-                </h3>
-
-                <p className="text-sm opacity-70">{course.schedule}</p>
-
-                <p className="text-sm opacity-70 mt-1">📹 {course.sessions}</p>
-
-                <button className="btn btn-primary btn-outline btn-sm w-full mt-3">
-                  Ver Sesiones
-                </button>
-
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
     </main>
   )
 }
