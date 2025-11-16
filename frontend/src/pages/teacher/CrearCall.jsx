@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { FaVideo, FaCopy, FaCheck } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import NotificationModal from "../../components/NotificationModal";
 
 export default function CreateCallPage() {
   const [courses, setCourses] = useState([]);
@@ -12,6 +13,7 @@ export default function CreateCallPage() {
   const [loading, setLoading] = useState(false);
   const [createdLink, setCreatedLink] = useState(null);
   const [copied, setCopied] = useState(false);
+  const [notification, setNotification] = useState(false);
 
   const token = localStorage.getItem("token");
   const url = import.meta.env.VITE_BACKEND_URL;
@@ -26,6 +28,7 @@ export default function CreateCallPage() {
         setCourses(data ?? []);
       } catch (err) {
         console.error("Error al obtener cursos:", err);
+        setNotification({ type: "error", message: "Error al obtener cursos" })
         setCourses([]);
       }
     };
@@ -34,7 +37,7 @@ export default function CreateCallPage() {
 
   const handleCreateCall = async () => {
     if (!selectedCourse || !titulo || !horaInicio || !horaFin) {
-      alert("Completa todos los campos obligatorios.");
+      setNotification({ type: "error", message: "Completa todos los campos obligatorios" })
       return;
     }
 
@@ -62,7 +65,7 @@ export default function CreateCallPage() {
       setCreatedLink(data.enlace_llamada);
     } catch (err) {
       console.error(err);
-      alert("Ocurrió un error al crear la llamada");
+      setNotification({ type: "error", message: "Ocurrió un error al crear la llamada" })
     } finally {
       setLoading(false);
       clearForm()
@@ -185,6 +188,16 @@ export default function CreateCallPage() {
             </div>
           </div>
         )}
+
+          {/* NOTIFICACIÓN */}
+          {notification && (
+            <NotificationModal
+              isOpen={true}
+              type={notification.type}
+              message={notification.message}
+              onClose={() => setNotification(null)}
+            />
+          )}
       </div>
     </div>
   );

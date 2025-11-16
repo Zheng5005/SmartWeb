@@ -2,7 +2,7 @@ from datetime import datetime, timedelta, timezone
 import uuid
 from config import SessionLocal
 from fastapi import APIRouter, Depends, HTTPException
-from model.models import Inscritos_Curso, Cursos, Usuarios, Sesiones_Virtuales
+from model.models import Inscritos_Curso, Cursos, Notificaciones, TipoNotificacion, Usuarios, Sesiones_Virtuales
 from sqlalchemy.orm import Session
 from services.jwt import verify_token
 from utils.time import remove_tz, now_naive
@@ -113,6 +113,15 @@ async def enroll_in_course(course_code: int, current_user: Usuarios = Depends(ve
     db.add(nueva_inscripcion)
     db.commit()
     db.refresh(nueva_inscripcion)
+
+    new_notif = Notificaciones(
+        usuario_id=curso.profesor_id,
+        titulo="Nueva Inscripcion",
+        mensaje="Un estudiante se inscribio a tu curso!",
+        tipo=TipoNotificacion.EN_APP,
+    )
+    db.add(new_notif)
+    db.commit()
 
     return {"message": "Registro exitoso. Verifique su correo si aplica."}
 
