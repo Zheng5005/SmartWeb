@@ -107,14 +107,20 @@ async def login_user(user_data: UsuarioLogin, db: Session = Depends(get_db)):
 
     # Control de múltiples sesiones
     existing_token = db.query(AuthToken).filter(
-        AuthToken.user_id == user.id,
-        AuthToken.revocado == False
+    AuthToken.user_id == user.id,
+    AuthToken.revocado == False
     ).first()
 
     # 🔥 Nueva lógica: si el token existe pero ya expiró, lo revocamos
     if existing_token:
         now = utcnow()
-        if existing_token.expiracion < now:
+        exp = existing_token.expiracion
+
+        # convertir expiración a timezone-aware
+        if exp.tzinfo is None:
+            exp = exp.replace(tzinfo=timezone.utc)
+
+        if exp < now:
             existing_token.revocado = True
             db.commit()
         else:
@@ -187,10 +193,10 @@ async def activate_account(token: str, db: Session = Depends(get_db)):
     return {"message": "Cuenta activada correctamente"}
 
 @router.get("/verify-token")
-async def verify_user_token(current=Depends(verify_token)):
+async def verify_user_token(current = Depends(verify_token)):
     return {
         "valid": True,
         "user_id": current.id,
         "nombre": current.nombre,
-        "rol": current.rol.nombre_rol if hasattr(current, "rol") else None
+        "rol": current.role_name.lower(),
     }
