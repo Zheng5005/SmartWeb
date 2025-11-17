@@ -42,6 +42,12 @@ export default function CreateCallPage() {
     }
 
     setLoading(true);
+    const inicioLocal = new Date(horaInicio)
+    const finLocal = new Date(horaFin)
+
+    const inicioUTC = inicioLocal.toISOString()
+    const finUTC = finLocal.toISOString()
+
     try {
       const res = await fetch(url + `/hope/createCall`, {
         method: "POST",
@@ -53,8 +59,8 @@ export default function CreateCallPage() {
           curso_id: selectedCourse,
           titulo,
           descripcion,
-          hora_inicio: horaInicio,
-          hora_fin: horaFin,
+          hora_inicio: inicioUTC,
+          hora_fin: finUTC,
           //origen: Creo que tendria que ser la url del frontend cuando ya esta desplegado
           origen: window.location.origin,
         }),
